@@ -1,4 +1,6 @@
 import 'package:get/get_navigation/get_navigation.dart';
+import 'package:template/features/auth/bindings/auth_binding.dart';
+import 'package:template/features/auth/screens/sign_Up_screen.dart';
 import 'package:template/features/auth/screens/sign_in_screen.dart';
 import 'package:template/features/home/screens/home_screens.dart';
 import 'package:template/features/splash/bindings/onboarding_binding.dart';
@@ -15,12 +17,21 @@ class AppRoutes {
       name: RoutesName.home,
       page: () => HomeScreen(),
       transition: Transition.rightToLeft,
+      binding: AuthBinding(),
     ),
     GetPage(
       name: RoutesName.login,
       page: () => SignInScreen(),
       transition: Transition.rightToLeft,
+      binding: AuthBinding(),
     ),
+    GetPage(
+      name: RoutesName.signup,
+      page: () => SignUpScreen(),
+      transition: Transition.rightToLeft,
+      binding: AuthBinding(),
+    ),
+
     GetPage(
       name: RoutesName.splashScreen,
       page: () => SplashScreen(),

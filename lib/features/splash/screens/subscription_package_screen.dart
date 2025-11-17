@@ -5,6 +5,7 @@ import 'package:template/core/constants/app_colors.dart';
 import 'package:template/core/themes/app_text_style.dart';
 import 'package:template/features/splash/controllers/subscription_controller.dart';
 import 'package:template/features/splash/widgets/subscription_card.dart';
+import 'package:template/routes/routes_name.dart';
 import 'package:template/widget/custome_button.dart';
 
 class SubscriptionPackageScreen extends StatelessWidget {
@@ -126,6 +127,7 @@ class SubscriptionPackageScreen extends StatelessWidget {
             CustomeButton(
               gradient: AppColors.primaryGradient,
               onTap: () {
+                Get.toNamed(RoutesName.login);
                 debugPrint('Click : Start Your Free Trail');
               },
               title: "Start Your 7-Day Free Trial",

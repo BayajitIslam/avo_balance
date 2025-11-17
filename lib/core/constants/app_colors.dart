@@ -30,7 +30,7 @@ class AppColors {
   static const Color scaffoldBackground = Color(0xFFFFFFFF);
   static const Color textGray = Color(0xFFBABABA);
   static const Color error = Color(0xFFEA2A2A);
-  static const Color brand = Color(0xFF3db84b);
+  static const Color brand = Color(0xFF02c29f);
   static const Color ash = Color(0xFF808080);
   static const Color greenLight = Color(0xFFECFBED);
 }

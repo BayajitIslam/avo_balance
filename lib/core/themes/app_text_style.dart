@@ -45,7 +45,20 @@ class AppTextStyles {
       fontSize: fontSize.sp,
       fontWeight: fontweight,
       height: 1,
-      
+    );
+  }
+
+  //------------------------------ Inter Font Styles --------------------------------//
+  static TextStyle s22w7i({
+    Color? color,
+    double fontSize = 22,
+    FontWeight fontweight = FontWeight.w700,
+  }) {
+    return GoogleFonts.inter(
+      color: color ?? AppColors.textBlack,
+      fontSize: fontSize.sp,
+      fontWeight: fontweight,
+      height: 1,
     );
   }
 }

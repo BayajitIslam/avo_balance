@@ -158,7 +158,7 @@ class SubscriptionCard extends StatelessWidget {
                       'Best Value',
                       style: AppTextStyles.s14w4i(
                         color: AppColors.white,
-                        fontSize: 10,
+                        fontSize: 11.sp,
                       ),
                     ),
                   ),

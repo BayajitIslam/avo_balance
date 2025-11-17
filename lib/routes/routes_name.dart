@@ -4,4 +4,5 @@ class RoutesName {
   static const String splashScreen = "/splashScreen";
   static const String onboarding = "/onboarding";
   static const String subscriptionPackage = "/subscriptionPackage";
+  static const String signup = "/signup";
 }
