@@ -17,13 +17,30 @@ class AuthController extends GetxController {
   final loginEmailController = TextEditingController();
   final loginPasswordController = TextEditingController();
 
+  // Forgot Password Controller
+  final forgotPasswordEmailController = TextEditingController();
+
+  // Reset Password Controllers
+  final newPasswordController = TextEditingController();
+  final confirmNewPasswordController = TextEditingController();
+
+  // Password Visibility
+  final RxBool isNewPasswordVisible = false.obs;
+  final RxBool isConfirmNewPasswordVisible = false.obs;
+
   // Observable States
   final RxBool isLoading = false.obs;
   final RxBool isPasswordVisible = false.obs;
   final RxBool isConfirmPasswordVisible = false.obs;
   final Rx<UserModel?> currentUser = Rx<UserModel?>(null);
 
-  final RxString errorMessage = ''.obs;
+  //Error Message
+  final RxString errorMessageSignIn = ''.obs;
+  final RxString errorMessageSignUp = ''.obs;
+  final RxString errorMessageForgotPassword = ''.obs;
+
+  // Error Message for Reset Password
+  final RxString errorMessageResetPassword = ''.obs;
 
   // Toggle Password Visibility
   void togglePasswordVisibility() {
@@ -32,6 +49,15 @@ class AuthController extends GetxController {
 
   void toggleConfirmPasswordVisibility() {
     isConfirmPasswordVisible.value = !isConfirmPasswordVisible.value;
+  }
+
+  // Toggle Password Visibility
+  void toggleNewPasswordVisibility() {
+    isNewPasswordVisible.value = !isNewPasswordVisible.value;
+  }
+
+  void toggleConfirmNewPasswordVisibility() {
+    isConfirmNewPasswordVisible.value = !isConfirmNewPasswordVisible.value;
   }
 
   // Sign Up
@@ -74,8 +100,8 @@ class AuthController extends GetxController {
         snackPosition: SnackPosition.BOTTOM,
       );
 
-      // Navigate to Home
-      Get.offAllNamed(RoutesName.login);
+      // Navigate to veryfy
+      Get.offAllNamed(RoutesName.otpVerificationSignup);
     } catch (e) {
       Get.snackbar(
         'Error',
@@ -141,6 +167,114 @@ class AuthController extends GetxController {
     }
   }
 
+  // Send Password Reset Email
+  Future<void> sendPasswordResetEmail() async {
+    errorMessageForgotPassword.value = '';
+
+    // Validation
+    if (forgotPasswordEmailController.text.trim().isEmpty) {
+      errorMessageForgotPassword.value = 'Please enter your email';
+      return;
+    }
+
+    if (!GetUtils.isEmail(forgotPasswordEmailController.text.trim())) {
+      errorMessageForgotPassword.value = 'Please enter a valid email';
+      return;
+    }
+
+    try {
+      isLoading.value = true;
+
+      // API Call (Replace with your actual API)
+      // final response = await ApiService.forgotPassword(
+      //   email: forgotPasswordEmailController.text.trim(),
+      // );
+
+      // Mock Response
+      await Future.delayed(Duration(seconds: 2));
+
+      // Success
+      Get.snackbar(
+        'Success',
+        'Otp has been sent to your email',
+        backgroundColor: Colors.green,
+        colorText: Colors.white,
+        snackPosition: SnackPosition.BOTTOM,
+        duration: Duration(seconds: 3),
+      );
+
+      // Navigate back to login after 2 seconds
+      await Future.delayed(Duration(seconds: 2));
+      Get.toNamed(RoutesName.otpVerification);
+    } catch (e) {
+      errorMessageForgotPassword.value =
+          'Failed to send reset link. Please try again.';
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
+  // Reset Password
+  Future<void> resetPassword() async {
+    errorMessageResetPassword.value = '';
+
+    // Validation
+    if (newPasswordController.text.isEmpty) {
+      errorMessageResetPassword.value = 'Please enter your new password';
+      return;
+    }
+
+    if (newPasswordController.text.length < 6) {
+      errorMessageResetPassword.value =
+          'Password must be at least 6 characters';
+      return;
+    }
+
+    if (confirmNewPasswordController.text.isEmpty) {
+      errorMessageResetPassword.value = 'Please confirm your password';
+      return;
+    }
+
+    if (newPasswordController.text != confirmNewPasswordController.text) {
+      errorMessageResetPassword.value = 'Passwords do not match';
+      return;
+    }
+
+    try {
+      isLoading.value = true;
+
+      // API Call (Replace with your actual API)
+      // final response = await ApiService.resetPassword(
+      //   password: newPasswordController.text,
+      // );
+
+      // Mock Response
+      await Future.delayed(Duration(seconds: 2));
+
+      // Success
+      Get.snackbar(
+        'Success',
+        'Password has been reset successfully!',
+        backgroundColor: Colors.green,
+        colorText: Colors.white,
+        snackPosition: SnackPosition.BOTTOM,
+      );
+
+      // Clear fields
+      newPasswordController.clear();
+      confirmNewPasswordController.clear();
+
+      // Navigate to login
+      await Future.delayed(Duration(seconds: 1));
+      Get.offAllNamed(RoutesName.login);
+    } catch (e) {
+      errorMessageResetPassword.value =
+          'Failed to reset password. Please try again.';
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
   // Sign Out
   Future<void> signOut() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -151,24 +285,20 @@ class AuthController extends GetxController {
 
   // Validate Sign Up Form
   bool _validateSignUpForm() {
-    if (nameController.text.trim().isEmpty) {
-      Get.snackbar('Error', 'Please enter your name');
-      return false;
-    }
     if (emailController.text.trim().isEmpty) {
-      Get.snackbar('Error', 'Please enter your email');
+      errorMessageSignUp.value = 'Please enter your email';
       return false;
     }
     if (!GetUtils.isEmail(emailController.text.trim())) {
-      Get.snackbar('Error', 'Please enter a valid email');
+      errorMessageSignUp.value = 'Please enter a valid email';
       return false;
     }
     if (passwordController.text.length < 6) {
-      Get.snackbar('Error', 'Password must be at least 6 characters');
+      errorMessageSignUp.value = 'Password must be at least 6 characters';
       return false;
     }
     if (passwordController.text != confirmPasswordController.text) {
-      Get.snackbar('Error', 'Passwords do not match');
+      errorMessageSignUp.value = 'Passwords do not match';
       return false;
     }
     return true;
@@ -177,15 +307,15 @@ class AuthController extends GetxController {
   // Validate Sign In Form
   bool _validateSignInForm() {
     if (loginEmailController.text.trim().isEmpty) {
-      errorMessage.value = 'Please enter your email';
+      errorMessageSignIn.value = 'Please enter your email';
       return false;
     }
     if (!GetUtils.isEmail(loginEmailController.text.trim())) {
-      errorMessage.value = 'Please enter a valid email';
+      errorMessageSignIn.value = 'Please enter a valid email';
       return false;
     }
     if (loginPasswordController.text.isEmpty) {
-      errorMessage.value = 'Please enter your password';
+      errorMessageSignIn.value = 'Please enter your password';
       return false;
     }
     return true;

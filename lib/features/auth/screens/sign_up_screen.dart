@@ -108,7 +108,7 @@ class SignUpScreen extends StatelessWidget {
                     controller.isConfirmPasswordVisible.value
                         ? Icons.visibility_outlined
                         : Icons.visibility_off_outlined,
-                    color: const Color(0xFFBABABA),
+                    color: const Color(0xFF6C6F72),
                   ),
                   onPressed: controller.toggleConfirmPasswordVisibility,
                 ),
@@ -116,12 +116,10 @@ class SignUpScreen extends StatelessWidget {
             ),
 
             // Error Message
-            controller.errorMessage.isNotEmpty
-                ? SizedBox(height: 8.5.h)
-                : SizedBox.shrink(),
+            SizedBox(height: 8.5.h),
 
             Obx(
-              () => controller.errorMessage.isNotEmpty
+              () => controller.errorMessageSignUp.isNotEmpty
                   ? Align(
                       alignment: Alignment.topLeft,
                       child: Row(
@@ -137,7 +135,7 @@ class SignUpScreen extends StatelessWidget {
                           SizedBox(width: 4.w),
                           Expanded(
                             child: Text(
-                              controller.errorMessage.value,
+                              controller.errorMessageSignUp.value,
                               style: AppTextStyles.s14w4i(
                                 fontSize: 12.sp,
                                 color: AppColors.error,
@@ -150,7 +148,7 @@ class SignUpScreen extends StatelessWidget {
                   : SizedBox.shrink(),
             ),
 
-            SizedBox(height: 24.h),
+            SizedBox(height: 16.h),
 
             // Sign Up Button
             Obx(
@@ -244,31 +242,43 @@ class SignUpScreen extends StatelessWidget {
       children: [
         Text(label, style: AppTextStyles.s16w5i()),
         SizedBox(height: 8.h),
-        TextField(
-          controller: controller,
-          obscureText: obscureText,
-          keyboardType: keyboardType,
-          style: TextStyle(
-            color: const Color(0xFFBABABA),
-            fontSize: 16.sp,
-            fontWeight: FontWeight.w500,
-          ),
-          decoration: InputDecoration(
-            hintText: hint,
-            hintStyle: TextStyle(
+        SizedBox(
+          height: 48.h,
+          child: TextField(
+            controller: controller,
+            obscureText: obscureText,
+            keyboardType: keyboardType,
+            style: TextStyle(
               color: const Color(0xFFBABABA),
               fontSize: 16.sp,
+              fontWeight: FontWeight.w500,
             ),
-            suffixIcon: suffixIcon,
-            filled: true,
-            fillColor: AppColors.white,
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(6.r),
-              borderSide: BorderSide.none,
-            ),
-            focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(6.r),
-              borderSide: BorderSide(color: AppColors.border, width: 1),
+            decoration: InputDecoration(
+              hintText: hint,
+              hintStyle: TextStyle(
+                color: const Color(0xFFBABABA),
+                fontSize: 16.sp,
+              ),
+              suffixIcon: suffixIcon,
+              filled: true,
+              fillColor: AppColors.white,
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(6.r),
+                borderSide: BorderSide(),
+              ),
+
+              // Border when not focused (enabled state)
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(6.r),
+                borderSide: BorderSide(
+                  color: AppColors.border, // Border color when not focused
+                  width: 1,
+                ),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(6.r),
+                borderSide: BorderSide(color: AppColors.brand, width: 1),
+              ),
             ),
           ),
         ),

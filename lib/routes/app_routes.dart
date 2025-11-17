@@ -1,5 +1,9 @@
 import 'package:get/get_navigation/get_navigation.dart';
 import 'package:template/features/auth/bindings/auth_binding.dart';
+import 'package:template/features/auth/bindings/otp_binding.dart';
+import 'package:template/features/auth/screens/forgot_password_screen.dart';
+import 'package:template/features/auth/screens/otp_verification_screen.dart';
+import 'package:template/features/auth/screens/reset_password_screen.dart';
 import 'package:template/features/auth/screens/sign_Up_screen.dart';
 import 'package:template/features/auth/screens/sign_in_screen.dart';
 import 'package:template/features/home/screens/home_screens.dart';
@@ -49,6 +53,30 @@ class AppRoutes {
       page: () => SubscriptionPackageScreen(),
       transition: Transition.rightToLeft,
       binding: SubscriptionBinding(),
+    ),
+    GetPage(
+      name: RoutesName.forgotPassword,
+      page: () => ForgotPasswordScreen(),
+      transition: Transition.rightToLeft,
+      binding: AuthBinding(),
+    ),
+    GetPage(
+      name: RoutesName.otpVerificationSignup,
+      page: () => OTPVerificationScreen(verificationType: "signup"),
+      transition: Transition.rightToLeft,
+      binding: OtpBindingSignup(),
+    ),
+    GetPage(
+      name: RoutesName.otpVerification,
+      page: () => OTPVerificationScreen(verificationType: "forgot_password"),
+      transition: Transition.rightToLeft,
+      binding: OtpBindingPasswordReset(),
+    ),
+    GetPage(
+      name: RoutesName.resetPassword,
+      page: () => ResetPasswordScreen(),
+      transition: Transition.rightToLeft,
+      binding: AuthBinding(),
     ),
   ];
 }
