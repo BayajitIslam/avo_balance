@@ -48,7 +48,10 @@ class SignInScreen extends StatelessWidget {
                   blendMode: BlendMode.srcIn, // This is important!
                   shaderCallback: (bounds) =>
                       AppColors.primaryGradient.createShader(bounds),
-                  child: Text('Sign in', style: AppTextStyles.s22w7i()),
+                  child: Text(
+                    'Sign in',
+                    style: AppTextStyles.s22w7i(color: AppColors.brand),
+                  ),
                 ),
               ],
             ),

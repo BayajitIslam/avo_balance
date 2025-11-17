@@ -1,16 +1,278 @@
+// screens/signup_screen.dart
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:template/core/constants/app_colors.dart';
+import 'package:template/core/themes/app_text_style.dart';
 import 'package:template/features/auth/controllers/auth_controller.dart';
+import 'package:template/routes/routes_name.dart';
+import 'package:template/widget/custome_button.dart';
 
 class SignUpScreen extends StatelessWidget {
-  SignUpScreen({super.key});
-
-  final controller = Get.find<AuthController>();
+  const SignUpScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final controller = Get.find<AuthController>();
+
     return Scaffold(
-      body: ElevatedButton(onPressed: () {}, child: Icon(Icons.logout)),
+      backgroundColor: AppColors.scaffoldBackground,
+      body: Container(
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage("assets/images/bg.png"),
+            fit: BoxFit.cover,
+          ),
+        ),
+        padding: EdgeInsets.symmetric(horizontal: 26.w),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            SizedBox(height: 40.h),
+
+            // Logo
+            Container(
+              width: 56.w,
+              height: 56.w,
+              decoration: BoxDecoration(
+                image: DecorationImage(
+                  image: AssetImage("assets/icons/logo.png"),
+                ),
+                borderRadius: BorderRadius.circular(8.r),
+              ),
+            ),
+
+            SizedBox(height: 26.h),
+
+            // Title
+            Row(
+              children: [
+                ShaderMask(
+                  blendMode: BlendMode.srcIn,
+                  shaderCallback: (bounds) =>
+                      AppColors.primaryGradient.createShader(bounds),
+                  child: Text(
+                    'Sign up',
+                    style: AppTextStyles.s22w7i(color: AppColors.brand),
+                  ),
+                ),
+              ],
+            ),
+
+            SizedBox(height: 26.h),
+
+            // Email Field
+            _buildTextField(
+              controller: controller.emailController,
+              label: 'Email Address',
+              icon: Icons.email_outlined,
+              hint: 'Enter your email',
+              keyboardType: TextInputType.emailAddress,
+            ),
+
+            SizedBox(height: 16.h),
+
+            // Password Field
+            Obx(
+              () => _buildTextField(
+                controller: controller.passwordController,
+                label: 'Password',
+                icon: Icons.lock_outline,
+                hint: 'Enter your password',
+                obscureText: !controller.isPasswordVisible.value,
+                suffixIcon: IconButton(
+                  icon: Icon(
+                    controller.isPasswordVisible.value
+                        ? Icons.visibility_outlined
+                        : Icons.visibility_off_outlined,
+                    color: const Color(0xFFBABABA),
+                  ),
+                  onPressed: controller.togglePasswordVisibility,
+                ),
+              ),
+            ),
+
+            SizedBox(height: 16.h),
+
+            // Confirm Password Field
+            Obx(
+              () => _buildTextField(
+                controller: controller.confirmPasswordController,
+                label: 'Re Type Password',
+                icon: Icons.lock_outline,
+                hint: 'Re-enter your password',
+                obscureText: !controller.isConfirmPasswordVisible.value,
+                suffixIcon: IconButton(
+                  icon: Icon(
+                    controller.isConfirmPasswordVisible.value
+                        ? Icons.visibility_outlined
+                        : Icons.visibility_off_outlined,
+                    color: const Color(0xFFBABABA),
+                  ),
+                  onPressed: controller.toggleConfirmPasswordVisibility,
+                ),
+              ),
+            ),
+
+            // Error Message
+            controller.errorMessage.isNotEmpty
+                ? SizedBox(height: 8.5.h)
+                : SizedBox.shrink(),
+
+            Obx(
+              () => controller.errorMessage.isNotEmpty
+                  ? Align(
+                      alignment: Alignment.topLeft,
+                      child: Row(
+                        children: [
+                          // Icon
+                          Icon(
+                            Icons.warning,
+                            color: AppColors.error,
+                            size: 16.sp,
+                          ),
+
+                          // Error Text
+                          SizedBox(width: 4.w),
+                          Expanded(
+                            child: Text(
+                              controller.errorMessage.value,
+                              style: AppTextStyles.s14w4i(
+                                fontSize: 12.sp,
+                                color: AppColors.error,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    )
+                  : SizedBox.shrink(),
+            ),
+
+            SizedBox(height: 24.h),
+
+            // Sign Up Button
+            Obx(
+              () => CustomeButton(
+                title: controller.isLoading.value
+                    ? 'Creating Account...'
+                    : 'Sign Up',
+                gradient: AppColors.primaryGradient,
+                onTap: controller.isLoading.value ? null : controller.signUp,
+              ),
+            ),
+
+            SizedBox(height: 24.h),
+
+            // Add this before the Sign Up button
+            RichText(
+              textAlign: TextAlign.left,
+              text: TextSpan(
+                style: AppTextStyles.s14w4i(
+                  color: AppColors.black,
+                  fontweight: FontWeight.w800,
+                  fontSize: 12,
+                ),
+                children: [
+                  TextSpan(
+                    text:
+                        'By clicking the "sign up" button, you accept the terms of the ',
+                  ),
+                  TextSpan(
+                    text: 'Privacy Policy',
+                    style: AppTextStyles.s14w4i(
+                      fontweight: FontWeight.w800,
+                      color: AppColors.brand,
+                      fontSize: 12,
+                    ),
+                    recognizer: TapGestureRecognizer()
+                      ..onTap = () {
+                        // Navigate to Privacy Policy
+                        print('Privacy Policy clicked');
+                        // Get.toNamed('/privacy-policy');
+                      },
+                  ),
+                  TextSpan(text: '.'),
+                ],
+              ),
+            ),
+
+            Spacer(),
+            // Already have account
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  'Already have an account? ',
+                  style: AppTextStyles.s14w4i(
+                    fontweight: FontWeight.w800,
+                    color: AppColors.black,
+                  ),
+                ),
+                GestureDetector(
+                  onTap: () => Get.toNamed(RoutesName.login),
+                  child: Text(
+                    'Sign In',
+                    style: AppTextStyles.s14w4i(
+                      fontweight: FontWeight.w800,
+                      color: AppColors.brand,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+
+            SizedBox(height: 45.h),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildTextField({
+    required TextEditingController controller,
+    required String label,
+    required IconData icon,
+    required String hint,
+    bool obscureText = false,
+    TextInputType? keyboardType,
+    Widget? suffixIcon,
+  }) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(label, style: AppTextStyles.s16w5i()),
+        SizedBox(height: 8.h),
+        TextField(
+          controller: controller,
+          obscureText: obscureText,
+          keyboardType: keyboardType,
+          style: TextStyle(
+            color: const Color(0xFFBABABA),
+            fontSize: 16.sp,
+            fontWeight: FontWeight.w500,
+          ),
+          decoration: InputDecoration(
+            hintText: hint,
+            hintStyle: TextStyle(
+              color: const Color(0xFFBABABA),
+              fontSize: 16.sp,
+            ),
+            suffixIcon: suffixIcon,
+            filled: true,
+            fillColor: AppColors.white,
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(6.r),
+              borderSide: BorderSide.none,
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(6.r),
+              borderSide: BorderSide(color: AppColors.border, width: 1),
+            ),
+          ),
+        ),
+      ],
     );
   }
 }
