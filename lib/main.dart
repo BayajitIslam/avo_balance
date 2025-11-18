@@ -2,10 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:template/core/themes/themes.dart';
+import 'package:template/features/main_screen/controllers/navigation_controller.dart';
 import 'package:template/routes/app_routes.dart';
 import 'package:template/routes/routes_name.dart';
 
 void main() {
+  // Initialize NavigationController BEFORE runApp
+  WidgetsFlutterBinding.ensureInitialized();
+
+  // Put controller in memory permanently
+  Get.put(NavigationController(), permanent: true);
   runApp(const MyApp());
 }
 

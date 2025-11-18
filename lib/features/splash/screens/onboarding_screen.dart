@@ -6,6 +6,7 @@ import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:template/core/constants/app_colors.dart';
 import 'package:template/core/themes/app_text_style.dart';
 import 'package:template/features/splash/controllers/onboarding_controller.dart';
+import 'package:template/routes/routes_name.dart';
 
 class OnboardingScreen extends StatelessWidget {
   const OnboardingScreen({super.key});
@@ -102,6 +103,7 @@ class OnboardingScreen extends StatelessWidget {
             child: TextButton(
               onPressed: () {
                 // Call skip onboarding
+                Get.toNamed(RoutesName.home);
               },
               child: Text(
                 'Already have a account?',

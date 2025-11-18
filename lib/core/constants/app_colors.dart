@@ -21,6 +21,23 @@ class AppColors {
     colors: [Color(0xFFFF6900), Color(0xFFFB2C36), Color(0xFFF6339A)],
   );
 
+  //-------------------------- App Gradients --------------------------//
+  static const LinearGradient container = LinearGradient(
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+    colors: [Color(0xFFAD46FF), Color(0xFFF6339A), Color(0xFFFF6900)],
+  );
+
+  //-------------------------- App Gradients --------------------------//
+  static const LinearGradient transparentGradiant = LinearGradient(
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+    colors: [
+      Color(0x33FFFFFF), // 20% opacity
+      Color(0x1AFFFFFF), // 10% opacity
+    ],
+  );
+
   //-------------------------- App Colors --------------------------//
   static const Color white = Color(0xFFFFFFFF);
   static const Color black = Color(0xFF000000);

@@ -1,5 +1,6 @@
 class RoutesName {
   static const String home = "/home";
+  static const String mainScreen = "/mainScreen";
   static const String login = "/login";
   static const String splashScreen = "/splashScreen";
   static const String onboarding = "/onboarding";
@@ -9,4 +10,6 @@ class RoutesName {
   static const String otpVerificationSignup = "/otpVerificationSignup";
   static const String otpVerification = '/otp-verification';
   static const String resetPassword = "/resetPassword";
+  static const String profileScreen = "/profileScreen";
+  static const String dietScreen = "/dietScreen";
 }

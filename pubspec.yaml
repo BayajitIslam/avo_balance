@@ -42,6 +42,9 @@ dependencies:
   introduction_screen: ^3.1.5
   smooth_page_indicator: ^1.0.0+2
   google_fonts: ^6.3.2
+  image_picker: ^1.0.7
+  intl: ^0.18.1
+  camera: ^0.10.5+5
 
 dev_dependencies:
   flutter_test:

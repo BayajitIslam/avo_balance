@@ -61,4 +61,18 @@ class AppTextStyles {
       height: 1,
     );
   }
+
+  //------------------------------ Inter Font Styles --------------------------------//
+  static TextStyle s18w5i({
+    Color? color,
+    double fontSize = 18,
+    FontWeight fontweight = FontWeight.w500,
+  }) {
+    return GoogleFonts.inter(
+      color: color ?? AppColors.textBlack,
+      fontSize: fontSize.sp,
+      fontWeight: fontweight,
+      height: 1,
+    );
+  }
 }
