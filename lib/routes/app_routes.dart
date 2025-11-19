@@ -8,6 +8,7 @@ import 'package:template/features/auth/screens/reset_password_screen.dart';
 import 'package:template/features/auth/screens/sign_Up_screen.dart';
 import 'package:template/features/auth/screens/sign_in_screen.dart';
 import 'package:template/features/main_screen/bindings/diet_binding.dart';
+import 'package:template/features/main_screen/bindings/profile_binding.dart';
 import 'package:template/features/main_screen/screens/diet/diet_screen.dart';
 import 'package:template/features/main_screen/screens/home/home_screens.dart';
 import 'package:template/features/main_screen/screens/profile/profile_screen.dart';
@@ -92,6 +93,7 @@ class AppRoutes {
       name: RoutesName.profileScreen,
       page: () => ProfileScreen(),
       // transition: Transition.rightToLeft,
+      bindings: [AuthBinding(), ProfileBinding()],
     ),
   ];
 }

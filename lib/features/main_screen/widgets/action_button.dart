@@ -105,11 +105,7 @@ class ActionButton extends StatelessWidget {
             CircleAvatar(
               radius: 22,
               backgroundColor: rightIconbgColor,
-              child: Icon(
-                Icons.arrow_forward,
-                color: rightIconColor,
-                size: 20.sp,
-              ),
+              child: Icon(rightIcon, color: rightIconColor, size: 20.sp),
             ),
           ],
         ),
