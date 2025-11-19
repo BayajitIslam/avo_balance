@@ -77,7 +77,7 @@ class ActionButton extends StatelessWidget {
                       )
                     : null,
               ),
-              child: Icon(Icons.fastfood, color: Colors.white, size: 20.sp),
+              child: Image.asset(leftIcon),
             ),
             SizedBox(width: 12.w),
             Expanded(

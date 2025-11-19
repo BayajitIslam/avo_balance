@@ -652,9 +652,17 @@ class DietScreen extends StatelessWidget {
         borderRadius: BorderRadius.circular(32.r),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.06),
-            blurRadius: 15,
-            offset: Offset(0, 4),
+            color: Colors.black.withOpacity(0.1),
+            blurRadius: 10,
+            spreadRadius: -6,
+            offset: Offset(0, 8),
+          ),
+
+          BoxShadow(
+            color: Colors.black.withOpacity(0.1),
+            blurRadius: 25,
+            spreadRadius: -5,
+            offset: Offset(0, 20),
           ),
         ],
       ),
@@ -1121,7 +1129,7 @@ class DietScreen extends StatelessWidget {
       children: [
         ActionButton(
           onTap: controller.navigateToLogCheatMeal,
-          leftIcon: "assets/icons/flip.png",
+          leftIcon: "assets/icons/fire.png",
           title: "Log Cheat Meal",
           leftIconbgColor: AppColors.transparentGradiant,
           rightIconbgColor: AppColors.white.withOpacity(0.20),
@@ -1135,7 +1143,7 @@ class DietScreen extends StatelessWidget {
         ActionButton(
           onTap: controller.navigateToManagePlan,
           gradient: AppColors.transparentGradiant,
-          leftIcon: "assets/icons/flip.png",
+          leftIcon: "assets/icons/add.png",
           leftIconbgColor: AppColors.secondaryGradient,
           title: 'Manage Your Plan',
           titleColor: AppColors.black,
