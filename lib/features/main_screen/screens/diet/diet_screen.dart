@@ -330,6 +330,7 @@ class DietScreen extends StatelessWidget {
             'PLANNED',
             dayPlan.breakfast!.totalCalories,
             dayPlan.breakfast!.items,
+            "Planned",
             true, // Has warning
           )
         else
@@ -347,9 +348,10 @@ class DietScreen extends StatelessWidget {
             controller,
             'lunch',
             dayPlan!.lunch!.name,
-            'PLANNED',
+            'TRACKED',
             dayPlan.lunch!.totalCalories,
             dayPlan.lunch!.items,
+            "Rebalance",
             false,
           )
         else
@@ -367,10 +369,12 @@ class DietScreen extends StatelessWidget {
             controller,
             'dinner',
             dayPlan!.dinner!.name,
-            'LOG TODAY',
+            'NOT TRACKED',
             dayPlan.dinner!.totalCalories,
             dayPlan.dinner!.items,
+            "CheatMeal",
             false,
+            isNotTracked: true,
             // isLogToday: true,
           )
         else
@@ -387,545 +391,226 @@ class DietScreen extends StatelessWidget {
     );
   }
 
-  // Daily Goal Card
-  // Widget _buildDailyGoalCard(int total, int consumed) {
-  //   double percentage = (consumed / total * 100).clamp(0, 100);
-
-  //   return Container(
-  //     padding: EdgeInsets.all(20.w),
-  //     decoration: BoxDecoration(
-  //       gradient: LinearGradient(
-  //         colors: [Color(0xFF00BFA5), Color(0xFF00E676)],
-  //       ),
-  //       borderRadius: BorderRadius.circular(20.r),
-  //     ),
-  //     child: Row(
-  //       children: [
-  //         // Progress Circle
-  //         SizedBox(
-  //           width: 70.w,
-  //           height: 70.w,
-  //           child: Stack(
-  //             alignment: Alignment.center,
-  //             children: [
-  //               SizedBox(
-  //                 width: 70.w,
-  //                 height: 70.w,
-  //                 child: CircularProgressIndicator(
-  //                   value: percentage / 100,
-  //                   strokeWidth: 6,
-  //                   backgroundColor: Colors.white.withOpacity(0.3),
-  //                   valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-  //                 ),
-  //               ),
-  //               Text(
-  //                 '${percentage.toInt()}%',
-  //                 style: AppTextStyles.s18w5i(
-  //                   color: AppColors.white,
-  //                   fontweight: FontWeight.w700,
-  //                   fontSize: 16.sp,
-  //                 ),
-  //               ),
-  //             ],
-  //           ),
-  //         ),
-
-  //         SizedBox(width: 16.w),
-
-  //         // Info
-  //         Expanded(
-  //           child: Column(
-  //             crossAxisAlignment: CrossAxisAlignment.start,
-  //             children: [
-  //               Row(
-  //                 children: [
-  //                   Text(
-  //                     'Daily Goal',
-  //                     style: AppTextStyles.s14w4i(
-  //                       color: AppColors.white,
-  //                       fontweight: FontWeight.w600,
-  //                     ),
-  //                   ),
-  //                   SizedBox(width: 6.w),
-  //                   Container(
-  //                     padding: EdgeInsets.symmetric(
-  //                       horizontal: 8.w,
-  //                       vertical: 3.h,
-  //                     ),
-  //                     decoration: BoxDecoration(
-  //                       color: Colors.white.withOpacity(0.3),
-  //                       borderRadius: BorderRadius.circular(10.r),
-  //                     ),
-  //                     child: Text(
-  //                       'Rebalanced',
-  //                       style: AppTextStyles.s14w4i(
-  //                         color: AppColors.white,
-  //                         fontSize: 9.sp,
-  //                         fontweight: FontWeight.w600,
-  //                       ),
-  //                     ),
-  //                   ),
-  //                 ],
-  //               ),
-  //               SizedBox(height: 4.h),
-  //               Text(
-  //                 '$total kcal',
-  //                 style: AppTextStyles.s22w7i(
-  //                   color: AppColors.white,
-  //                   fontSize: 28.sp,
-  //                 ),
-  //               ),
-  //               SizedBox(height: 4.h),
-  //               Text(
-  //                 'Adjusted from Sunday\'s cheat\nmeal',
-  //                 style: AppTextStyles.s14w4i(
-  //                   color: AppColors.white.withOpacity(0.9),
-  //                   fontSize: 10.sp,
-  //                 ),
-  //               ),
-  //             ],
-  //           ),
-  //         ),
-
-  //         // Consumed Badge
-  //         Container(
-  //           padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 10.h),
-  //           decoration: BoxDecoration(
-  //             color: Colors.white,
-  //             borderRadius: BorderRadius.circular(15.r),
-  //           ),
-  //           child: Text(
-  //             '$consumed',
-  //             style: AppTextStyles.s16w5i(
-  //               color: AppColors.brand,
-  //               fontweight: FontWeight.w700,
-  //               fontSize: 14.sp,
-  //             ),
-  //           ),
-  //         ),
-  //       ],
-  //     ),
-  //   );
-  // }
-
+  //Daily Goal Card Show On Top
   Widget _buildDailyGoalCard(int total, int consumed) {
     double percentage = (consumed / total * 100).clamp(0, 100);
     int adjusted = 109;
 
-    return Container(
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(20.r),
-        child: Container(
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              begin: AlignmentGeometry.topLeft,
-              end: AlignmentGeometry.bottomRight,
-              colors: [Color(0xFF00D096), Color(0xFF01C0A4), Color(0xFF9BD6A4)],
-            ),
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(20.r),
+      child: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: AlignmentGeometry.topLeft,
+            end: AlignmentGeometry.bottomRight,
+            colors: [Color(0xFF00D096), Color(0xFF01C0A4), Color(0xFF9BD6A4)],
           ),
-          padding: EdgeInsets.all(4),
-          child: Container(
-            padding: EdgeInsets.all(20.w),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(17.r),
-            ),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                // Left Side
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      // Icon and Title
-                      Row(
-                        children: [
-                          Container(
-                            width: 40.w,
-                            height: 40.h,
-                            decoration: BoxDecoration(
-                              gradient: LinearGradient(
-                                colors: [Color(0xFF00D095), Color(0xFF00BEA4)],
-                              ),
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                            child: Image.asset("assets/icons/flash_avo.png"),
-                          ),
-                          SizedBox(width: 12.w),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                'Daily Goal',
-                                style: AppTextStyles.s18w5i(
-                                  fontweight: FontWeight.w700,
-                                ),
-                              ),
-                              Row(
-                                children: [
-                                  Image.asset("assets/icons/Rebalanced.png"),
-                                  SizedBox(width: 4.w),
-                                  Text(
-                                    'Rebalanced',
-                                    style: AppTextStyles.s14w4i(
-                                      fontSize: 12.sp,
-                                      fontweight: FontWeight.w700,
-                                      color: const Color(0xFF6A7282),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-
-                      SizedBox(height: 11.h),
-
-                      // Calories with Gradient
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        children: [
-                          ShaderMask(
-                            shaderCallback: (bounds) => LinearGradient(
-                              colors: [
-                                Color(0xFF00D195),
-                                Color(0xFF00C0A2),
-                                Color(0xFF92D39B),
-                              ],
-                            ).createShader(bounds),
-                            child: Text(
-                              total.toString().replaceAllMapped(
-                                RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'),
-                                (Match m) => '${m[1]},',
-                              ),
-                              style: AppTextStyles.s30w8i(
-                                fontSize: 40,
-                                fontweight: FontWeight.w900,
-                                color: AppColors.white,
-                              ),
-                            ),
-                          ),
-                          SizedBox(width: 8.w),
-                          Text(
-                            'kcal',
-                            style: AppTextStyles.s18w5i(
-                              fontweight: FontWeight.w700,
-                              color: AppColors.brand,
-                            ),
-                          ),
-                        ],
-                      ),
-
-                      SizedBox(height: 8.h),
-
-                      Text(
-                        'Adjusted from Sundays cheat meal',
-                        style: AppTextStyles.s14w4i(
-                          fontSize: 13.sp,
-                          color: const Color(0xFF4A5565),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-
-                SizedBox(width: 16.w),
-
-                // Right Side
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
+        ),
+        padding: EdgeInsets.all(4),
+        child: Container(
+          padding: EdgeInsets.all(20.w),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(17.r),
+          ),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              // Left Side
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    // Progress Circle
-                    SizedBox(
-                      width: 70.w,
-                      height: 70.w,
-                      child: Stack(
-                        alignment: Alignment.center,
-                        children: [
-                          Container(
-                            width: 70.w,
-                            height: 70.w,
-                            decoration: BoxDecoration(shape: BoxShape.circle),
+                    // Icon and Title
+                    Row(
+                      children: [
+                        Container(
+                          width: 40.w,
+                          height: 40.h,
+                          decoration: BoxDecoration(
+                            gradient: LinearGradient(
+                              colors: [Color(0xFF00D095), Color(0xFF00BEA4)],
+                            ),
+                            borderRadius: BorderRadius.circular(12),
                           ),
-                          SizedBox(
-                            width: 61.w,
-                            height: 61.w,
-                            child: CircularProgressIndicator(
-                              value: percentage / 100,
-                              strokeWidth: 6,
-                              backgroundColor: const Color(0xFFDBDBDB),
-                              valueColor: AlwaysStoppedAnimation<Color>(
-                                AppColors.brand,
+                          child: Image.asset("assets/icons/flash_avo.png"),
+                        ),
+                        SizedBox(width: 12.w),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'Daily Goal',
+                              style: AppTextStyles.s18w5i(
+                                fontweight: FontWeight.w700,
                               ),
                             ),
-                          ),
-                          ShaderMask(
-                            shaderCallback: (bounds) => LinearGradient(
-                              colors: [Color(0xFF00BFA5), Color(0xFF00E676)],
-                            ).createShader(bounds),
-                            child: Text(
-                              '${percentage.toInt()}%',
-                              style: AppTextStyles.s16w5i(
-                                fontweight: FontWeight.w800,
-                                color: Colors.white,
-                              ),
+                            Row(
+                              children: [
+                                Image.asset("assets/icons/Rebalanced.png"),
+                                SizedBox(width: 4.w),
+                                Text(
+                                  'Rebalanced',
+                                  style: AppTextStyles.s14w4i(
+                                    fontSize: 12.sp,
+                                    fontweight: FontWeight.w700,
+                                    color: const Color(0xFF6A7282),
+                                  ),
+                                ),
+                              ],
                             ),
-                          ),
-                        ],
-                      ),
+                          ],
+                        ),
+                      ],
                     ),
 
-                    SizedBox(height: 16.h),
+                    SizedBox(height: 11.h),
 
-                    // Adjusted Badge
-                    Container(
-                      width: 66.w,
-                      height: 60.h,
-                      decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          colors: [Color(0xFF00D294), Color(0xFF00C1A2)],
-                        ),
-                        borderRadius: BorderRadius.circular(16.r),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Color(0X1A00D195),
-                            blurRadius: 6,
-                            spreadRadius: -4,
-                            offset: Offset(0, 10),
-                          ),
-                        ],
-                      ),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            '$adjusted',
-                            style: AppTextStyles.s18w5i(
+                    // Calories with Gradient
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        ShaderMask(
+                          shaderCallback: (bounds) => LinearGradient(
+                            colors: [
+                              Color(0xFF00D195),
+                              Color(0xFF00C0A2),
+                              Color(0xFF92D39B),
+                            ],
+                          ).createShader(bounds),
+                          child: Text(
+                            total.toString().replaceAllMapped(
+                              RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'),
+                              (Match m) => '${m[1]},',
+                            ),
+                            style: AppTextStyles.s30w8i(
+                              fontSize: 40,
                               fontweight: FontWeight.w900,
                               color: AppColors.white,
                             ),
                           ),
-                          Text(
-                            'Adjusted',
-                            style: AppTextStyles.s22w7i(
-                              fontSize: 10,
-                              color: AppColors.white,
-                            ),
+                        ),
+                        SizedBox(width: 8.w),
+                        Text(
+                          'kcal',
+                          style: AppTextStyles.s18w5i(
+                            fontweight: FontWeight.w700,
+                            color: AppColors.brand,
                           ),
-                        ],
+                        ),
+                      ],
+                    ),
+
+                    SizedBox(height: 8.h),
+
+                    Text(
+                      'Adjusted from Sundays cheat meal',
+                      style: AppTextStyles.s14w4i(
+                        fontSize: 13.sp,
+                        color: const Color(0xFF4A5565),
                       ),
                     ),
                   ],
                 ),
-              ],
-            ),
+              ),
+
+              SizedBox(width: 16.w),
+
+              // Right Side
+              Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  // Progress Circle
+                  SizedBox(
+                    width: 70.w,
+                    height: 70.w,
+                    child: Stack(
+                      alignment: Alignment.center,
+                      children: [
+                        Container(
+                          width: 70.w,
+                          height: 70.w,
+                          decoration: BoxDecoration(shape: BoxShape.circle),
+                        ),
+                        SizedBox(
+                          width: 61.w,
+                          height: 61.w,
+                          child: CircularProgressIndicator(
+                            value: percentage / 100,
+                            strokeWidth: 6,
+                            backgroundColor: const Color(0xFFDBDBDB),
+                            valueColor: AlwaysStoppedAnimation<Color>(
+                              AppColors.brand,
+                            ),
+                          ),
+                        ),
+                        ShaderMask(
+                          shaderCallback: (bounds) => LinearGradient(
+                            colors: [Color(0xFF00BFA5), Color(0xFF00E676)],
+                          ).createShader(bounds),
+                          child: Text(
+                            '${percentage.toInt()}%',
+                            style: AppTextStyles.s16w5i(
+                              fontweight: FontWeight.w800,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+
+                  SizedBox(height: 16.h),
+
+                  // Adjusted Badge
+                  Container(
+                    width: 66.w,
+                    height: 60.h,
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        colors: [Color(0xFF00D294), Color(0xFF00C1A2)],
+                      ),
+                      borderRadius: BorderRadius.circular(16.r),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Color(0X1A00D195),
+                          blurRadius: 6,
+                          spreadRadius: -4,
+                          offset: Offset(0, 10),
+                        ),
+                      ],
+                    ),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          '$adjusted',
+                          style: AppTextStyles.s18w5i(
+                            fontweight: FontWeight.w900,
+                            color: AppColors.white,
+                          ),
+                        ),
+                        Text(
+                          'Adjusted',
+                          style: AppTextStyles.s22w7i(
+                            fontSize: 10,
+                            color: AppColors.white,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ],
           ),
         ),
       ),
     );
   }
 
-  // // Expandable Meal Section
-  // Widget _buildExpandableMealSection(
-  //   DietController controller,
-  //   String mealId,
-  //   String title,
-  //   String status,
-  //   int totalCalories,
-  //   List<MealItem> items,
-  //   bool hasWarning, {
-  //   bool isLogToday = false,
-  // }) {
-  //   return Container(
-  //     decoration: BoxDecoration(
-  //       color: AppColors.white,
-  //       borderRadius: BorderRadius.circular(16.r),
-  //       boxShadow: [
-  //         BoxShadow(
-  //           color: Colors.black.withOpacity(0.05),
-  //           blurRadius: 10,
-  //           offset: Offset(0, 2),
-  //         ),
-  //       ],
-  //     ),
-  //     child: Column(
-  //       children: [
-  //         // Header
-  //         InkWell(
-  //           onTap: () => controller.toggleMealExpansion(mealId),
-  //           child: Padding(
-  //             padding: EdgeInsets.all(16.w),
-  //             child: Row(
-  //               children: [
-  //                 Expanded(
-  //                   child: Row(
-  //                     children: [
-  //                       Text(
-  //                         title,
-  //                         style: AppTextStyles.s18w5i(
-  //                           fontweight: FontWeight.w700,
-  //                         ),
-  //                       ),
-  //                       SizedBox(width: 8.w),
-  //                       Container(
-  //                         padding: EdgeInsets.symmetric(
-  //                           horizontal: 8.w,
-  //                           vertical: 4.h,
-  //                         ),
-  //                         decoration: BoxDecoration(
-  //                           color: isLogToday
-  //                               ? Color(0xFFFF9800)
-  //                               : Color(0xFF00BFA5),
-  //                           borderRadius: BorderRadius.circular(10.r),
-  //                         ),
-  //                         child: Text(
-  //                           status,
-  //                           style: AppTextStyles.s14w4i(
-  //                             color: AppColors.white,
-  //                             fontSize: 9.sp,
-  //                             fontweight: FontWeight.w600,
-  //                           ),
-  //                         ),
-  //                       ),
-  //                     ],
-  //                   ),
-  //                 ),
-  //                 SizedBox(
-  //                   width: 50.w,
-  //                   height: 50.w,
-  //                   child: Stack(
-  //                     alignment: Alignment.center,
-  //                     children: [
-  //                       SizedBox(
-  //                         width: 50.w,
-  //                         height: 50.w,
-  //                         child: CircularProgressIndicator(
-  //                           value: 0.7,
-  //                           strokeWidth: 4,
-  //                           backgroundColor: const Color(
-  //                             0xFFE91E63,
-  //                           ).withOpacity(0.2),
-  //                           valueColor: AlwaysStoppedAnimation<Color>(
-  //                             const Color(0xFFE91E63),
-  //                           ),
-  //                         ),
-  //                       ),
-  //                       Text(
-  //                         '$totalCalories',
-  //                         style: AppTextStyles.s14w4i(
-  //                           color: const Color(0xFFE91E63),
-  //                           fontweight: FontWeight.w700,
-  //                           fontSize: 13.sp,
-  //                         ),
-  //                       ),
-  //                     ],
-  //                   ),
-  //                 ),
-  //               ],
-  //             ),
-  //           ),
-  //         ),
-
-  //         // Expandable Content
-  //         Obx(() {
-  //           bool isExpanded = controller.expandedMeals[mealId] ?? true;
-
-  //           return AnimatedCrossFade(
-  //             duration: Duration(milliseconds: 300),
-  //             crossFadeState: isExpanded
-  //                 ? CrossFadeState.showFirst
-  //                 : CrossFadeState.showSecond,
-  //             firstChild: Column(
-  //               children: [
-  //                 Divider(height: 1, color: Colors.grey.shade200),
-  //                 Padding(
-  //                   padding: EdgeInsets.all(16.w),
-  //                   child: Column(
-  //                     children: [
-  //                       ...items.map((item) => _buildMealItem(item)).toList(),
-
-  //                       if (hasWarning)
-  //                         Container(
-  //                           margin: EdgeInsets.only(top: 12.h),
-  //                           padding: EdgeInsets.all(12.w),
-  //                           decoration: BoxDecoration(
-  //                             color: Color(0xFFFFF3E0),
-  //                             borderRadius: BorderRadius.circular(12.r),
-  //                             border: Border.all(color: Color(0xFFFFB74D)),
-  //                           ),
-  //                           child: Row(
-  //                             children: [
-  //                               Container(
-  //                                 padding: EdgeInsets.all(6.w),
-  //                                 decoration: BoxDecoration(
-  //                                   color: Color(0xFFFF9800),
-  //                                   shape: BoxShape.circle,
-  //                                 ),
-  //                                 child: Icon(
-  //                                   Icons.warning_rounded,
-  //                                   color: Colors.white,
-  //                                   size: 14.sp,
-  //                                 ),
-  //                               ),
-  //                               SizedBox(width: 10.w),
-  //                               Expanded(
-  //                                 child: Text(
-  //                                   'The 15gm butter in your meal was off. We adjusted it to keep you on track.',
-  //                                   style: AppTextStyles.s14w4i(
-  //                                     fontSize: 11.sp,
-  //                                     color: Color(0xFFE65100),
-  //                                   ),
-  //                                 ),
-  //                               ),
-  //                             ],
-  //                           ),
-  //                         ),
-  //                     ],
-  //                   ),
-  //                 ),
-  //                 InkWell(
-  //                   onTap: () => controller.toggleMealExpansion(mealId),
-  //                   child: Container(
-  //                     padding: EdgeInsets.symmetric(vertical: 8.h),
-  //                     decoration: BoxDecoration(
-  //                       border: Border(
-  //                         top: BorderSide(color: Colors.grey.shade200),
-  //                       ),
-  //                     ),
-  //                     child: Icon(
-  //                       Icons.keyboard_arrow_up,
-  //                       color: Colors.grey,
-  //                       size: 20.sp,
-  //                     ),
-  //                   ),
-  //                 ),
-  //               ],
-  //             ),
-  //             secondChild: InkWell(
-  //               onTap: () => controller.toggleMealExpansion(mealId),
-  //               child: Container(
-  //                 padding: EdgeInsets.symmetric(vertical: 8.h),
-  //                 decoration: BoxDecoration(
-  //                   border: Border(
-  //                     top: BorderSide(color: Colors.grey.shade200),
-  //                   ),
-  //                 ),
-  //                 child: Icon(
-  //                   Icons.keyboard_arrow_down,
-  //                   color: Colors.grey,
-  //                   size: 20.sp,
-  //                 ),
-  //               ),
-  //             ),
-  //           );
-  //         }),
-  //       ],
-  //     ),
-  //   );
-  // }
+  //If  Plan Availabel
   Widget _buildExpandableMealSection(
     DietController controller,
     String mealId,
@@ -933,18 +618,38 @@ class DietScreen extends StatelessWidget {
     String status,
     int totalCalories,
     List<MealItem> items,
+    String mealMode,
     bool hasWarning, {
-    bool isHotTracked = false,
-    bool isRebalanced = false,
-    bool isCheatMeal = false,
+    bool isNotTracked = false,
   }) {
-    Color badgeColor = isHotTracked ? Color(0xFFFF6B6B) : Color(0xFF00BFA5);
-    String badgeText = isHotTracked ? 'HOT TRACKED' : status;
+    Color badgeColor = isNotTracked ? const Color(0xFFFF6504) : AppColors.brand;
+    String badgeText = isNotTracked ? 'NOT TRACKED' : status;
+    Color mealModeColor;
+    switch (mealMode) {
+      case "Planned":
+        mealModeColor = AppColors.brand;
+        mealMode = "Planned";
+        break;
+
+      case "Rebalance":
+        mealModeColor = const Color(0xFFFF6504);
+        mealMode = "Rebalance";
+        break;
+
+      case "CheatMeal":
+        mealModeColor = const Color(0xFFF82F68);
+        mealMode = "Cheat Meal";
+        break;
+
+      default:
+        mealModeColor = Colors.transparent;
+        mealMode = "Unknown";
+    }
 
     return Container(
       decoration: BoxDecoration(
         color: AppColors.white,
-        borderRadius: BorderRadius.circular(20.r),
+        borderRadius: BorderRadius.circular(32.r),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withOpacity(0.06),
@@ -953,200 +658,223 @@ class DietScreen extends StatelessWidget {
           ),
         ],
       ),
-      child: Column(
+      child: Stack(
         children: [
-          InkWell(
-            onTap: () => controller.toggleMealExpansion(mealId),
-            child: Padding(
-              padding: EdgeInsets.all(20.w),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          children: [
-                            Container(
-                              width: 4.w,
-                              height: 24.h,
-                              decoration: BoxDecoration(
-                                gradient: LinearGradient(
-                                  colors: _getMealGradientColors(title),
-                                ),
-                                borderRadius: BorderRadius.circular(2.r),
-                              ),
-                            ),
-                            SizedBox(width: 12.w),
-                            Text(
-                              title,
-                              style: AppTextStyles.s18w5i(
-                                fontweight: FontWeight.w700,
-                                fontSize: 20.sp,
-                              ),
-                            ),
-                            SizedBox(width: 10.w),
-                            Container(
-                              padding: EdgeInsets.symmetric(
-                                horizontal: 12.w,
-                                vertical: 5.h,
-                              ),
-                              decoration: BoxDecoration(
-                                color: badgeColor,
-                                borderRadius: BorderRadius.circular(12.r),
-                              ),
-                              child: Text(
-                                badgeText,
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 9.sp,
-                                  fontWeight: FontWeight.w700,
-                                  letterSpacing: 0.8,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                        if (isRebalanced || isCheatMeal)
-                          Padding(
-                            padding: EdgeInsets.only(left: 16.w, top: 10.h),
-                            child: Row(
-                              children: [
-                                Container(
-                                  width: 8.w,
-                                  height: 8.w,
-                                  decoration: BoxDecoration(
-                                    color: isRebalanced
-                                        ? Color(0xFFFF9800)
-                                        : Color(0xFFE91E63),
-                                    shape: BoxShape.circle,
-                                  ),
-                                ),
-                                SizedBox(width: 8.w),
-                                Text(
-                                  isRebalanced ? 'Rebalanced' : 'Cheat meal',
-                                  style: AppTextStyles.s14w4i(
-                                    fontSize: 13.sp,
-                                    color: isRebalanced
-                                        ? Color(0xFFFF9800)
-                                        : Colors.grey.shade700,
-                                    fontweight: FontWeight.w600,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                      ],
-                    ),
-                  ),
-                  SizedBox(width: 16.w),
-                  MultiSegmentCircularProgress(
-                    size: 70,
-                    totalCalories: totalCalories,
-                    segments: _getMealSegments(items),
-                  ),
-                ],
+          // Left gradient border
+          Positioned(
+            left: 0.w,
+            top: 29.h,
+            bottom: 29.h,
+            child: Container(
+              width: 4.w,
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: _getMealGradientColors(title),
+                ),
+                borderRadius: BorderRadius.only(
+                  topRight: Radius.circular(33554400),
+                  bottomRight: Radius.circular(33554400),
+                ),
               ),
             ),
           ),
-          Obx(() {
-            bool isExpanded = controller.expandedMeals[mealId] ?? false;
 
-            return AnimatedCrossFade(
-              duration: Duration(milliseconds: 300),
-              crossFadeState: isExpanded
-                  ? CrossFadeState.showFirst
-                  : CrossFadeState.showSecond,
-              firstChild: Column(
-                children: [
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 20.w),
-                    child: Divider(height: 1, color: Colors.grey.shade200),
+          //all info i need
+          Column(
+            children: [
+              InkWell(
+                onTap: () => controller.toggleMealExpansion(mealId),
+                child: Padding(
+                  padding: EdgeInsetsGeometry.only(
+                    left: 25,
+                    right: 25,
+                    top: 14,
                   ),
-                  Padding(
-                    padding: EdgeInsets.all(20.w),
-                    child: Column(
-                      children: [
-                        ...items.map((item) => _buildMealItemRow(item)),
-                        if (hasWarning)
-                          Container(
-                            margin: EdgeInsets.only(top: 16.h),
-                            padding: EdgeInsets.all(14.w),
-                            decoration: BoxDecoration(
-                              color: Color(0xFFfff6f8),
-                              borderRadius: BorderRadius.circular(16.r),
-                              border: Border.all(
-                                color: AppColors.border,
-                                width: 2,
-                              ),
-                            ),
-                            child: Row(
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
                               children: [
-                                Container(
-                                  padding: EdgeInsets.all(8.w),
-                                  decoration: BoxDecoration(
-                                    gradient: AppColors.secondaryGradient,
-                                    borderRadius: BorderRadius.circular(14),
-                                  ),
-                                  child: Image.asset(
-                                    "assets/icons/warning_avo.png",
+                                Text(
+                                  title,
+                                  style: AppTextStyles.s18w5i(
+                                    fontweight: FontWeight.w900,
+                                    fontSize: 20.sp,
                                   ),
                                 ),
-                                SizedBox(width: 12.w),
-                                Expanded(
+                                SizedBox(width: 10.w),
+                                Container(
+                                  padding: EdgeInsets.symmetric(
+                                    horizontal: 8.w,
+                                    vertical: 4.h,
+                                  ),
+                                  decoration: BoxDecoration(
+                                    color: badgeColor,
+                                    borderRadius: BorderRadius.circular(
+                                      33554400.r,
+                                    ),
+                                  ),
                                   child: Text(
-                                    'The 15gm butter in your meal was off. We adjusted it to keep you on track.',
-                                    style: AppTextStyles.s14w4i(
-                                      fontSize: 12.sp,
-                                      color: Color(0xFF364153),
+                                    badgeText,
+                                    style: AppTextStyles.s22w7i(
+                                      fontSize: 10,
+                                      color: AppColors.white,
                                     ),
                                   ),
                                 ),
                               ],
                             ),
-                          ),
-                      ],
-                    ),
+
+                            Padding(
+                              padding: EdgeInsets.only(top: 10.h),
+                              child: Row(
+                                children: [
+                                  Container(
+                                    width: 12.w,
+                                    height: 12.h,
+                                    decoration: BoxDecoration(
+                                      color: mealModeColor,
+                                      shape: BoxShape.circle,
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: AppColors.black.withOpacity(
+                                            0.3,
+                                          ),
+                                          spreadRadius: -4,
+                                          blurRadius: 6,
+                                          offset: Offset(0, 10),
+                                        ),
+                                        BoxShadow(
+                                          color: AppColors.black.withOpacity(
+                                            0.3,
+                                          ),
+                                          spreadRadius: -3,
+                                          blurRadius: 15,
+                                          offset: Offset(0, 10),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  SizedBox(width: 8.w),
+                                  Text(
+                                    mealMode,
+                                    style: AppTextStyles.s14w4i(
+                                      color: AppColors.black,
+                                      fontweight: FontWeight.w700,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      SizedBox(width: 16.w),
+                      MultiSegmentCircularProgress(
+                        size: 100,
+                        totalCalories: totalCalories,
+                        segments: _getMealSegments(items),
+                      ),
+                    ],
                   ),
-                  InkWell(
-                    onTap: () => controller.toggleMealExpansion(mealId),
-                    child: Container(
-                      padding: EdgeInsets.symmetric(vertical: 14.h),
-                      decoration: BoxDecoration(
-                        border: Border(
-                          top: BorderSide(
-                            color: Colors.grey.shade200,
-                            width: 1,
+                ),
+              ),
+              Obx(() {
+                bool isExpanded = controller.expandedMeals[mealId] ?? false;
+
+                return AnimatedCrossFade(
+                  duration: Duration(milliseconds: 300),
+                  crossFadeState: isExpanded
+                      ? CrossFadeState.showFirst
+                      : CrossFadeState.showSecond,
+                  firstChild: Column(
+                    children: [
+                      // Padding(
+                      //   // padding: EdgeInsets.symmetric(horizontal: 20.w),
+                      //   child: Divider(height: 1, color: Colors.grey.shade200),
+                      // ),
+                      Padding(
+                        padding: EdgeInsetsGeometry.only(
+                          left: 20,
+                          right: 20,
+                          top: 12,
+                        ),
+                        child: Column(
+                          children: [
+                            ...items.map((item) => _buildMealItemRow(item)),
+                            if (hasWarning)
+                              Container(
+                                margin: EdgeInsets.only(top: 16.h),
+                                padding: EdgeInsets.all(14.w),
+                                decoration: BoxDecoration(
+                                  color: Color(0xFFfff6f8),
+                                  borderRadius: BorderRadius.circular(16.r),
+                                  border: Border.all(
+                                    color: AppColors.border,
+                                    width: 2,
+                                  ),
+                                ),
+                                child: Row(
+                                  children: [
+                                    Container(
+                                      padding: EdgeInsets.all(8.w),
+                                      decoration: BoxDecoration(
+                                        gradient: AppColors.secondaryGradient,
+                                        borderRadius: BorderRadius.circular(14),
+                                      ),
+                                      child: Image.asset(
+                                        "assets/icons/warning_avo.png",
+                                      ),
+                                    ),
+                                    SizedBox(width: 12.w),
+                                    Expanded(
+                                      child: Text(
+                                        'The 15gm butter in your meal was off. We adjusted it to keep you on track.',
+                                        style: AppTextStyles.s14w4i(
+                                          fontSize: 12.sp,
+                                          color: Color(0xFF364153),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                          ],
+                        ),
+                      ),
+                      InkWell(
+                        onTap: () => controller.toggleMealExpansion(mealId),
+                        child: Padding(
+                          padding: const EdgeInsets.only(top: 4, bottom: 4),
+                          child: Icon(
+                            Icons.keyboard_arrow_up,
+                            color: AppColors.black,
+                            size: 24.sp,
                           ),
                         ),
                       ),
+                    ],
+                  ),
+                  secondChild: InkWell(
+                    onTap: () => controller.toggleMealExpansion(mealId),
+                    child: Padding(
+                      padding: const EdgeInsets.only(bottom: 4.0),
                       child: Icon(
-                        Icons.keyboard_arrow_up,
+                        Icons.keyboard_arrow_down,
                         color: Colors.grey.shade600,
                         size: 24.sp,
                       ),
                     ),
                   ),
-                ],
-              ),
-              secondChild: InkWell(
-                onTap: () => controller.toggleMealExpansion(mealId),
-                child: Container(
-                  padding: EdgeInsets.symmetric(vertical: 14.h),
-                  decoration: BoxDecoration(
-                    border: Border(
-                      top: BorderSide(color: Colors.grey.shade200, width: 1),
-                    ),
-                  ),
-                  child: Icon(
-                    Icons.keyboard_arrow_down,
-                    color: Colors.grey.shade600,
-                    size: 24.sp,
-                  ),
-                ),
-              ),
-            );
-          }),
+                );
+              }),
+            ],
+          ),
         ],
       ),
     );
@@ -1154,15 +882,34 @@ class DietScreen extends StatelessWidget {
 
   Widget _buildMealItemRow(MealItem item) {
     return Container(
-      margin: EdgeInsets.only(bottom: 14.h),
+      decoration: BoxDecoration(
+        color: const Color(0xCCF9FAFB),
+        borderRadius: BorderRadius.circular(16),
+      ),
+      margin: EdgeInsets.only(bottom: 10.h),
+      padding: EdgeInsets.symmetric(horizontal: 12, vertical: 4),
       child: Row(
         children: [
           Container(
-            width: 10.w,
-            height: 10.w,
+            width: 12.w,
+            height: 12.w,
             decoration: BoxDecoration(
               color: item.color,
               shape: BoxShape.circle,
+              boxShadow: [
+                BoxShadow(
+                  color: AppColors.black.withOpacity(0.3),
+                  spreadRadius: -4,
+                  blurRadius: 6,
+                  offset: Offset(0, 10),
+                ),
+                BoxShadow(
+                  color: AppColors.black.withOpacity(0.3),
+                  spreadRadius: -3,
+                  blurRadius: 15,
+                  offset: Offset(0, 10),
+                ),
+              ],
             ),
           ),
           SizedBox(width: 14.w),
@@ -1170,9 +917,9 @@ class DietScreen extends StatelessWidget {
             child: Text(
               item.name,
               style: AppTextStyles.s14w4i(
-                fontweight: FontWeight.w600,
+                fontweight: FontWeight.w700,
                 fontSize: 15.sp,
-                color: Color(0xFF101828),
+                color: AppColors.black,
               ),
             ),
           ),
@@ -1224,7 +971,7 @@ class DietScreen extends StatelessWidget {
     );
   }
 
-  // Helper Methods
+  // Helper method in diet_screen.dart
   List<MealSegment> _getMealSegments(List<MealItem> items) {
     final itemsWithCalories = items.where((item) => item.calories > 0).toList();
 
@@ -1246,170 +993,15 @@ class DietScreen extends StatelessWidget {
   List<Color> _getMealGradientColors(String mealType) {
     switch (mealType.toLowerCase()) {
       case 'breakfast':
-        return [Color(0xFF9C27B0), Color(0xFFE91E63)];
+        return [Color(0xFFFF8904), Color(0xFFF6339A)];
       case 'lunch':
-        return [Color(0xFFFF9800), Color(0xFFFFB74D)];
+        return [Color(0xFFC27AFF), Color(0xFF2B7FFF)];
       case 'dinner':
-        return [Color(0xFFE91E63), Color(0xFFFF6B9D)];
+        return [Color(0xFFFB64B6), Color(0xFFAD46FF)];
       default:
         return [Color(0xFF00BFA5), Color(0xFF00E676)];
     }
   }
-
-  // // Meal Item Row
-  // Widget _buildMealItemRow(MealItem item) {
-  //   return Container(
-  //     margin: EdgeInsets.only(bottom: 12.h),
-  //     child: Row(
-  //       children: [
-  //         // Colored Dot
-  //         Container(
-  //           width: 10.w,
-  //           height: 10.w,
-  //           decoration: BoxDecoration(
-  //             color: item.color ?? Color(0xFF00BFA5),
-  //             shape: BoxShape.circle,
-  //           ),
-  //         ),
-
-  //         SizedBox(width: 12.w),
-
-  //         // Item Name
-  //         Expanded(
-  //           child: Text(
-  //             item.name,
-  //             style: AppTextStyles.s14w4i(fontweight: FontWeight.w600),
-  //           ),
-  //         ),
-
-  //         // Weight
-  //         if (item.weight != null)
-  //           Text(
-  //             '${item.weight}g',
-  //             style: AppTextStyles.s14w4i(fontSize: 12.sp, color: Colors.grey),
-  //           ),
-
-  //         SizedBox(width: 12.w),
-
-  //         // Calorie Badge
-  //         if (item.calories > 0)
-  //           Container(
-  //             padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
-  //             decoration: BoxDecoration(
-  //               gradient: LinearGradient(
-  //                 colors: [Color(0xFF00BFA5), Color(0xFF00E676)],
-  //               ),
-  //               borderRadius: BorderRadius.circular(12.r),
-  //             ),
-  //             child: Column(
-  //               children: [
-  //                 Text(
-  //                   '${item.calories}',
-  //                   style: TextStyle(
-  //                     color: Colors.white,
-  //                     fontSize: 14.sp,
-  //                     fontWeight: FontWeight.w700,
-  //                   ),
-  //                 ),
-  //                 Text(
-  //                   'kcal',
-  //                   style: TextStyle(
-  //                     color: Colors.white,
-  //                     fontSize: 8.sp,
-  //                     fontWeight: FontWeight.w600,
-  //                   ),
-  //                 ),
-  //               ],
-  //             ),
-  //           ),
-  //       ],
-  //     ),
-  //   );
-  // }
-
-  // // Get Meal Gradient Colors
-  // List<Color> _getMealGradient(String mealType) {
-  //   if (mealType == 'Breakfast') {
-  //     return [Color(0xFF9C27B0), Color(0xFFE91E63)]; // Purple to Pink
-  //   } else if (mealType == 'Lunch') {
-  //     return [Color(0xFFFF9800), Color(0xFFFFB74D)]; // Orange
-  //   } else if (mealType == 'Dinner') {
-  //     return [Color(0xFFE91E63), Color(0xFFFF6B9D)]; // Pink
-  //   }
-  //   return [Color(0xFF00BFA5), Color(0xFF00E676)]; // Default Green
-  // }
-
-  // // Meal Item
-  // Widget _buildMealItem(MealItem item) {
-  //   return Container(
-  //     margin: EdgeInsets.only(bottom: 10.h),
-  //     child: Row(
-  //       children: [
-  //         Container(
-  //           width: 8.w,
-  //           height: 8.w,
-  //           decoration: BoxDecoration(
-  //             color: _getMealItemColor(item.name),
-  //             shape: BoxShape.circle,
-  //           ),
-  //         ),
-  //         SizedBox(width: 12.w),
-  //         Expanded(
-  //           child: Text(
-  //             item.name,
-  //             style: AppTextStyles.s14w4i(fontweight: FontWeight.w500),
-  //           ),
-  //         ),
-  //         if (item.calories > 0)
-  //           Row(
-  //             mainAxisSize: MainAxisSize.min,
-  //             children: [
-  //               if (item.name.contains('g'))
-  //                 Padding(
-  //                   padding: EdgeInsets.only(right: 8.w),
-  //                   child: Text(
-  //                     item.name.split(' ').last,
-  //                     style: AppTextStyles.s14w4i(
-  //                       fontSize: 12.sp,
-  //                       color: Colors.grey,
-  //                     ),
-  //                   ),
-  //                 ),
-  //               Container(
-  //                 padding: EdgeInsets.symmetric(
-  //                   horizontal: 10.w,
-  //                   vertical: 5.h,
-  //                 ),
-  //                 decoration: BoxDecoration(
-  //                   color: AppColors.brand,
-  //                   borderRadius: BorderRadius.circular(12.r),
-  //                 ),
-  //                 child: Text(
-  //                   '${item.calories}',
-  //                   style: AppTextStyles.s14w4i(
-  //                     color: AppColors.white,
-  //                     fontSize: 11.sp,
-  //                     fontweight: FontWeight.w700,
-  //                   ),
-  //                 ),
-  //               ),
-  //             ],
-  //           ),
-  //       ],
-  //     ),
-  //   );
-  // }
-
-  // Color _getMealItemColor(String itemName) {
-  //   if (itemName.contains('Planned')) return Color(0xFF00BFA5);
-  //   if (itemName.contains('Oatmeal')) return Color(0xFFE91E63);
-  //   if (itemName.contains('Rice')) return Color(0xFF9C27B0);
-  //   if (itemName.contains('Butter')) return Color(0xFF00BCD4);
-  //   if (itemName.contains('Meat')) return Color(0xFF00BFA5);
-  //   if (itemName.contains('Restaurant')) return Color(0xFFE91E63);
-  //   if (itemName.contains('Cheat')) return Color(0xFFE91E63);
-  //   return Color(0xFF00BFA5);
-  // }
 
   //empty meal card
   Widget _buildEmptyMealCard(

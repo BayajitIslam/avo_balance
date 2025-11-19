@@ -48,7 +48,7 @@ class DietController extends GetxController {
         await loadDietPlanData();
       }
     } catch (e) {
-      print('Error checking diet plan: $e');
+      debugPrint('Error checking diet plan: $e');
     } finally {
       isLoading.value = false;
     }
@@ -71,28 +71,54 @@ class DietController extends GetxController {
           breakfast: MealData(
             name: 'Breakfast',
             items: [
-              MealItem(name: 'Paratha', calories: 200, color: Colors.blue),
-              MealItem(name: 'Yogurt', calories: 100, color: Colors.yellow),
-              MealItem(name: 'Pickle', calories: 20, color: Colors.redAccent),
+              MealItem(
+                name: 'Oatmeal',
+                calories: 220,
+                weight: 100,
+                color: Color(0xffFF73A3),
+              ),
+              MealItem(
+                name: 'Rice',
+
+                weight: 15,
+                calories: 220,
+                color: Color(0xFF3F51B5),
+              ),
+              MealItem(
+                name: 'Butter',
+                calories: 220,
+                weight: 100,
+                color: Color(0xFF9C28B1),
+              ),
+              MealItem(
+                name: 'Meat',
+                calories: 160,
+                weight: 15,
+                color: Color(0xFFBC81C7),
+              ),
             ],
           ),
           lunch: MealData(
             name: 'Lunch',
             items: [
-              MealItem(name: 'Paratha', calories: 300, color: Colors.black12),
               MealItem(
-                name: 'Yogurt',
-                calories: 100,
-                color: Colors.yellowAccent,
+                name: 'Oatmeal',
+                calories: 220,
+                color: Color(0xffFF73A3),
               ),
-              MealItem(name: 'Pickle', calories: 20, color: Colors.redAccent),
+              MealItem(name: 'Rice', calories: 220, color: Color(0xFF3F51B5)),
+              MealItem(name: 'Butter', calories: 220, color: Color(0xFF9C28B1)),
             ],
           ),
           dinner: MealData(
             name: 'Dinner',
             items: [
-              MealItem(name: 'Dal Curry', calories: 250, color: Colors.teal),
-              MealItem(name: 'Rice', calories: 300, color: Colors.blue),
+              MealItem(
+                name: 'Oatmeal',
+                calories: 220,
+                color: Color(0xffFF73A3),
+              ),
+              MealItem(name: 'Rice', calories: 220, color: Color(0xFF3F51B5)),
             ],
           ),
           totalCalories: 1800,
@@ -104,9 +130,13 @@ class DietController extends GetxController {
           breakfast: MealData(
             name: 'Breakfast',
             items: [
-              MealItem(name: 'Paratha', calories: 300, color: Colors.blue),
-              MealItem(name: 'Yogurt', calories: 100, color: Colors.yellow),
-              MealItem(name: 'Pickle', calories: 20, color: Colors.redAccent),
+              MealItem(
+                name: 'Oatmeal',
+                calories: 220,
+                color: Color(0xffFF73A3),
+              ),
+              MealItem(name: 'Rice', calories: 220, color: Color(0xFF3F51B5)),
+              MealItem(name: 'Butter', calories: 220, color: Color(0xFF9C28B1)),
             ],
           ),
           lunch: null,
@@ -120,15 +150,23 @@ class DietController extends GetxController {
           breakfast: MealData(
             name: 'Breakfast',
             items: [
-              MealItem(name: 'Dal Curry', calories: 250, color: Colors.teal),
-              MealItem(name: 'Rice', calories: 300, color: Colors.blue),
+              MealItem(
+                name: 'Oatmeal',
+                calories: 220,
+                color: Color(0xffFF73A3),
+              ),
+              MealItem(name: 'Rice', calories: 220, color: Color(0xFF3F51B5)),
             ],
           ),
           lunch: MealData(
             name: 'Lunch',
             items: [
-              MealItem(name: 'Dal Curry', calories: 250, color: Colors.teal),
-              MealItem(name: 'Rice', calories: 300, color: Colors.blue),
+              MealItem(
+                name: 'Oatmeal',
+                calories: 220,
+                color: Color(0xffFF73A3),
+              ),
+              MealItem(name: 'Rice', calories: 220, color: Color(0xFF3F51B5)),
             ],
           ),
           dinner: null,
@@ -141,36 +179,36 @@ class DietController extends GetxController {
           breakfast: MealData(
             name: 'Breakfast',
             items: [
-              MealItem(name: 'Paratha', calories: 300, color: Colors.black12),
-              MealItem(name: 'Yogurt', calories: 100, color: Colors.yellow),
-              MealItem(name: 'Pickle', calories: 20, color: Colors.redAccent),
+              MealItem(
+                name: 'Oatmeal',
+                calories: 220,
+                color: Color(0xffFF73A3),
+              ),
+              MealItem(name: 'Rice', calories: 220, color: Color(0xFF3F51B5)),
+              MealItem(name: 'Butter', calories: 220, color: Color(0xFF9C28B1)),
             ],
           ),
           lunch: MealData(
             name: 'Lunch',
             items: [
-              MealItem(name: 'Dal Curry', calories: 250, color: Colors.teal),
-              MealItem(name: 'Rice', calories: 300, color: Colors.blue),
               MealItem(
-                name: 'Fish Fry',
-                calories: 200,
-                color: Colors.redAccent,
+                name: 'Oatmeal',
+                calories: 220,
+                color: Color(0xffFF73A3),
               ),
+              MealItem(name: 'Rice', calories: 220, color: Color(0xFF3F51B5)),
+              MealItem(name: 'Butter', calories: 220, color: Color(0xFF9C28B1)),
             ],
           ),
           dinner: MealData(
             name: 'Dinner',
             items: [
               MealItem(
-                name: 'Vegetable Soup',
-                calories: 150,
-                color: Colors.blue,
+                name: 'Oatmeal',
+                calories: 220,
+                color: Color(0xffFF73A3),
               ),
-              MealItem(
-                name: 'Chicken Breast',
-                calories: 250,
-                color: Colors.redAccent,
-              ),
+              MealItem(name: 'Rice', calories: 220, color: Color(0xFF3F51B5)),
             ],
           ),
           totalCalories: 1570,
@@ -184,30 +222,22 @@ class DietController extends GetxController {
             name: 'Lunch',
             items: [
               MealItem(
-                name: 'Pasta Carbonara',
-                calories: 550,
-                color: Colors.red,
+                name: 'Oatmeal',
+                calories: 220,
+                color: Color(0xffFF73A3),
               ),
-              MealItem(
-                name: 'Caesar Salad',
-                calories: 200,
-                color: Colors.yellow,
-              ),
+              MealItem(name: 'Rice', calories: 220, color: Color(0xFF3F51B5)),
             ],
           ),
           dinner: MealData(
             name: 'Dinner',
             items: [
               MealItem(
-                name: 'Grilled Salmon',
-                calories: 400,
-                color: Colors.blue,
+                name: 'Oatmeal',
+                calories: 220,
+                color: Color(0xffFF73A3),
               ),
-              MealItem(
-                name: 'Steamed Vegetables',
-                calories: 100,
-                color: Colors.black12,
-              ),
+              MealItem(name: 'Rice', calories: 220, color: Color(0xFF3F51B5)),
             ],
           ),
           totalCalories: 1250,

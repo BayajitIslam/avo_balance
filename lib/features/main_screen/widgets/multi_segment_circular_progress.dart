@@ -1,7 +1,10 @@
-// Create new file: widgets/multi_segment_circular_progress.dart
+// widgets/multi_segment_circular_progress.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:template/core/constants/app_colors.dart';
 import 'dart:math' as math;
+
+import 'package:template/core/themes/app_text_style.dart';
 
 class MultiSegmentCircularProgress extends StatelessWidget {
   final double size;
@@ -27,7 +30,7 @@ class MultiSegmentCircularProgress extends StatelessWidget {
             size: Size(size.w, size.w),
             painter: MultiSegmentProgressPainter(
               segments: segments,
-              strokeWidth: 8.w,
+              strokeWidth: 14.w,
             ),
           ),
           Column(
@@ -35,25 +38,22 @@ class MultiSegmentCircularProgress extends StatelessWidget {
             children: [
               ShaderMask(
                 shaderCallback: (bounds) => LinearGradient(
-                  colors: segments.isNotEmpty
-                      ? [segments.first.color, segments.last.color]
-                      : [Color(0xFFE91E63), Color(0xFF9C27B0)],
+                  colors: [
+                    Color(0xFF9810FA),
+                    Color(0xFFE60076),
+                    Color(0xFFFF6900),
+                  ],
                 ).createShader(bounds),
                 child: Text(
                   '$totalCalories',
-                  style: TextStyle(
-                    fontSize: 24.sp,
-                    fontWeight: FontWeight.w800,
-                    color: Colors.white,
-                  ),
+                  style: AppTextStyles.s22w7i(color: AppColors.white),
                 ),
               ),
               Text(
                 'kcal',
-                style: TextStyle(
-                  fontSize: 10.sp,
-                  color: Colors.grey,
-                  fontWeight: FontWeight.w600,
+                style: AppTextStyles.s14w4i(
+                  fontSize: 12.sp,
+                  fontweight: FontWeight.w700,
                 ),
               ),
             ],
@@ -86,22 +86,40 @@ class MultiSegmentProgressPainter extends CustomPainter {
     final radius = (size.width - strokeWidth) / 2;
 
     final backgroundPaint = Paint()
-      ..color = Color(0xFFF5F5F5)
+      ..color = const Color(0xFFF5F5F5)
       ..style = PaintingStyle.stroke
       ..strokeWidth = strokeWidth
-      ..strokeCap = StrokeCap.round;
+      ..strokeCap = StrokeCap.butt;
 
     canvas.drawCircle(center, radius, backgroundPaint);
 
     if (segments.isEmpty) return;
 
     double startAngle = -math.pi / 2;
+    final gapAngle = 0.33; // Gap between segments
 
     for (var segment in segments) {
       if (segment.percentage <= 0) continue;
 
-      final sweepAngle = 2 * math.pi * segment.percentage;
+      final sweepAngle = (2 * math.pi * segment.percentage) - gapAngle;
 
+      // Shadow for 3D effect
+      final shadowPaint = Paint()
+        ..color = segment.color
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = strokeWidth
+        ..strokeCap = StrokeCap.butt
+        ..maskFilter = MaskFilter.blur(BlurStyle.normal, 4);
+
+      canvas.drawArc(
+        Rect.fromCircle(center: center, radius: radius + 1),
+        startAngle,
+        sweepAngle,
+        false,
+        shadowPaint,
+      );
+
+      // Main segment
       final segmentPaint = Paint()
         ..color = segment.color
         ..style = PaintingStyle.stroke
@@ -116,7 +134,7 @@ class MultiSegmentProgressPainter extends CustomPainter {
         segmentPaint,
       );
 
-      startAngle += sweepAngle;
+      startAngle += sweepAngle + gapAngle;
     }
   }
 
