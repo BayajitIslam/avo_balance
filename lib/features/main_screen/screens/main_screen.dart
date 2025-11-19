@@ -11,7 +11,15 @@ class MainScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: child,
+      body: Container(
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage("assets/images/bg.png"),
+            fit: BoxFit.cover,
+          ),
+        ),
+        child: child,
+      ),
       bottomNavigationBar: showBottomNav ? CustomBottomNavBar() : null,
     );
   }

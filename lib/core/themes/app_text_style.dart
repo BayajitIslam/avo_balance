@@ -20,6 +20,22 @@ class AppTextStyles {
   }
 
   //------------------------------ Inter Font Styles --------------------------------//
+  static TextStyle s12w5i({
+    Color? color,
+    double fontSize = 12,
+    double lineHeight = 1,
+    FontWeight fontweight = FontWeight.w500,
+  }) {
+    return GoogleFonts.inter(
+      color: color ?? AppColors.ash,
+      fontSize: fontSize.sp,
+      fontWeight: fontweight,
+      height: lineHeight,
+      letterSpacing: -1,
+    );
+  }
+
+  //------------------------------ Inter Font Styles --------------------------------//
   static TextStyle s30w8i({
     Color? color,
     double fontSize = 30,

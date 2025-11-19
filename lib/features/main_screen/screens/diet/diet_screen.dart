@@ -22,65 +22,57 @@ class DietScreen extends StatelessWidget {
     final dietController = Get.put(DietController());
 
     return MainScreen(
-      child: Container(
-        decoration: BoxDecoration(
-          image: DecorationImage(
-            image: AssetImage("assets/images/bg.png"),
-            fit: BoxFit.cover,
-          ),
-        ),
-        child: SafeArea(
-          child: Stack(
-            children: [
-              Column(
-                children: [
-                  _buildHeader(dietController),
-                  GetBuilder<DietController>(
+      child: SafeArea(
+        child: Stack(
+          children: [
+            Column(
+              children: [
+                _buildHeader(dietController),
+                GetBuilder<DietController>(
+                  builder: (controller) {
+                    return _buildCalendar(controller);
+                  },
+                ),
+                SizedBox(height: 20.h),
+                Expanded(
+                  child: GetBuilder<DietController>(
                     builder: (controller) {
-                      return _buildCalendar(controller);
+                      if (!controller.hasDietPlan.value) {
+                        return _buildNoDietPlanState(controller);
+                      }
+
+                      return _buildMealsList(controller);
                     },
                   ),
-                  SizedBox(height: 20.h),
-                  Expanded(
-                    child: GetBuilder<DietController>(
-                      builder: (controller) {
-                        if (!controller.hasDietPlan.value) {
-                          return _buildNoDietPlanState(controller);
-                        }
-
-                        return _buildMealsList(controller);
-                      },
+                ),
+              ],
+            ),
+            Obx(() {
+              if (dietController.isLoading.value) {
+                return Container(
+                  color: Colors.black.withOpacity(0.5),
+                  child: Center(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        CircularProgressIndicator(
+                          valueColor: AlwaysStoppedAnimation<Color>(
+                            Colors.white,
+                          ),
+                        ),
+                        SizedBox(height: 16.h),
+                        Text(
+                          'Processing your prescription...',
+                          style: AppTextStyles.s16w5i(color: Colors.white),
+                        ),
+                      ],
                     ),
                   ),
-                ],
-              ),
-              Obx(() {
-                if (dietController.isLoading.value) {
-                  return Container(
-                    color: Colors.black.withOpacity(0.5),
-                    child: Center(
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          CircularProgressIndicator(
-                            valueColor: AlwaysStoppedAnimation<Color>(
-                              Colors.white,
-                            ),
-                          ),
-                          SizedBox(height: 16.h),
-                          Text(
-                            'Processing your prescription...',
-                            style: AppTextStyles.s16w5i(color: Colors.white),
-                          ),
-                        ],
-                      ),
-                    ),
-                  );
-                }
-                return SizedBox.shrink();
-              }),
-            ],
-          ),
+                );
+              }
+              return SizedBox.shrink();
+            }),
+          ],
         ),
       ),
     );
@@ -327,7 +319,7 @@ class DietScreen extends StatelessWidget {
             controller,
             'breakfast',
             dayPlan!.breakfast!.name,
-            'PLANNED',
+            'TRACKED',
             dayPlan.breakfast!.totalCalories,
             dayPlan.breakfast!.items,
             "Planned",
