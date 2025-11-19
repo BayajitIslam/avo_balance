@@ -11,55 +11,59 @@ class CustomBottomNavBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Get controller safely
     NavigationController controller;
 
     try {
       controller = Get.find<NavigationController>();
     } catch (e) {
-      // If not found, create new one
       controller = Get.put(NavigationController(), permanent: true);
     }
 
     return Container(
-      height: 70.h,
+      height: 85.h,
       decoration: BoxDecoration(
         color: AppColors.white,
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.1),
-            blurRadius: 10,
-            offset: Offset(0, -2),
-          ),
-        ],
+        // boxShadow: [
+        //   BoxShadow(
+        //     color: Colors.black.withOpacity(0.1),
+        //     blurRadius: 10,
+        //     offset: Offset(0, -2),
+        //   ),
+        // ],
       ),
       child: Obx(
-        () => Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
+        () => Stack(
+          clipBehavior: Clip.none,
+          alignment: Alignment.bottomCenter,
           children: [
-            _buildNavItem(
-              icon: Icons.home_outlined,
-              activeIcon: Icons.home,
-              label: 'Home',
-              index: 0,
-              isActive: controller.currentIndex.value == 0,
-              onTap: () => controller.changePage(0),
-            ),
-            _buildNavItem(
-              icon: Icons.restaurant_menu_outlined,
-              activeIcon: Icons.restaurant_menu,
-              label: 'Diet',
-              index: 1,
-              isActive: controller.currentIndex.value == 1,
-              onTap: () => controller.changePage(1),
-            ),
-            _buildNavItem(
-              icon: Icons.person_outline,
-              activeIcon: Icons.person,
-              label: 'User',
-              index: 2,
-              isActive: controller.currentIndex.value == 2,
-              onTap: () => controller.changePage(2),
+            // Bottom Nav Items
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                _buildNavItem(
+                  imagePath: 'assets/icons/home.png', // Replace with your image
+                  label: 'Home',
+                  index: 0,
+                  isActive: controller.currentIndex.value == 0,
+                  onTap: () => controller.changePage(0),
+                ),
+                _buildNavItem(
+                  imagePath:
+                      'assets/icons/deitNav.png', // Replace with your image
+                  label: 'Diet',
+                  index: 1,
+                  isActive: controller.currentIndex.value == 1,
+                  onTap: () => controller.changePage(1),
+                ),
+                _buildNavItem(
+                  imagePath:
+                      'assets/icons/profile.png', // Replace with your image
+                  label: 'User',
+                  index: 2,
+                  isActive: controller.currentIndex.value == 2,
+                  onTap: () => controller.changePage(2),
+                ),
+              ],
             ),
           ],
         ),
@@ -68,8 +72,7 @@ class CustomBottomNavBar extends StatelessWidget {
   }
 
   Widget _buildNavItem({
-    required IconData icon,
-    required IconData activeIcon,
+    required String imagePath,
     required String label,
     required int index,
     required bool isActive,
@@ -77,30 +80,58 @@ class CustomBottomNavBar extends StatelessWidget {
   }) {
     return GestureDetector(
       onTap: onTap,
-      child: Container(
-        padding: EdgeInsets.symmetric(vertical: 8.h),
+      child: AnimatedContainer(
+        duration: Duration(milliseconds: 300),
+        curve: Curves.easeInOut,
+        transform: Matrix4.translationValues(0, isActive ? -20.h : 0, 0),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
+            // Circular Button
             Container(
-              width: 48.w,
-              height: 36.h,
+              width: isActive ? 66.w : 48.w,
+              height: isActive ? 66.h : 48.h,
               decoration: BoxDecoration(
                 gradient: isActive ? AppColors.primaryGradient : null,
-                borderRadius: BorderRadius.circular(12.r),
+                color: isActive ? null : Colors.transparent,
+                shape: BoxShape.circle,
+                border: isActive
+                    ? Border.all(color: Colors.white, width: 4)
+                    : Border.all(color: AppColors.transparent),
+                boxShadow: isActive
+                    ? [
+                        BoxShadow(
+                          color: const Color(0xFFE6E6E6),
+                          blurRadius: 4,
+                          offset: Offset(0, 1),
+                        ),
+                      ]
+                    : null,
               ),
-              child: Icon(
-                isActive ? activeIcon : icon,
-                color: isActive ? AppColors.white : Colors.grey.shade600,
-                size: 24.sp,
+              child: Center(
+                child: ColorFiltered(
+                  colorFilter: ColorFilter.mode(
+                    isActive ? Colors.white : Colors.grey.shade600,
+                    BlendMode.srcIn,
+                  ),
+                  child: Image.asset(
+                    imagePath,
+                    width: isActive ? 24.w : 23.w,
+                    height: isActive ? 24.h : 23.h,
+                    fit: BoxFit.contain,
+                  ),
+                ),
               ),
             ),
-            SizedBox(height: 4.h),
+
+            SizedBox(height: 6.h),
+
+            // Label
             Text(
               label,
               style: AppTextStyles.s14w4i(
                 fontSize: 12.sp,
-                fontweight: isActive ? FontWeight.w700 : FontWeight.w500,
+                fontweight: isActive ? FontWeight.w500 : FontWeight.w700,
                 color: isActive ? AppColors.brand : Colors.grey.shade600,
               ),
             ),

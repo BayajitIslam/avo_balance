@@ -24,7 +24,7 @@ class AppRoutes {
     GetPage(
       name: RoutesName.home,
       page: () => HomeScreen(),
-      transition: Transition.rightToLeft,
+      // transition: Transition.rightToLeft,
       binding: AuthBinding(),
     ),
     GetPage(
@@ -85,13 +85,13 @@ class AppRoutes {
     GetPage(
       name: RoutesName.dietScreen,
       page: () => DietScreen(),
-      transition: Transition.rightToLeft,
+      // transition: Transition.circularReveal,
       binding: DietBinding(),
     ),
     GetPage(
       name: RoutesName.profileScreen,
       page: () => ProfileScreen(),
-      transition: Transition.rightToLeft,
+      // transition: Transition.rightToLeft,
     ),
   ];
 }
