@@ -9,6 +9,8 @@ import 'package:template/features/main_screen/controllers/profile_controller.dar
 import 'package:template/features/main_screen/screens/main_screen.dart';
 import 'package:intl/intl.dart';
 import 'package:template/features/main_screen/widgets/action_button.dart';
+import 'package:template/features/main_screen/widgets/edit_personal_data_dialog.dart';
+import 'package:template/features/main_screen/widgets/semicircular_gauge_painter.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
@@ -48,6 +50,7 @@ class ProfileScreen extends StatelessWidget {
           return SingleChildScrollView(
             child: Column(
               children: [
+                SizedBox(height: 25.h),
                 _buildHeader(),
                 SizedBox(height: 20.h),
                 _buildProfileSection(controller),
@@ -57,6 +60,8 @@ class ProfileScreen extends StatelessWidget {
                 _buildProgressCard(controller),
                 SizedBox(height: 16.h),
                 _buildPersonalDataCard(controller),
+                SizedBox(height: 16.h),
+                _buildChangesPassword(controller),
                 SizedBox(height: 16.h),
                 _buildMenuItems(controller),
                 SizedBox(height: 16.h),
@@ -73,23 +78,33 @@ class ProfileScreen extends StatelessWidget {
   }
 
   Widget _buildHeader() {
+    final canGoBack = Navigator.of(Get.context!).canPop();
+
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 10.h),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          InkWell(
-            onTap: () => Get.back(),
-            child: Container(
-              width: 36.w,
-              height: 36.h,
-              decoration: BoxDecoration(
-                color: AppColors.black,
-                shape: BoxShape.circle,
-              ),
-              child: Icon(Icons.arrow_back, color: Colors.white, size: 20.sp),
-            ),
-          ),
+          // Conditional Back Button
+          canGoBack
+              ? InkWell(
+                  onTap: () => Get.back(),
+                  child: Container(
+                    width: 36.w,
+                    height: 36.h,
+                    decoration: BoxDecoration(
+                      color: AppColors.black,
+                      shape: BoxShape.circle,
+                    ),
+                    child: Icon(
+                      Icons.arrow_back,
+                      color: Colors.white,
+                      size: 20.sp,
+                    ),
+                  ),
+                )
+              : SizedBox(width: 36.w), // Empty space to maintain alignment
+
           Text(
             'Profile',
             style: AppTextStyles.s22w7i(
@@ -97,6 +112,7 @@ class ProfileScreen extends StatelessWidget {
               fontweight: FontWeight.w700,
             ),
           ),
+
           Row(
             children: [
               Icon(Icons.notifications_outlined, size: 24.sp),
@@ -238,202 +254,259 @@ class ProfileScreen extends StatelessWidget {
 
   Widget _buildProgressCard(ProfileController controller) {
     final user = controller.user.value!;
+    final progressPercentage = user.progressDays / user.totalDays;
 
-    return Container(
-      margin: EdgeInsets.symmetric(horizontal: 20.w),
-      padding: EdgeInsets.all(20.w),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16.r),
-        border: Border.all(color: AppColors.brand, width: 2),
-        boxShadow: [
-          BoxShadow(
-            color: AppColors.brand.withOpacity(0.1),
-            blurRadius: 10,
-            offset: Offset(0, 2),
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Container(
-                padding: EdgeInsets.all(8.w),
-                decoration: BoxDecoration(
-                  color: AppColors.brand.withOpacity(0.1),
-                  borderRadius: BorderRadius.circular(10.r),
-                ),
-                child: Icon(
-                  Icons.trending_up,
-                  color: AppColors.brand,
-                  size: 20.sp,
-                ),
-              ),
-              SizedBox(width: 12.w),
-              Text(
-                'Your Progress',
-                style: AppTextStyles.s18w5i(fontweight: FontWeight.w700),
+    return Column(
+      children: [
+        Container(
+          margin: EdgeInsets.symmetric(horizontal: 20.w),
+          padding: EdgeInsets.all(18.w),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(16.r),
+            border: Border.all(color: AppColors.brand, width: 4),
+            boxShadow: [
+              BoxShadow(
+                color: const Color(0xFFCCCCCC),
+                blurRadius: 10,
+                offset: Offset(0, 2),
               ),
             ],
           ),
-          SizedBox(height: 20.h),
-          Row(
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.end,
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(
-                'This is the Health update',
-                style: AppTextStyles.s14w4i(
-                  fontSize: 12.sp,
-                  color: Colors.grey.shade600,
-                ),
-              ),
-              SizedBox(
-                width: 80.w,
-                height: 80.w,
-                child: Stack(
-                  alignment: Alignment.center,
-                  children: [
-                    SizedBox(
-                      width: 80.w,
-                      height: 80.w,
-                      child: CircularProgressIndicator(
-                        value: user.progressDays / user.totalDays,
-                        strokeWidth: 8,
-                        strokeCap: StrokeCap.round,
-                        backgroundColor: Colors.grey.shade200,
-                        valueColor: AlwaysStoppedAnimation<Color>(
-                          AppColors.brand,
+              Column(
+                children: [
+                  Row(
+                    children: [
+                      Container(
+                        padding: EdgeInsets.all(10.w),
+                        decoration: BoxDecoration(
+                          gradient: AppColors.primaryGradient,
+                          borderRadius: BorderRadius.circular(12.r),
+                        ),
+                        child: Image.asset("assets/icons/flash_avo.png"),
+                      ),
+                      SizedBox(width: 12.w),
+                      Text(
+                        'Your Progress',
+                        style: AppTextStyles.s18w5i(
+                          fontweight: FontWeight.w700,
+                          fontSize: 18.sp,
                         ),
                       ),
+                    ],
+                  ),
+                  //
+                  SizedBox(height: 16.h),
+                  Text(
+                    'You\'re on a ${user.progressDays}-day healthy eating\nstreak!',
+                    style: AppTextStyles.s14w4i(
+                      fontSize: 10.sp,
+                      color: Colors.grey.shade600,
+                      fontweight: FontWeight.w600,
+                      lineHeight: 1.4,
                     ),
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          '${user.progressDays}/${user.totalDays}',
-                          style: AppTextStyles.s18w5i(
-                            fontweight: FontWeight.w700,
-                            color: AppColors.brand,
+                  ),
+                ],
+              ),
+              SizedBox(width: 12.w),
+              // Semicircular Gauge
+              SizedBox(
+                width: 90.w,
+                height: 50.h,
+                child: CustomPaint(
+                  painter: SemiCircularGaugePainter(
+                    percentage: progressPercentage,
+                    activeColor: AppColors.brand,
+                    inactiveColor: Colors.grey.shade300,
+                  ),
+                  child: Center(
+                    child: Padding(
+                      padding: EdgeInsets.only(top: 8.h),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          ShaderMask(
+                            shaderCallback: (bounds) => LinearGradient(
+                              colors: const [
+                                Color(0xFF9810FA),
+                                Color(0xFFE60076),
+                                Color(0xFFFF6900),
+                              ],
+                            ).createShader(bounds),
+                            child: Text(
+                              '${user.progressDays}/${user.totalDays}',
+                              style: AppTextStyles.s18w5i(
+                                fontweight: FontWeight.w800,
+                                color: AppColors.white,
+                              ),
+                            ),
                           ),
-                        ),
-                        Text(
-                          'Days',
-                          style: AppTextStyles.s14w4i(
-                            fontSize: 10.sp,
-                            color: Colors.grey.shade600,
+                          Text(
+                            'Balance',
+                            style: AppTextStyles.s14w4i(
+                              fontweight: FontWeight.w800,
+                              fontSize: 8,
+                              color: AppColors.black,
+                            ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
-                  ],
+                  ),
                 ),
               ),
             ],
           ),
-          SizedBox(height: 20.h),
-          Row(
+        ),
+
+        //     // Bottom Section - Two Separate Containers
+        Padding(
+          padding: const EdgeInsets.all(20.0),
+          child: Row(
             children: [
               Expanded(
                 child: Container(
-                  padding: EdgeInsets.all(12.w),
+                  padding: EdgeInsets.all(20.w),
                   decoration: BoxDecoration(
-                    color: Color(0xFFF5F5F5),
-                    borderRadius: BorderRadius.circular(12.r),
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(16.r),
+                    boxShadow: [
+                      BoxShadow(
+                        color: const Color(0xFFCCCCCC),
+                        blurRadius: 10,
+                        offset: Offset(0, 2),
+                      ),
+                    ],
                   ),
                   child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Icon(
-                            Icons.calendar_today,
-                            size: 16.sp,
-                            color: AppColors.brand,
+                          Container(
+                            width: 8.w,
+                            height: 8.h,
+                            decoration: BoxDecoration(
+                              color: AppColors.brand,
+                              shape: BoxShape.circle,
+                              boxShadow: [
+                                BoxShadow(
+                                  color: AppColors.brand,
+                                  blurRadius: 2,
+                                  offset: Offset(0, 1),
+                                ),
+                              ],
+                            ),
                           ),
-                          SizedBox(width: 4.w),
+                          SizedBox(width: 6.w),
                           Text(
                             'Weekly',
                             style: AppTextStyles.s14w4i(
-                              fontSize: 11.sp,
-                              color: Colors.grey.shade700,
+                              fontweight: FontWeight.w600,
                             ),
                           ),
                         ],
                       ),
-                      SizedBox(height: 8.h),
-                      Text(
-                        '${user.weeklyPercentage}%',
-                        style: AppTextStyles.s22w7i(
-                          color: AppColors.brand,
-                          fontSize: 24.sp,
+                      SizedBox(height: 12.h),
+                      ShaderMask(
+                        shaderCallback: (bounds) => LinearGradient(
+                          colors: const [
+                            Color(0xFF00D195),
+                            Color(0xFF00C0A2),
+                            Color(0xFF92D39B),
+                          ],
+                        ).createShader(bounds),
+                        child: Text(
+                          '${user.weeklyPercentage}%',
+                          style: AppTextStyles.s22w7i(
+                            color: Colors
+                                .white, // Must be white for gradient to show
+                            fontSize: 40.sp,
+                            fontweight: FontWeight.w900,
+                          ),
                         ),
                       ),
                       SizedBox(height: 4.h),
-                      Text(
-                        'Balanced days',
-                        style: AppTextStyles.s14w4i(
-                          fontSize: 10.sp,
-                          color: Colors.grey.shade600,
-                        ),
-                      ),
+                      Text('Balanced days', style: AppTextStyles.s14w4i()),
                     ],
                   ),
                 ),
               ),
-              SizedBox(width: 12.w),
+              SizedBox(width: 16.w),
               Expanded(
                 child: Container(
-                  padding: EdgeInsets.all(12.w),
+                  padding: EdgeInsets.all(20.w),
                   decoration: BoxDecoration(
-                    color: Color(0xFFF5F5F5),
-                    borderRadius: BorderRadius.circular(12.r),
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(16.r),
+                    boxShadow: [
+                      BoxShadow(
+                        color: const Color(0xFFCCCCCC),
+                        blurRadius: 10,
+                        offset: Offset(0, 2),
+                      ),
+                    ],
                   ),
                   child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Icon(
-                            Icons.watch_later_outlined,
-                            size: 16.sp,
-                            color: AppColors.brand,
+                          Container(
+                            width: 8.w,
+                            height: 8.h,
+                            decoration: BoxDecoration(
+                              color: AppColors.brand,
+                              shape: BoxShape.circle,
+                              boxShadow: [
+                                BoxShadow(
+                                  color: AppColors.brand,
+                                  blurRadius: 2,
+                                  offset: Offset(0, 1),
+                                ),
+                              ],
+                            ),
                           ),
-                          SizedBox(width: 4.w),
+                          SizedBox(width: 6.w),
                           Text(
-                            'Once streak',
+                            'Cheat meals',
                             style: AppTextStyles.s14w4i(
-                              fontSize: 11.sp,
-                              color: Colors.grey.shade700,
+                              fontweight: FontWeight.w600,
                             ),
                           ),
                         ],
                       ),
-                      SizedBox(height: 8.h),
-                      Text(
-                        '${user.streakCount}',
-                        style: AppTextStyles.s22w7i(
-                          color: AppColors.brand,
-                          fontSize: 24.sp,
+                      SizedBox(height: 12.h),
+                      ShaderMask(
+                        shaderCallback: (bounds) => LinearGradient(
+                          colors: const [Color(0xFF00D195), Color(0xFF00C0A2)],
+                        ).createShader(bounds),
+                        child: Text(
+                          '${user.streakCount}',
+                          style: AppTextStyles.s22w7i(
+                            color: Colors
+                                .white, // Must be white for gradient to show
+                            fontSize: 40.sp,
+                            fontweight: FontWeight.w900,
+                          ),
                         ),
                       ),
                       SizedBox(height: 4.h),
-                      Text(
-                        'Logged',
-                        style: AppTextStyles.s14w4i(
-                          fontSize: 10.sp,
-                          color: Colors.grey.shade600,
-                        ),
-                      ),
+                      Text('Logged', style: AppTextStyles.s14w4i()),
                     ],
                   ),
                 ),
               ),
             ],
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 
@@ -442,13 +515,13 @@ class ProfileScreen extends StatelessWidget {
 
     return Container(
       margin: EdgeInsets.symmetric(horizontal: 20.w),
-      padding: EdgeInsets.all(20.w),
+      padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 24.h),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(16.r),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            color: const Color(0xFFCCCCCC),
             blurRadius: 10,
             offset: Offset(0, 2),
           ),
@@ -462,10 +535,16 @@ class ProfileScreen extends StatelessWidget {
             children: [
               Text(
                 'Personal Data',
-                style: AppTextStyles.s18w5i(fontweight: FontWeight.w700),
+                style: AppTextStyles.s18w5i(fontweight: FontWeight.w800),
               ),
               InkWell(
-                onTap: () => controller.editPersonalData('Personal Data'),
+                onTap: () {
+                  // Show edit dialog
+                  Get.dialog(
+                    EditPersonalDataDialog(),
+                    barrierDismissible: false,
+                  );
+                },
                 child: Container(
                   padding: EdgeInsets.symmetric(
                     horizontal: 16.w,
@@ -475,84 +554,74 @@ class ProfileScreen extends StatelessWidget {
                     gradient: AppColors.primaryGradient,
                     borderRadius: BorderRadius.circular(20.r),
                   ),
-                  child: Text(
-                    'Edit',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 12.sp,
-                      fontWeight: FontWeight.w600,
-                    ),
+                  child: Row(
+                    children: [
+                      //text
+                      Text(
+                        'Edit',
+                        style: AppTextStyles.s14w4i(
+                          color: AppColors.white,
+                          fontweight: FontWeight.w700,
+                        ),
+                      ),
+                      //icon
+                      SizedBox(width: 3.w),
+                      Icon(
+                        Icons.edit_outlined,
+                        size: 14.sp,
+                        color: AppColors.white,
+                      ),
+                    ],
                   ),
                 ),
               ),
             ],
           ),
-          SizedBox(height: 20.h),
-          _buildDataRow(controller, 'Age', '${user.age} Years'),
-          _buildDataRow(controller, 'Gender', user.gender),
-          _buildDataRow(controller, 'Weight', '${user.weight} kg'),
-          _buildDataRow(controller, 'Height', '${user.height.toInt()} cm'),
-          _buildDataRow(controller, 'Goal', user.goal, isLast: true),
+          SizedBox(height: 16.h),
+          _buildDataRow('Age', '${user.age} Years'),
+          SizedBox(height: 16.h),
+          _buildDataRow('Gender', user.gender),
+          SizedBox(height: 16.h),
+          _buildDataRow('Weight', '${user.weight} kg'),
+          SizedBox(height: 16.h),
+          _buildDataRow('Height', '${user.height.toInt()} cm'),
+          SizedBox(height: 16.h),
+          _buildDataRow('Goal', user.goal, isLast: true),
         ],
       ),
     );
   }
 
-  Widget _buildDataRow(
-    ProfileController controller,
-    String label,
-    String value, {
-    bool isLast = false,
-  }) {
+  Widget _buildDataRow(String label, String value, {bool isLast = false}) {
     return Column(
       children: [
-        InkWell(
-          onTap: () => controller.editPersonalData(label),
-          child: Padding(
-            padding: EdgeInsets.symmetric(vertical: 4.h),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  label,
-                  style: AppTextStyles.s14w4i(color: Colors.grey.shade600),
-                ),
-                Row(
-                  children: [
-                    Text(
-                      value,
-                      style: AppTextStyles.s14w4i(fontweight: FontWeight.w600),
-                    ),
-                    SizedBox(width: 8.w),
-                    Icon(
-                      Icons.arrow_forward_ios,
-                      size: 14.sp,
-                      color: Colors.grey.shade400,
-                    ),
-                  ],
-                ),
-              ],
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              label,
+              style: AppTextStyles.s14w4i(
+                color: AppColors.black,
+                fontweight: FontWeight.w700,
+              ),
             ),
-          ),
+            Text(value, style: AppTextStyles.s14w4i(color: AppColors.black)),
+          ],
         ),
-        if (!isLast) ...[
-          SizedBox(height: 8.h),
-          Divider(height: 1, color: Colors.grey.shade200),
-          SizedBox(height: 8.h),
-        ],
       ],
     );
   }
 
-  Widget _buildMenuItems(ProfileController controller) {
+  Widget _buildChangesPassword(ProfileController controller) {
     return Container(
       margin: EdgeInsets.symmetric(horizontal: 20.w),
+      padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 20.h),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(16.r),
+        borderRadius: BorderRadius.circular(28.r),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            color: const Color(0xFFCCCCCC),
             blurRadius: 10,
             offset: Offset(0, 2),
           ),
@@ -565,19 +634,41 @@ class ProfileScreen extends StatelessWidget {
             Icons.lock_outline,
             controller.changePassword,
           ),
-          Divider(height: 1),
+        ],
+      ),
+    );
+  }
+
+  //build menu items setting
+  Widget _buildMenuItems(ProfileController controller) {
+    return Container(
+      margin: EdgeInsets.symmetric(horizontal: 20.w),
+      padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 20.h),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(28.r),
+        boxShadow: [
+          BoxShadow(
+            color: const Color(0xFFCCCCCC),
+            blurRadius: 10,
+            offset: Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Column(
+        children: [
           _buildMenuItem(
             'Terms & Conditions',
             Icons.description_outlined,
             controller.viewTerms,
           ),
-          Divider(height: 1),
+          SizedBox(height: 15.h),
           _buildMenuItem(
             'Privacy Policy',
             Icons.privacy_tip_outlined,
             controller.viewPrivacyPolicy,
           ),
-          Divider(height: 1),
+          SizedBox(height: 15.h),
           _buildMenuItem(
             'FAQs',
             Icons.help_outline,
@@ -597,14 +688,25 @@ class ProfileScreen extends StatelessWidget {
   }) {
     return InkWell(
       onTap: onTap,
-      child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 16.h),
+      child: Container(
+        decoration: BoxDecoration(
+          color: const Color(0xFFfafbfc),
+          borderRadius: BorderRadius.circular(16.r),
+        ),
+
+        padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 10.h),
         child: Row(
           children: [
-            Icon(icon, size: 20.sp, color: Colors.grey.shade700),
-            SizedBox(width: 12.w),
-            Expanded(child: Text(title, style: AppTextStyles.s16w5i())),
-            Icon(Icons.chevron_right, size: 20.sp, color: Colors.grey.shade400),
+            Expanded(
+              child: Text(
+                title,
+                style: AppTextStyles.s14w4i(
+                  fontweight: FontWeight.w700,
+                  color: AppColors.black,
+                ),
+              ),
+            ),
+            Icon(Icons.chevron_right, size: 30.sp, color: AppColors.black),
           ],
         ),
       ),
