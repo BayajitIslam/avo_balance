@@ -145,67 +145,74 @@ class ProfileScreen extends StatelessWidget {
 
   Widget _buildKYCBanner(ProfileController controller) {
     final user = controller.user.value!;
-
+    final navController = Get.find<NavigationController>();
     if (!user.isPremium) return SizedBox.shrink();
 
-    return Container(
-      margin: EdgeInsets.symmetric(horizontal: 20.w),
-      padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 20.h),
-      decoration: BoxDecoration(
-        color: AppColors.white,
-        borderRadius: BorderRadius.circular(24.r),
-        boxShadow: [
-          BoxShadow(
-            color: const Color(0xFFCCCCCC),
-            blurRadius: 10,
-            offset: Offset(0, 2),
-          ),
-        ],
-      ),
-      child: Row(
-        children: [
-          Container(
-            width: 32.w,
-            height: 32.h,
-            decoration: BoxDecoration(
-              color: AppColors.brand,
-              borderRadius: BorderRadius.circular(14.r),
-              boxShadow: [
-                BoxShadow(
-                  color: const Color(0xFFCCCCCC),
-                  blurRadius: 10,
-                  offset: Offset(0, 2),
-                ),
-              ],
+    return InkWell(
+      onTap: () {
+        //route
+        navController.clearSelection();
+        Get.toNamed(RoutesName.changeSubscriptionScreen);
+      },
+      child: Container(
+        margin: EdgeInsets.symmetric(horizontal: 20.w),
+        padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 20.h),
+        decoration: BoxDecoration(
+          color: AppColors.white,
+          borderRadius: BorderRadius.circular(24.r),
+          boxShadow: [
+            BoxShadow(
+              color: const Color(0xFFCCCCCC),
+              blurRadius: 10,
+              offset: Offset(0, 2),
             ),
-            child: Icon(
-              Icons.workspace_premium,
-              color: Colors.white,
-              size: 20.sp,
-            ),
-          ),
-          SizedBox(width: 12.w),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  'AVO Premium (Free Trial)',
-                  style: AppTextStyles.s14w4i(
-                    fontweight: FontWeight.w600,
-                    color: AppColors.brand,
+          ],
+        ),
+        child: Row(
+          children: [
+            Container(
+              width: 32.w,
+              height: 32.h,
+              decoration: BoxDecoration(
+                color: AppColors.brand,
+                borderRadius: BorderRadius.circular(14.r),
+                boxShadow: [
+                  BoxShadow(
+                    color: const Color(0xFFCCCCCC),
+                    blurRadius: 10,
+                    offset: Offset(0, 2),
                   ),
-                ),
-                SizedBox(height: 2.h),
-                Text(
-                  'No charges until ${DateFormat('MMM dd, yyyy').format(user.premiumExpiryDate!)}',
-                  style: AppTextStyles.s14w4i(fontSize: 12.sp),
-                ),
-              ],
+                ],
+              ),
+              child: Icon(
+                Icons.workspace_premium,
+                color: Colors.white,
+                size: 20.sp,
+              ),
             ),
-          ),
-        ],
+            SizedBox(width: 12.w),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    'AVO Premium (Free Trial)',
+                    style: AppTextStyles.s14w4i(
+                      fontweight: FontWeight.w600,
+                      color: AppColors.brand,
+                    ),
+                  ),
+                  SizedBox(height: 2.h),
+                  Text(
+                    'No charges until ${DateFormat('MMM dd, yyyy').format(user.premiumExpiryDate!)}',
+                    style: AppTextStyles.s14w4i(fontSize: 12.sp),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

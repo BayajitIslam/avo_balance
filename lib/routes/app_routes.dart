@@ -13,6 +13,7 @@ import 'package:template/features/main_screen/bindings/profile_binding.dart';
 import 'package:template/features/main_screen/screens/diet/diet_screen.dart';
 import 'package:template/features/main_screen/screens/home/home_screens.dart';
 import 'package:template/features/main_screen/screens/profile/profile_screen.dart';
+import 'package:template/features/main_screen/screens/profile/under_profile_screen/change_subscription_screen.dart';
 import 'package:template/features/main_screen/screens/profile/under_profile_screen/edit_profile_screen.dart';
 import 'package:template/features/splash/bindings/onboarding_binding.dart';
 import 'package:template/features/splash/bindings/splash_binding.dart';
@@ -102,6 +103,12 @@ class AppRoutes {
       page: () => EditProfileScreen(),
       transition: Transition.rightToLeft,
       binding: EditProfileBinding(),
+    ),
+    GetPage(
+      name: RoutesName.changeSubscriptionScreen,
+      page: () => ChangeSubscriptionScreen(),
+      transition: Transition.rightToLeft,
+      binding: SubscriptionBinding(),
     ),
   ];
 }

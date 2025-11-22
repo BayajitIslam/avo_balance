@@ -10,12 +10,16 @@ class SubscriptionCard extends StatelessWidget {
   final SubscriptionPlan plan;
   final bool isSelected;
   final VoidCallback onTap;
+  final bool isCurrentPlan; // Shows Current Plan badge
+  final bool showRecommended; // Controls Recommended badge visibility
 
   const SubscriptionCard({
     super.key,
     required this.plan,
     required this.isSelected,
     required this.onTap,
+    this.isCurrentPlan = false,
+    this.showRecommended = true, // Default true for first time users
   });
 
   @override
@@ -28,7 +32,6 @@ class SubscriptionCard extends StatelessWidget {
           strokeWidth: isSelected ? 6 : 3,
           radius: 16,
         ),
-
         child: Container(
           decoration: BoxDecoration(
             color: AppColors.greenLight,
@@ -36,7 +39,6 @@ class SubscriptionCard extends StatelessWidget {
             boxShadow: isSelected
                 ? [
                     BoxShadow(
-                      // ignore: deprecated_member_use
                       color: AppColors.black.withOpacity(0.3),
                       blurRadius: 12,
                       offset: Offset(0, 4),
@@ -63,10 +65,9 @@ class SubscriptionCard extends StatelessWidget {
                         shape: BoxShape.circle,
                         boxShadow: [
                           BoxShadow(
-                            // ignore: deprecated_member_use
                             color: Colors.black.withOpacity(0.1),
                             blurRadius: 6,
-                            offset: Offset(0, 6), // Bottom shadow
+                            offset: Offset(0, 6),
                           ),
                         ],
                       ),
@@ -93,8 +94,7 @@ class SubscriptionCard extends StatelessWidget {
                                 ),
                               ),
                               ShaderMask(
-                                blendMode:
-                                    BlendMode.srcIn, // This is important!
+                                blendMode: BlendMode.srcIn,
                                 shaderCallback: (bounds) => AppColors
                                     .primaryGradient
                                     .createShader(bounds),
@@ -110,6 +110,7 @@ class SubscriptionCard extends StatelessWidget {
                           ),
 
                           SizedBox(height: 8.h),
+
                           // Description
                           Text(
                             plan.description,
@@ -121,6 +122,7 @@ class SubscriptionCard extends StatelessWidget {
                           ),
 
                           SizedBox(height: 2.h),
+
                           // Daily Cost (if available)
                           if (plan.dailyCost != null) ...[
                             SizedBox(height: 2.h),
@@ -140,10 +142,42 @@ class SubscriptionCard extends StatelessWidget {
                 ),
               ),
 
-              // Best Value Badge
-              if (plan.isBestValue)
+              // Current Plan Badge (Priority: Shows when user has active subscription)
+              if (isCurrentPlan)
                 Positioned(
-                  top: -8,
+                  top: -10,
+                  right: 8,
+                  child: Container(
+                    decoration: BoxDecoration(
+                      gradient: AppColors.secondaryGradient,
+                      borderRadius: BorderRadius.circular(12),
+                      boxShadow: [
+                        BoxShadow(
+                          color: AppColors.brand.withOpacity(0.3),
+                          blurRadius: 8,
+                          offset: Offset(0, 2),
+                        ),
+                      ],
+                    ),
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 12.w,
+                      vertical: 4.h,
+                    ),
+                    child: Text(
+                      'Your current plan',
+                      style: AppTextStyles.s14w4i(
+                        color: AppColors.white,
+                        fontSize: 11.sp,
+                        fontweight: FontWeight.w700,
+                      ),
+                    ),
+                  ),
+                ),
+
+              // Recommended Badge (Only shows for first time users)
+              if (!isCurrentPlan && plan.isBestValue && showRecommended)
+                Positioned(
+                  top: -10,
                   right: 8,
                   child: Container(
                     decoration: BoxDecoration(
@@ -152,13 +186,14 @@ class SubscriptionCard extends StatelessWidget {
                     ),
                     padding: EdgeInsets.symmetric(
                       horizontal: 12.w,
-                      vertical: 2.h,
+                      vertical: 4.h,
                     ),
                     child: Text(
-                      'Best Value',
+                      'Recommended',
                       style: AppTextStyles.s14w4i(
                         color: AppColors.white,
                         fontSize: 11.sp,
+                        fontweight: FontWeight.w700,
                       ),
                     ),
                   ),
