@@ -5,7 +5,9 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:get/get.dart';
 import 'package:template/core/constants/app_colors.dart';
 import 'package:template/core/themes/app_text_style.dart';
+import 'package:template/features/main_screen/controllers/navigation_controller.dart';
 import 'package:template/features/main_screen/screens/main_screen.dart';
+import 'package:template/routes/routes_name.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -108,7 +110,14 @@ class HomeScreen extends StatelessWidget {
                   color: AppColors.black,
                   size: 24.sp,
                 ),
-                onPressed: () {},
+                onPressed: () {
+                  // Register the NavigationController lazily using a builder function
+                  NavigationController controller =
+                      Get.find<NavigationController>();
+
+                  controller.clearSelection();
+                  Get.toNamed(RoutesName.shoppingList);
+                },
               ),
             ],
           ),

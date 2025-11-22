@@ -18,6 +18,7 @@ class ActionButton extends StatelessWidget {
   final bool borderEnbale;
   final bool iconBorderEnable;
   final bool shadowOn;
+  final int padding;
   const ActionButton({
     super.key,
     required this.onTap,
@@ -34,6 +35,7 @@ class ActionButton extends StatelessWidget {
     this.iconBorderEnable = false,
     this.borderEnbale = false,
     this.shadowOn = false,
+    this.padding = 16,
   });
 
   @override
@@ -42,7 +44,7 @@ class ActionButton extends StatelessWidget {
       onTap: onTap,
       borderRadius: BorderRadius.circular(16.r),
       child: Container(
-        padding: EdgeInsets.all(16.w),
+        padding: EdgeInsets.all(padding.w),
         decoration: BoxDecoration(
           boxShadow: shadowOn
               ? [
@@ -83,6 +85,7 @@ class ActionButton extends StatelessWidget {
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
                     title,
@@ -91,14 +94,16 @@ class ActionButton extends StatelessWidget {
                       fontweight: FontWeight.w900,
                     ),
                   ),
-                  SizedBox(height: 4.h),
-                  Text(
-                    desc,
-                    style: AppTextStyles.s14w4i(
-                      color: descColor,
-                      fontSize: 12.sp,
-                    ),
-                  ),
+                  desc.isEmpty ? SizedBox.shrink() : SizedBox(height: 4.h),
+                  desc.isEmpty
+                      ? SizedBox.shrink()
+                      : Text(
+                          desc,
+                          style: AppTextStyles.s14w4i(
+                            color: descColor,
+                            fontSize: 12.sp,
+                          ),
+                        ),
                 ],
               ),
             ),
