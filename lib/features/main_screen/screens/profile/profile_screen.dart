@@ -22,6 +22,7 @@ class ProfileScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final controller = Get.find<ProfileController>();
     final authController = Get.find<AuthController>();
+    final navController = Get.find<NavigationController>();
 
     return MainScreen(
       child: SafeArea(
@@ -64,9 +65,9 @@ class ProfileScreen extends StatelessWidget {
                 SizedBox(height: 16.h),
                 _buildPersonalDataCard(controller),
                 SizedBox(height: 16.h),
-                _buildChangesPassword(controller),
+                _buildChangesPassword(controller, navController),
                 SizedBox(height: 16.h),
-                _buildMenuItems(controller),
+                _buildMenuItems(controller, navController),
                 SizedBox(height: 16.h),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 20.0),
@@ -577,7 +578,10 @@ class ProfileScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildChangesPassword(ProfileController controller) {
+  Widget _buildChangesPassword(
+    ProfileController controller,
+    NavigationController navController,
+  ) {
     return Container(
       margin: EdgeInsets.symmetric(horizontal: 20.w),
       padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 20.h),
@@ -594,18 +598,20 @@ class ProfileScreen extends StatelessWidget {
       ),
       child: Column(
         children: [
-          _buildMenuItem(
-            'Change Password',
-            Icons.lock_outline,
-            controller.changePassword,
-          ),
+          _buildMenuItem('Change Password', Icons.lock_outline, () {
+            navController.clearSelection();
+            Get.toNamed(RoutesName.changePasswordScreen);
+          }),
         ],
       ),
     );
   }
 
   //build menu items setting
-  Widget _buildMenuItems(ProfileController controller) {
+  Widget _buildMenuItems(
+    ProfileController controller,
+    NavigationController navController,
+  ) {
     return Container(
       margin: EdgeInsets.symmetric(horizontal: 20.w),
       padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 20.h),

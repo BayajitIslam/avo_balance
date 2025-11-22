@@ -15,6 +15,7 @@ import 'package:template/features/main_screen/screens/home/home_screens.dart';
 import 'package:template/features/main_screen/screens/profile/profile_screen.dart';
 import 'package:template/features/main_screen/screens/profile/under_profile_screen/change_subscription_screen.dart';
 import 'package:template/features/main_screen/screens/profile/under_profile_screen/edit_profile_screen.dart';
+import 'package:template/features/main_screen/screens/profile/under_profile_screen/password_changes.dart';
 import 'package:template/features/splash/bindings/onboarding_binding.dart';
 import 'package:template/features/splash/bindings/splash_binding.dart';
 import 'package:template/features/splash/bindings/subscription_binding.dart';
@@ -109,6 +110,12 @@ class AppRoutes {
       page: () => ChangeSubscriptionScreen(),
       transition: Transition.rightToLeft,
       binding: SubscriptionBinding(),
+    ),
+    GetPage(
+      name: RoutesName.changePasswordScreen,
+      page: () => ChangePasswordScreen(),
+      transition: Transition.rightToLeft,
+      // binding: SubscriptionBinding(),
     ),
   ];
 }

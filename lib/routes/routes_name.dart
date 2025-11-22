@@ -14,4 +14,5 @@ class RoutesName {
   static const String dietScreen = "/dietScreen";
   static const String editProfile = "/editProfile";
   static const String changeSubscriptionScreen = "/changeSubscriptionScreen";
+  static const String changePasswordScreen = "/ChangePasswordScreen";
 }

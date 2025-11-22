@@ -219,16 +219,6 @@ class ProfileController extends GetxController {
     );
   }
 
-  void changePassword() {
-    Get.dialog(
-      AlertDialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-        title: Text('Coming Soon'),
-        content: Text('Change password feature will be available soon!'),
-        actions: [TextButton(onPressed: () => Get.back(), child: Text('OK'))],
-      ),
-    );
-  }
 
   void downloadSummary() {
     Get.dialog(
