@@ -48,7 +48,17 @@ class CustomeHeader extends StatelessWidget {
 
           Row(
             children: [
-              Icon(Icons.notifications_outlined, size: 24.sp),
+              InkWell(
+                onTap: () {
+                  // Register the NavigationController lazily using a builder function
+                  NavigationController controller =
+                      Get.find<NavigationController>();
+
+                  controller.clearSelection();
+                  Get.toNamed(RoutesName.trackingScreen);
+                },
+                child: Icon(Icons.notifications_outlined, size: 24.sp),
+              ),
               SizedBox(width: 12.w),
               InkWell(
                 onTap: () {

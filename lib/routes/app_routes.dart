@@ -11,6 +11,7 @@ import 'package:template/features/main_screen/bindings/diet_binding.dart';
 import 'package:template/features/main_screen/bindings/edit_profile_binding.dart';
 import 'package:template/features/main_screen/bindings/profile_binding.dart';
 import 'package:template/features/main_screen/bindings/shopping_list_binding.dart';
+import 'package:template/features/main_screen/bindings/tracking_binding.dart';
 import 'package:template/features/main_screen/screens/diet/diet_screen.dart';
 import 'package:template/features/main_screen/screens/home/home_screens.dart';
 import 'package:template/features/main_screen/screens/legal/faqs_screen.dart';
@@ -21,6 +22,7 @@ import 'package:template/features/main_screen/screens/profile/under_profile_scre
 import 'package:template/features/main_screen/screens/profile/under_profile_screen/edit_profile_screen.dart';
 import 'package:template/features/main_screen/screens/profile/under_profile_screen/password_changes.dart';
 import 'package:template/features/main_screen/screens/shoping/shopping_list_screen.dart';
+import 'package:template/features/main_screen/screens/tracking/tracking_screen.dart';
 import 'package:template/features/splash/bindings/onboarding_binding.dart';
 import 'package:template/features/splash/bindings/splash_binding.dart';
 import 'package:template/features/splash/bindings/subscription_binding.dart';
@@ -144,6 +146,12 @@ class AppRoutes {
       page: () => ShoppingListScreen(),
       transition: Transition.rightToLeft,
       binding: ShoppingListBinding(),
+    ),
+        GetPage(
+      name: RoutesName.trackingScreen,
+      page: () => TrackingScreen(),
+      transition: Transition.rightToLeft,
+      binding: TrackingBinding(),
     ),
   ];
 }

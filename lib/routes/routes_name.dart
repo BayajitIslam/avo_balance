@@ -18,5 +18,6 @@ class RoutesName {
   static const String faqsScreen = "/faqsScreen";
   static const String privacyPolicy = "/privacyPolicy";
   static const String termsConditions = "/termsConditions";
-    static const String shoppingList = "/shoppingList";
+  static const String shoppingList = "/shoppingList";
+  static const String trackingScreen = "/trackingScreen";
 }
