@@ -32,6 +32,7 @@ class _FAQItemWidgetState extends State<FAQItemWidget> {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(12.r),
+        border: Border.all(color: AppColors.border, width: 1),
         boxShadow: [
           BoxShadow(
             color: const Color(0xFFCFCFCF),
