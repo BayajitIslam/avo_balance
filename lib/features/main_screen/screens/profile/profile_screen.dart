@@ -5,12 +5,15 @@ import 'package:get/get.dart';
 import 'package:template/core/constants/app_colors.dart';
 import 'package:template/core/themes/app_text_style.dart';
 import 'package:template/features/auth/controllers/auth_controller.dart';
+import 'package:template/features/main_screen/controllers/navigation_controller.dart';
 import 'package:template/features/main_screen/controllers/profile_controller.dart';
 import 'package:template/features/main_screen/screens/main_screen.dart';
 import 'package:intl/intl.dart';
 import 'package:template/features/main_screen/widgets/action_button.dart';
+import 'package:template/features/main_screen/widgets/custome_header.dart';
 import 'package:template/features/main_screen/widgets/edit_personal_data_dialog.dart';
 import 'package:template/features/main_screen/widgets/semicircular_gauge_painter.dart';
+import 'package:template/routes/routes_name.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
@@ -51,7 +54,7 @@ class ProfileScreen extends StatelessWidget {
             child: Column(
               children: [
                 SizedBox(height: 25.h),
-                _buildHeader(),
+                CustomeHeader(title: "Profile"),
                 SizedBox(height: 20.h),
                 _buildProfileSection(controller),
                 SizedBox(height: 16.h),
@@ -77,57 +80,9 @@ class ProfileScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildHeader() {
-    final canGoBack = Navigator.of(Get.context!).canPop();
-
-    return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 10.h),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          // Conditional Back Button
-          canGoBack
-              ? InkWell(
-                  onTap: () => Get.back(),
-                  child: Container(
-                    width: 36.w,
-                    height: 36.h,
-                    decoration: BoxDecoration(
-                      color: AppColors.black,
-                      shape: BoxShape.circle,
-                    ),
-                    child: Icon(
-                      Icons.arrow_back,
-                      color: Colors.white,
-                      size: 20.sp,
-                    ),
-                  ),
-                )
-              : SizedBox(width: 36.w), // Empty space to maintain alignment
-
-          Text(
-            'Profile',
-            style: AppTextStyles.s22w7i(
-              fontSize: 20.sp,
-              fontweight: FontWeight.w700,
-            ),
-          ),
-
-          Row(
-            children: [
-              Icon(Icons.notifications_outlined, size: 24.sp),
-              SizedBox(width: 12.w),
-              Icon(Icons.shopping_cart_outlined, size: 24.sp),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-
   Widget _buildProfileSection(ProfileController controller) {
     final user = controller.user.value!;
-
+    final navController = Get.find<NavigationController>();
     return Container(
       margin: EdgeInsets.symmetric(horizontal: 20.w),
       padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 13.h),
@@ -165,7 +120,10 @@ class ProfileScreen extends StatelessWidget {
             ),
           ),
           InkWell(
-            onTap: controller.updateProfilePicture,
+            onTap: () {
+              navController.clearSelection();
+              Get.toNamed(RoutesName.editProfile);
+            },
             child: Container(
               width: 40.w,
               height: 40.h,
@@ -275,7 +233,7 @@ class ProfileScreen extends StatelessWidget {
           ),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.end,
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               Column(
                 children: [
@@ -363,7 +321,7 @@ class ProfileScreen extends StatelessWidget {
           ),
         ),
 
-        //     // Bottom Section - Two Separate Containers
+        // Bottom Section - Two Separate Containers
         Padding(
           padding: const EdgeInsets.all(20.0),
           child: Row(
