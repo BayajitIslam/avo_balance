@@ -8,6 +8,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:template/core/constants/app_colors.dart';
 import 'package:template/core/themes/app_text_style.dart';
 import 'package:template/features/main_screen/screens/camara/camera_capture_screen.dart';
+import 'package:template/features/main_screen/widgets/bottom_shet/replace_meal_bottom_sheet.dart';
 
 class DietController extends GetxController {
   final RxBool hasDietPlan = false.obs;
@@ -358,204 +359,61 @@ class DietController extends GetxController {
     update();
   }
 
-  //Bottom Sheet
-  void showAddMealDialog(String mealType) {
-    showModalBottomSheet(
+  void showAddMealDialog(String mealType) async {
+    final result = await showModalBottomSheet(
       context: Get.context!,
       backgroundColor: Colors.transparent,
       isScrollControlled: true,
-      builder: (context) => Container(
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(25.r),
-            topRight: Radius.circular(25.r),
-          ),
-        ),
-        child: Padding(
-          padding: EdgeInsets.only(
-            bottom: MediaQuery.of(context).viewInsets.bottom,
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              // Handle bar
-              SizedBox(height: 12.h),
-              Container(
-                width: 40.w,
-                height: 4.h,
-                decoration: BoxDecoration(
-                  color: Colors.grey.shade300,
-                  borderRadius: BorderRadius.circular(2.r),
-                ),
-              ),
-
-              SizedBox(height: 20.h),
-
-              // Title
-              Text('Add $mealType', style: AppTextStyles.s22w7i()),
-
-              SizedBox(height: 8.h),
-
-              Text(
-                'Upload your prescription photo',
-                style: AppTextStyles.s14w4i(color: Colors.grey),
-              ),
-
-              SizedBox(height: 24.h),
-
-              // Capture Photo Option
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: 24.w),
-                child: InkWell(
-                  onTap: () async {
-                    Navigator.pop(context); // Close bottom sheet
-
-                    // Open custom camera screen
-                    final result = await Get.to(
-                      () => CameraCaptureScreen(mealType: mealType),
-                      transition: Transition.downToUp,
-                    );
-
-                    if (result != null && result is File) {
-                      await uploadPrescription(result, mealType);
-                    }
-                  },
-                  borderRadius: BorderRadius.circular(16.r),
-                  child: Container(
-                    padding: EdgeInsets.all(16.w),
-                    decoration: BoxDecoration(
-                      gradient: AppColors.primaryGradient,
-                      borderRadius: BorderRadius.circular(16.r),
-                    ),
-                    child: Row(
-                      children: [
-                        Container(
-                          padding: EdgeInsets.all(12.w),
-                          decoration: BoxDecoration(
-                            color: Colors.white.withOpacity(0.3),
-                            shape: BoxShape.circle,
-                          ),
-                          child: Icon(
-                            Icons.camera_alt,
-                            color: Colors.white,
-                            size: 24.sp,
-                          ),
-                        ),
-                        SizedBox(width: 16.w),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                'Capture Photo',
-                                style: AppTextStyles.s16w5i(
-                                  color: Colors.white,
-                                  fontweight: FontWeight.w700,
-                                ),
-                              ),
-                              Text(
-                                'Take a photo now',
-                                style: AppTextStyles.s14w4i(
-                                  color: Colors.white.withOpacity(0.8),
-                                  fontSize: 12.sp,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        Icon(
-                          Icons.arrow_forward_ios,
-                          color: Colors.white,
-                          size: 16.sp,
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-
-              SizedBox(height: 12.h),
-
-              // Select from Gallery Option
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: 24.w),
-                child: InkWell(
-                  onTap: () {
-                    Navigator.pop(context);
-                    selectFromGallery(mealType);
-                  },
-                  borderRadius: BorderRadius.circular(16.r),
-                  child: Container(
-                    padding: EdgeInsets.all(16.w),
-                    decoration: BoxDecoration(
-                      color: Colors.grey.shade100,
-                      borderRadius: BorderRadius.circular(16.r),
-                      border: Border.all(color: AppColors.border),
-                    ),
-                    child: Row(
-                      children: [
-                        Container(
-                          padding: EdgeInsets.all(12.w),
-                          decoration: BoxDecoration(
-                            color: AppColors.brand.withOpacity(0.1),
-                            shape: BoxShape.circle,
-                          ),
-                          child: Icon(
-                            Icons.photo_library,
-                            color: AppColors.brand,
-                            size: 24.sp,
-                          ),
-                        ),
-                        SizedBox(width: 16.w),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                'Select from Gallery',
-                                style: AppTextStyles.s16w5i(
-                                  fontweight: FontWeight.w700,
-                                ),
-                              ),
-                              Text(
-                                'Choose existing photo',
-                                style: AppTextStyles.s14w4i(
-                                  color: Colors.grey,
-                                  fontSize: 12.sp,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        Icon(
-                          Icons.arrow_forward_ios,
-                          color: AppColors.brand,
-                          size: 16.sp,
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-
-              SizedBox(height: 16.h),
-
-              // Cancel Button
-              TextButton(
-                onPressed: () => Navigator.pop(context),
-                child: Text(
-                  'Cancel',
-                  style: AppTextStyles.s16w5i(color: Colors.grey),
-                ),
-              ),
-
-              SizedBox(height: 20.h),
-            ],
-          ),
-        ),
-      ),
+      builder: (context) => ReplaceMealBottomSheet(initialMealType: mealType),
     );
+
+    // Handle result
+    if (result != null && result is Map) {
+      final action = result['action'];
+      final selectedMealType = result['mealType'];
+      final details = result['details'];
+
+      if (action == 'camera') {
+        // Open camera screen
+        final cameraResult = await Get.to(
+          () => CameraCaptureScreen(mealType: selectedMealType),
+          transition: Transition.downToUp,
+        );
+
+        if (cameraResult != null && cameraResult is File) {
+          await uploadPrescription(
+            cameraResult,
+            selectedMealType,
+            details: details,
+          );
+        }
+      } else if (action == 'gallery') {
+        // Open gallery
+        try {
+          final ImagePicker picker = ImagePicker();
+          final XFile? image = await picker.pickImage(
+            source: ImageSource.gallery,
+            imageQuality: 80,
+          );
+
+          if (image != null) {
+            await uploadPrescription(
+              File(image.path),
+              selectedMealType,
+              details: details,
+            );
+          }
+        } catch (e) {
+          Get.snackbar(
+            'Error',
+            'Failed to select photo: $e',
+            backgroundColor: Colors.red,
+            colorText: Colors.white,
+            snackPosition: SnackPosition.BOTTOM,
+          );
+        }
+      }
+    }
   }
 
   Future<void> capturePhoto(String mealType) async {
@@ -594,7 +452,11 @@ class DietController extends GetxController {
     }
   }
 
-  Future<void> uploadPrescription(File image, String mealType) async {
+  Future<void> uploadPrescription(
+    File image,
+    String mealType, {
+    String? details, // Add this parameter
+  }) async {
     isLoading.value = true;
 
     try {
@@ -602,6 +464,7 @@ class DietController extends GetxController {
       // final response = await ApiService.uploadPrescription(
       //   image: image,
       //   mealType: mealType,
+      //   details: details, // Pass details to API
       // );
 
       // Simulate API delay
@@ -610,7 +473,9 @@ class DietController extends GetxController {
       // Show success message
       Get.snackbar(
         'Success',
-        'Prescription uploaded! Generating your meal plan...',
+        details != null && details.isNotEmpty
+            ? 'Meal uploaded with details!'
+            : 'Meal uploaded successfully!',
         backgroundColor: Colors.green,
         colorText: Colors.white,
         snackPosition: SnackPosition.BOTTOM,

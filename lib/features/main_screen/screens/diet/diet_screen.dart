@@ -18,8 +18,7 @@ class DietScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final navController = Get.find<NavigationController>();
     navController.setCurrentPage(1);
-
-    final dietController = Get.put(DietController());
+    final dietController = Get.find<DietController>();
 
     return MainScreen(
       child: SafeArea(

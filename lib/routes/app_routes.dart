@@ -124,30 +124,30 @@ class AppRoutes {
       transition: Transition.rightToLeft,
       // binding: SubscriptionBinding(),
     ),
-     GetPage(
+    GetPage(
       name: RoutesName.faqsScreen,
       page: () => FAQsScreen(),
       transition: Transition.rightToLeft,
     ),
-     GetPage(
+    GetPage(
       name: RoutesName.termsConditions,
       page: () => TermsConditionsScreen(),
       transition: Transition.rightToLeft,
       // binding: SubscriptionBinding(),
     ),
-     GetPage(
+    GetPage(
       name: RoutesName.privacyPolicy,
       page: () => PrivacyPolicyScreen(),
       transition: Transition.rightToLeft,
       // binding: SubscriptionBinding(),
     ),
-      GetPage(
+    GetPage(
       name: RoutesName.shoppingList,
       page: () => ShoppingListScreen(),
       transition: Transition.rightToLeft,
       binding: ShoppingListBinding(),
     ),
-        GetPage(
+    GetPage(
       name: RoutesName.trackingScreen,
       page: () => TrackingScreen(),
       transition: Transition.rightToLeft,
