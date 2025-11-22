@@ -12,6 +12,9 @@ import 'package:template/features/main_screen/bindings/edit_profile_binding.dart
 import 'package:template/features/main_screen/bindings/profile_binding.dart';
 import 'package:template/features/main_screen/screens/diet/diet_screen.dart';
 import 'package:template/features/main_screen/screens/home/home_screens.dart';
+import 'package:template/features/main_screen/screens/legal/faqs_screen.dart';
+import 'package:template/features/main_screen/screens/legal/privacy_policy_screen.dart';
+import 'package:template/features/main_screen/screens/legal/terms_conditions_screen.dart';
 import 'package:template/features/main_screen/screens/profile/profile_screen.dart';
 import 'package:template/features/main_screen/screens/profile/under_profile_screen/change_subscription_screen.dart';
 import 'package:template/features/main_screen/screens/profile/under_profile_screen/edit_profile_screen.dart';
@@ -114,6 +117,23 @@ class AppRoutes {
     GetPage(
       name: RoutesName.changePasswordScreen,
       page: () => ChangePasswordScreen(),
+      transition: Transition.rightToLeft,
+      // binding: SubscriptionBinding(),
+    ),
+     GetPage(
+      name: RoutesName.faqsScreen,
+      page: () => FAQsScreen(),
+      transition: Transition.rightToLeft,
+    ),
+     GetPage(
+      name: RoutesName.termsConditions,
+      page: () => TermsConditionsScreen(),
+      transition: Transition.rightToLeft,
+      // binding: SubscriptionBinding(),
+    ),
+     GetPage(
+      name: RoutesName.privacyPolicy,
+      page: () => PrivacyPolicyScreen(),
       transition: Transition.rightToLeft,
       // binding: SubscriptionBinding(),
     ),

@@ -628,24 +628,20 @@ class ProfileScreen extends StatelessWidget {
       ),
       child: Column(
         children: [
-          _buildMenuItem(
-            'Terms & Conditions',
-            Icons.description_outlined,
-            controller.viewTerms,
-          ),
+          _buildMenuItem('Terms & Conditions', Icons.description_outlined, () {
+            navController.clearSelection();
+            Get.toNamed(RoutesName.termsConditions);
+          }),
           SizedBox(height: 15.h),
-          _buildMenuItem(
-            'Privacy Policy',
-            Icons.privacy_tip_outlined,
-            controller.viewPrivacyPolicy,
-          ),
+          _buildMenuItem('Privacy Policy', Icons.privacy_tip_outlined, () {
+            navController.clearSelection();
+            Get.toNamed(RoutesName.privacyPolicy);
+          }),
           SizedBox(height: 15.h),
-          _buildMenuItem(
-            'FAQs',
-            Icons.help_outline,
-            controller.viewFAQs,
-            isLast: true,
-          ),
+          _buildMenuItem('FAQs', Icons.help_outline, () {
+            navController.clearSelection();
+            Get.toNamed(RoutesName.faqsScreen);
+          }, isLast: true),
         ],
       ),
     );

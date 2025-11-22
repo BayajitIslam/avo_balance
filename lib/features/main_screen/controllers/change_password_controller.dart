@@ -34,38 +34,6 @@ class ChangePasswordController extends GetxController {
     showConfirmPassword.value = !showConfirmPassword.value;
   }
 
-  // Forgot Password
-  void forgotPassword() {
-    Get.dialog(
-      AlertDialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-        title: Text('Forgot Password'),
-        content: Text(
-          'A password reset link will be sent to your registered email address.',
-        ),
-        actions: [
-          TextButton(onPressed: () => Get.back(), child: Text('Cancel')),
-          TextButton(
-            onPressed: () {
-              Get.back();
-              // TODO: Implement forgot password logic
-              Get.snackbar(
-                'Success',
-                'Password reset link sent to your email',
-                snackPosition: SnackPosition.BOTTOM,
-                backgroundColor: Colors.green,
-                colorText: Colors.white,
-                margin: EdgeInsets.all(16),
-                borderRadius: 12,
-              );
-            },
-            child: Text('Send Link'),
-          ),
-        ],
-      ),
-    );
-  }
-
   // Change Password
   Future<void> changePassword() async {
     // Validation

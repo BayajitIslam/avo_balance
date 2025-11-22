@@ -15,4 +15,7 @@ class RoutesName {
   static const String editProfile = "/editProfile";
   static const String changeSubscriptionScreen = "/changeSubscriptionScreen";
   static const String changePasswordScreen = "/ChangePasswordScreen";
+  static const String faqsScreen = "/faqsScreen";
+  static const String privacyPolicy = "/privacyPolicy";
+  static const String termsConditions = "/termsConditions";
 }

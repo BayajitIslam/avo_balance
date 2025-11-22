@@ -8,6 +8,7 @@ import 'package:template/features/main_screen/controllers/change_password_contro
 import 'package:template/features/main_screen/screens/main_screen.dart';
 import 'package:template/features/main_screen/widgets/custom_text_field.dart';
 import 'package:template/features/main_screen/widgets/custome_header.dart';
+import 'package:template/routes/routes_name.dart';
 import 'package:template/widget/custome_button.dart';
 
 class ChangePasswordScreen extends StatelessWidget {
@@ -126,7 +127,8 @@ class ChangePasswordScreen extends StatelessWidget {
                             Align(
                               alignment: Alignment.center,
                               child: TextButton(
-                                onPressed: controller.forgotPassword,
+                                onPressed: () =>
+                                    Get.toNamed(RoutesName.forgotPassword),
                                 child: Text(
                                   'Forgot password?',
                                   style: AppTextStyles.s14w4i(
