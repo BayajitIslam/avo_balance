@@ -1,13 +1,18 @@
 // widgets/replace_meal_bottom_sheet.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:get/get.dart';
 import 'package:template/core/constants/app_colors.dart';
 import 'package:template/core/themes/app_text_style.dart';
-import 'package:template/features/main_screen/widgets/bottom_shet/replace_meal_bottom_sheet.dart';
 
 class LogCheatMealBottomSheet extends StatelessWidget {
-  const LogCheatMealBottomSheet({super.key});
+  final void Function()? replaceMealTap;
+  final void Function()? extraMealTap;
+
+  const LogCheatMealBottomSheet({
+    super.key,
+    required this.replaceMealTap,
+    required this.extraMealTap,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -73,16 +78,7 @@ class LogCheatMealBottomSheet extends StatelessWidget {
                     // Log Meal Button
                     Expanded(
                       child: InkWell(
-                        onTap: () {
-                          showModalBottomSheet(
-                            context: Get.context!,
-                            backgroundColor: Colors.transparent,
-                            isScrollControlled: true,
-                            builder: (context) => ReplaceMealBottomSheet(
-                              initialMealType: "Breakfast",
-                            ),
-                          );
-                        },
+                        onTap: replaceMealTap,
                         child: Container(
                           height: 50.h,
                           decoration: BoxDecoration(
@@ -124,7 +120,7 @@ class LogCheatMealBottomSheet extends StatelessWidget {
 
                     Expanded(
                       child: InkWell(
-                        onTap: () => Navigator.pop(context),
+                        onTap: extraMealTap,
                         child: Container(
                           height: 50.h,
                           decoration: BoxDecoration(

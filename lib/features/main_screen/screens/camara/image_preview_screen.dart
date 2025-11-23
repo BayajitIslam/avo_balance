@@ -11,10 +11,10 @@ class ImagePreviewScreen extends StatelessWidget {
   final String mealType;
 
   const ImagePreviewScreen({
-    Key? key,
+    super.key,
     required this.image,
     required this.mealType,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
