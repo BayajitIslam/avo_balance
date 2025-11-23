@@ -7,6 +7,7 @@ class UserModel {
   final String? profileImage;
   final String? token;
   final DateTime? createdAt;
+  final bool? planActive;
 
   UserModel({
     this.id,
@@ -16,6 +17,7 @@ class UserModel {
     this.profileImage,
     this.token,
     this.createdAt,
+    this.planActive,
   });
 
   // From JSON

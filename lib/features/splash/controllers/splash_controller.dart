@@ -27,16 +27,21 @@ class SplashController extends GetxService {
 
       // Check if user is logged in
       bool? isLoggedIn = prefs.getBool('is_logged_in') ?? false;
+      // Check if user is Active plan
+      bool? isplanActive = prefs.getBool('plan_active') ?? false;
 
       if (!onboardingCompleted) {
         // First time user → Show onboarding
         Get.offAllNamed(RoutesName.onboarding);
-      } else if (isLoggedIn) {
+      } else if (isLoggedIn && isplanActive) {
         // User is logged in → Go to HomePage
         Get.offAllNamed(RoutesName.home);
+      } else if (!isplanActive && isLoggedIn) {
+        // User is logged in → Go to HomePage
+        Get.offAllNamed(RoutesName.subscriptionPackage);
       } else {
         // User completed onboarding but not logged in → LoginPage
-        Get.offAllNamed(RoutesName.onboarding);
+        Get.offAllNamed(RoutesName.login);
       }
     });
   }

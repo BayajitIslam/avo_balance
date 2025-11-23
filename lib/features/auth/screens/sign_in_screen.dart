@@ -148,7 +148,7 @@ class SignInScreen extends StatelessWidget {
                   ),
                 ),
                 GestureDetector(
-                  onTap: () => Get.toNamed('/signup'),
+                  onTap: () => Get.toNamed(RoutesName.signup),
                   child: Text(
                     'Sign Up',
                     style: AppTextStyles.s14w4i(

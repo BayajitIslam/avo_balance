@@ -13,7 +13,7 @@ class OnboardingController extends GetxController {
       title: "FOLLOWING A DIET\nISN'T EASY.",
       description:
           "You try to stay consistent, but life happens — dinners out, cravings, busy days.",
-      imagePath: "assets/images/helthyFood.png",
+      imagePath: "assets/images/food_onboardin.png",
       description2: "",
     ),
     OnboardingData(
@@ -56,7 +56,7 @@ class OnboardingController extends GetxController {
   Future<void> finishOnboarding() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setBool('onboarding_completed', true);
-    Get.toNamed(RoutesName.subscriptionPackage);
+    Get.toNamed(RoutesName.signup);
   }
 
   @override
@@ -71,11 +71,15 @@ class OnboardingData {
   final String description;
   final String imagePath;
   final String description2;
+  final double imageWeight;
+  final double imageHeight;
 
   OnboardingData({
     required this.title,
     required this.description,
     required this.imagePath,
     required this.description2,
+    this.imageHeight = 361,
+    this.imageWeight = 361,
   });
 }

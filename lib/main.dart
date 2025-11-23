@@ -24,15 +24,26 @@ class MyApp extends StatelessWidget {
       designSize: const Size(393, 852),
       minTextAdapt: true,
       splitScreenMode: true,
-      builder: (context, child) {
+
+      builder: (_, child) {
         return GetMaterialApp(
           debugShowCheckedModeBanner: false,
           title: 'Avo Balance',
           theme: MyAppThemes.lightThemes,
           initialRoute: RoutesName.splashScreen,
           getPages: AppRoutes.pages,
+          builder: (context, widget) {
+            return MediaQuery(
+              data: MediaQuery.of(
+                context,
+              ).copyWith(textScaler: TextScaler.linear(1.0)),
+              child: widget!,
+            );
+          },
         );
       },
+      // 👉 This MUST be added, otherwise ScreenUtil DOES NOT APPLY
+      child: const SizedBox(),
     );
   }
 }

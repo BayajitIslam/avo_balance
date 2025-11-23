@@ -7,7 +7,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:template/features/main_screen/screens/camara/camera_capture_screen.dart';
 import 'package:template/features/main_screen/widgets/bottom_shet/log_cheat_meal_bottom_sheet.dart';
 import 'package:template/features/main_screen/widgets/bottom_shet/manage_your_plan.dart';
-import 'package:template/features/main_screen/widgets/bottom_shet/replace_meal_bottom_sheet.dart';
 
 class DietController extends GetxController {
   final RxBool hasDietPlan = false.obs;
@@ -358,62 +357,81 @@ class DietController extends GetxController {
     update();
   }
 
+  //show camara
   void showAddMealDialog(String mealType) async {
-    final result = await showModalBottomSheet(
-      context: Get.context!,
-      backgroundColor: Colors.transparent,
-      isScrollControlled: true,
-      builder: (context) => ReplaceMealBottomSheet(initialMealType: mealType),
+    // Directly open camera screen
+    final cameraResult = await Get.to(
+      () => CameraCaptureScreen(mealType: mealType),
+      transition: Transition.downToUp,
     );
 
-    // Handle result
-    if (result != null && result is Map) {
-      final action = result['action'];
-      final selectedMealType = result['mealType'];
-      final details = result['details'];
-
-      if (action == 'camera') {
-        // Open camera screen
-        final cameraResult = await Get.to(
-          () => CameraCaptureScreen(mealType: selectedMealType),
-          transition: Transition.downToUp,
-        );
-
-        if (cameraResult != null && cameraResult is File) {
-          await uploadPrescription(
-            cameraResult,
-            selectedMealType,
-            details: details,
-          );
-        }
-      } else if (action == 'gallery') {
-        // Open gallery
-        try {
-          final ImagePicker picker = ImagePicker();
-          final XFile? image = await picker.pickImage(
-            source: ImageSource.gallery,
-            imageQuality: 80,
-          );
-
-          if (image != null) {
-            await uploadPrescription(
-              File(image.path),
-              selectedMealType,
-              details: details,
-            );
-          }
-        } catch (e) {
-          Get.snackbar(
-            'Error',
-            'Failed to select photo: $e',
-            backgroundColor: Colors.red,
-            colorText: Colors.white,
-            snackPosition: SnackPosition.BOTTOM,
-          );
-        }
-      }
+    // If user captured image
+    if (cameraResult != null && cameraResult is File) {
+      await uploadPrescription(cameraResult, mealType);
     }
   }
+
+  // void showAddMealDialog(String mealType) async {
+  //   final result = await Get.to(CameraCaptureScreen(mealType: "Breakfast"));
+
+  //   // Handle result
+  //   if (result != null && result is Map) {
+  //     final action = result['action'];
+  //     final selectedMealType = result['mealType'];
+  //     final details = result['details'];
+
+  //     if (action == 'camera') {
+  //       // Open camera screen
+  //       final cameraResult = await Get.to(
+  //         () => CameraCaptureScreen(mealType: selectedMealType),
+  //         transition: Transition.downToUp,
+  //       );
+
+  //       if (cameraResult != null && cameraResult is File) {
+  //         await uploadPrescription(
+  //           cameraResult,
+  //           selectedMealType,
+  //           details: details,
+  //         );
+  //       }
+  //     } else if (action == 'gallery') {
+  //       // Open gallery
+  //       try {
+  //         final ImagePicker picker = ImagePicker();
+  //         final XFile? image = await picker.pickImage(
+  //           source: ImageSource.gallery,
+  //           imageQuality: 80,
+  //         );
+
+  //         if (image != null) {
+  //           await uploadPrescription(
+  //             File(image.path),
+  //             selectedMealType,
+  //             details: details,
+  //           );
+  //         }
+  //       } catch (e) {
+  //         Get.snackbar(
+  //           'Error',
+  //           'Failed to select photo: $e',
+  //           backgroundColor: Colors.red,
+  //           colorText: Colors.white,
+  //           snackPosition: SnackPosition.BOTTOM,
+  //         );
+  //       }
+  //     }
+  //   }
+  // }
+
+  // void showAddMealDialog(String mealType) async {
+  //   final result = await showModalBottomSheet(
+  //     context: Get.context!,
+  //     backgroundColor: Colors.transparent,
+  //     isScrollControlled: true,
+  //     builder: (context) => ReplaceMealBottomSheet(initialMealType: mealType),
+  //   );
+
+  // }
 
   Future<void> capturePhoto(String mealType) async {
     Get.back();

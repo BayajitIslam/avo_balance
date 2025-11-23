@@ -144,6 +144,10 @@ class AuthController extends GetxController {
       // Save to SharedPreferences
       await _saveUserData(user);
 
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+
+      bool? isplanActive = prefs.getBool('plan_active') ?? false;
+
       Get.snackbar(
         'Success',
         'Welcome back!',
@@ -151,9 +155,13 @@ class AuthController extends GetxController {
         colorText: Colors.white,
         snackPosition: SnackPosition.BOTTOM,
       );
-
       // Navigate to Home
-      Get.offAllNamed(RoutesName.home);
+      if (isplanActive) {
+        // First time user → Show onboarding
+        Get.offAllNamed(RoutesName.home);
+      } else {
+        Get.offAllNamed(RoutesName.subscriptionPackage);
+      }
     } catch (e) {
       Get.snackbar(
         'Error',
@@ -329,5 +337,8 @@ class AuthController extends GetxController {
     await prefs.setString('user_email', user.email);
     await prefs.setString('auth_token', user.token ?? '');
     await prefs.setBool('is_logged_in', true);
+
+    //only for ui flow
+    await prefs.setBool('plan_active', false);
   }
 }
