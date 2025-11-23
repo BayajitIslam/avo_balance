@@ -83,41 +83,4 @@ class TrackingScreen extends StatelessWidget {
       ),
     );
   }
-
-  Widget _buildHeader() {
-    return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 10.h),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          InkWell(
-            onTap: () => Get.back(),
-            child: Container(
-              width: 40.w,
-              height: 40.w,
-              decoration: BoxDecoration(
-                color: Colors.black87,
-                shape: BoxShape.circle,
-              ),
-              child: Icon(Icons.arrow_back, color: Colors.white, size: 20.sp),
-            ),
-          ),
-          Text(
-            'Tracking',
-            style: AppTextStyles.s22w7i(
-              fontweight: FontWeight.w700,
-              fontSize: 18.sp,
-            ),
-          ),
-          Row(
-            children: [
-              Icon(Icons.notifications_outlined, size: 24.sp),
-              SizedBox(width: 12.w),
-              Icon(Icons.shopping_cart_outlined, size: 24.sp),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
 }

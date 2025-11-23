@@ -1,13 +1,12 @@
 // controllers/diet_controller.dart
 import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:template/core/constants/app_colors.dart';
-import 'package:template/core/themes/app_text_style.dart';
 import 'package:template/features/main_screen/screens/camara/camera_capture_screen.dart';
+import 'package:template/features/main_screen/widgets/bottom_shet/log_cheat_meal_bottom_sheet.dart';
+import 'package:template/features/main_screen/widgets/bottom_shet/manage_your_plan.dart';
 import 'package:template/features/main_screen/widgets/bottom_shet/replace_meal_bottom_sheet.dart';
 
 class DietController extends GetxController {
@@ -513,20 +512,36 @@ class DietController extends GetxController {
 
   void navigateToLogCheatMeal() {
     // TODO: Implement log cheat meal screen
-    Get.snackbar(
-      'Coming Soon',
-      'Log Cheat Meal feature will be available soon',
-      snackPosition: SnackPosition.BOTTOM,
+    showModalBottomSheet(
+      context: Get.context!,
+      backgroundColor: Colors.transparent,
+      isScrollControlled: true,
+      builder: (context) => LogCheatMealBottomSheet(),
     );
   }
 
-  void navigateToManagePlan() {
-    // TODO: Implement manage plan screen
-    Get.snackbar(
-      'Coming Soon',
-      'Manage Plan feature will be available soon',
-      snackPosition: SnackPosition.BOTTOM,
+  void navigateToManagePlan() async {
+    final result = await showModalBottomSheet(
+      context: Get.context!,
+      backgroundColor: Colors.transparent,
+      isScrollControlled: true,
+      builder: (context) => ManageYourPlan(),
     );
+
+    // Handle result
+    if (result != null && result is Map) {
+      final action = result['action'];
+
+      if (action == 'continue') {
+        print('Continue current plan');
+      } else if (action == 'upload') {
+        print('Upload new plan');
+        // TODO: Implement upload logic
+      } else if (action == 'replace') {
+        print('Replace current plan');
+        // TODO: Implement replace logic
+      }
+    }
   }
 }
 

@@ -102,7 +102,14 @@ class HomeScreen extends StatelessWidget {
                   color: AppColors.black,
                   size: 24.sp,
                 ),
-                onPressed: () {},
+                onPressed: () {
+                  // Register the NavigationController lazily using a builder function
+                  NavigationController controller =
+                      Get.find<NavigationController>();
+
+                  controller.clearSelection();
+                  Get.toNamed(RoutesName.trackingScreen);
+                },
               ),
               IconButton(
                 icon: Icon(

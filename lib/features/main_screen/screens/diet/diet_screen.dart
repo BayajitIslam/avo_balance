@@ -10,6 +10,7 @@ import 'package:template/features/main_screen/screens/main_screen.dart';
 import 'package:intl/intl.dart';
 import 'package:template/features/main_screen/widgets/action_button.dart';
 import 'package:template/features/main_screen/widgets/multi_segment_circular_progress.dart';
+import 'package:template/routes/routes_name.dart';
 
 class DietScreen extends StatelessWidget {
   const DietScreen({super.key});
@@ -140,7 +141,14 @@ class DietScreen extends StatelessWidget {
                       color: AppColors.black,
                       size: 24.sp,
                     ),
-                    onPressed: () {},
+                    onPressed: () {
+                      // Register the NavigationController lazily using a builder function
+                      NavigationController controller =
+                          Get.find<NavigationController>();
+
+                      controller.clearSelection();
+                      Get.toNamed(RoutesName.trackingScreen);
+                    },
                   ),
                   IconButton(
                     icon: Icon(
@@ -148,7 +156,14 @@ class DietScreen extends StatelessWidget {
                       color: AppColors.black,
                       size: 24.sp,
                     ),
-                    onPressed: () {},
+                    onPressed: () {
+                      // Register the NavigationController lazily using a builder function
+                      NavigationController controller =
+                          Get.find<NavigationController>();
+
+                      controller.clearSelection();
+                      Get.toNamed(RoutesName.shoppingList);
+                    },
                   ),
                 ],
               ),
@@ -215,6 +230,8 @@ class DietScreen extends StatelessWidget {
               controller.selectedDate.value.day == date.day &&
               controller.selectedDate.value.month == date.month &&
               controller.selectedDate.value.year == date.year;
+          //TODO      Has Data
+          // ignore: unused_local_variable
           bool hasData = controller.hasDataForDate(date);
           bool isToday =
               date.day == now.day &&
