@@ -34,7 +34,7 @@ class CustomBottomNavBar extends StatelessWidget {
       child: Obx(
         () => Stack(
           clipBehavior: Clip.none,
-          alignment: Alignment.bottomCenter,
+          alignment: Alignment.topCenter,
           children: [
             // Bottom Nav Items
             Row(
