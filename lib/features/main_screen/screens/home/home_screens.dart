@@ -455,18 +455,30 @@ class HomeScreen extends StatelessWidget {
                   fontSize: 16,
                 ),
               ),
-              Container(
-                padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(4),
-                  gradient: AppColors.secondaryGradient,
-                ),
-                child: Text(
-                  'Update',
-                  style: AppTextStyles.s14w4i(
-                    fontSize: 10,
-                    fontweight: FontWeight.w500,
-                    color: AppColors.white,
+              GestureDetector(
+                onTap: () {
+                  NavigationController controller =
+                      Get.find<NavigationController>();
+
+                  controller.clearSelection();
+                  Get.toNamed(RoutesName.weightEntryScreen);
+                },
+                child: Container(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: 12.w,
+                    vertical: 6.h,
+                  ),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(4),
+                    gradient: AppColors.secondaryGradient,
+                  ),
+                  child: Text(
+                    'Update',
+                    style: AppTextStyles.s14w4i(
+                      fontSize: 10,
+                      fontweight: FontWeight.w500,
+                      color: AppColors.white,
+                    ),
                   ),
                 ),
               ),

@@ -14,6 +14,7 @@ import 'package:template/features/main_screen/bindings/shopping_list_binding.dar
 import 'package:template/features/main_screen/bindings/tracking_binding.dart';
 import 'package:template/features/main_screen/screens/diet/diet_screen.dart';
 import 'package:template/features/main_screen/screens/home/home_screens.dart';
+import 'package:template/features/main_screen/screens/home/weight_entry_screen.dart';
 import 'package:template/features/main_screen/screens/legal/faqs_screen.dart';
 import 'package:template/features/main_screen/screens/legal/privacy_policy_screen.dart';
 import 'package:template/features/main_screen/screens/legal/terms_conditions_screen.dart';
@@ -152,6 +153,11 @@ class AppRoutes {
       page: () => TrackingScreen(),
       transition: Transition.rightToLeft,
       binding: TrackingBinding(),
+    ),
+     GetPage(
+      name: RoutesName.weightEntryScreen,
+      page: () => WeightEntryScreen(),
+      transition: Transition.rightToLeft,
     ),
   ];
 }
