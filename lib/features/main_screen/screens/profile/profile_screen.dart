@@ -701,6 +701,22 @@ class ProfileScreen extends StatelessWidget {
 
         SizedBox(height: 16.h),
         ActionButton(
+          gradient: AppColors.secondaryGradient,
+          onTap: controller.deleteAccount,
+          leftIcon: "assets/icons/fire.png",
+          title: "Delet Account",
+          leftIconbgColor: AppColors.transparentGradiant,
+          rightIconbgColor: AppColors.white.withOpacity(0.20),
+          desc: "Parmanently Delete Your Account",
+          descColor: const Color(0xFFffffff).withOpacity(0.8),
+          rightIconColor: AppColors.white,
+          iconBorderEnable: true,
+          shadowOn: true,
+          rightIcon: Icons.delete,
+        ),
+
+        SizedBox(height: 16.h),
+        ActionButton(
           onTap: authcontroller.signOut,
           leftIcon: "assets/icons/fire.png",
           title: "Log Out",

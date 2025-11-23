@@ -1,6 +1,7 @@
 // widgets/custom_bottom_nav_bar.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:template/core/constants/app_colors.dart';
 import 'package:template/core/themes/app_text_style.dart';
@@ -41,13 +42,15 @@ class CustomBottomNavBar extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
                 _buildNavItem(
-                  imagePath: 'assets/icons/home.png', // Replace with your image
+                  isSvg: true,
+                  imagePath: 'assets/icons/home.svg', // Replace with your image
                   label: 'Home',
                   index: 0,
                   isActive: controller.currentIndex.value == 0,
                   onTap: () => controller.changePage(0),
                 ),
                 _buildNavItem(
+                  isSvg: false,
                   imagePath:
                       'assets/icons/deitNav.png', // Replace with your image
                   label: 'Diet',
@@ -56,8 +59,9 @@ class CustomBottomNavBar extends StatelessWidget {
                   onTap: () => controller.changePage(1),
                 ),
                 _buildNavItem(
+                  isSvg: true,
                   imagePath:
-                      'assets/icons/profile.png', // Replace with your image
+                      'assets/icons/user_avo.svg', // Replace with your image
                   label: 'User',
                   index: 2,
                   isActive: controller.currentIndex.value == 2,
@@ -72,6 +76,7 @@ class CustomBottomNavBar extends StatelessWidget {
   }
 
   Widget _buildNavItem({
+    required bool isSvg,
     required String imagePath,
     required String label,
     required int index,
@@ -114,17 +119,19 @@ class CustomBottomNavBar extends StatelessWidget {
                     isActive ? Colors.white : Colors.grey.shade600,
                     BlendMode.srcIn,
                   ),
-                  child: Image.asset(
-                    imagePath,
-                    width: isActive ? 24.w : 23.w,
-                    height: isActive ? 24.h : 23.h,
-                    fit: BoxFit.contain,
-                  ),
+                  child: isSvg
+                      ? SvgPicture.asset(imagePath)
+                      : Image.asset(
+                          imagePath,
+                          width: isActive ? 24.w : 23.w,
+                          height: isActive ? 24.h : 23.h,
+                          fit: BoxFit.contain,
+                        ),
                 ),
               ),
             ),
 
-            SizedBox(height: 6.h),
+            SizedBox(height: 5.h),
 
             // Label
             Text(

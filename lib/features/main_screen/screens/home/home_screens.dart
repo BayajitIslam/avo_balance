@@ -51,7 +51,7 @@ class HomeScreen extends StatelessWidget {
     return Padding(
       padding: EdgeInsetsGeometry.only(
         left: 18,
-        right: 20,
+        right: 17,
         top: 20,
         bottom: 10,
       ),

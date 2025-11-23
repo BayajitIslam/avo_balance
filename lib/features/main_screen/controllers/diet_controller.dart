@@ -358,7 +358,7 @@ class DietController extends GetxController {
   }
 
   //show camara
-  void showAddMealDialog(String mealType) async {
+  void openCamara(String mealType) async {
     // Directly open camera screen
     final cameraResult = await Get.to(
       () => CameraCaptureScreen(mealType: mealType),

@@ -47,6 +47,7 @@ dependencies:
   camera: ^0.10.5+5
   fl_chart: ^1.1.1
   syncfusion_flutter_gauges: ^31.2.12
+  flutter_svg: ^2.2.3
 
 dev_dependencies:
   flutter_test:

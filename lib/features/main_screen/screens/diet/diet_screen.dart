@@ -296,21 +296,19 @@ class DietScreen extends StatelessWidget {
       children: [
         _buildEmptyMealCard(
           'Breakfast',
-          () => controller.showAddMealDialog('Breakfast'),
+          () => controller.openCamara('Breakfast'),
           [Color(0xFFFF9800), Color(0xFFFF6B6B)],
         ),
         SizedBox(height: 16.h),
-        _buildEmptyMealCard(
-          'Lunch',
-          () => controller.showAddMealDialog('Lunch'),
-          [Color(0xFF2196F3), Color(0xFF00BCD4)],
-        ),
+        _buildEmptyMealCard('Lunch', () => controller.openCamara('Lunch'), [
+          Color(0xFF2196F3),
+          Color(0xFF00BCD4),
+        ]),
         SizedBox(height: 16.h),
-        _buildEmptyMealCard(
-          'Dinner',
-          () => controller.showAddMealDialog('Dinner'),
-          [Color(0xFF9C27B0), Color(0xFFE91E63)],
-        ),
+        _buildEmptyMealCard('Dinner', () => controller.openCamara('Dinner'), [
+          Color(0xFF9C27B0),
+          Color(0xFFE91E63),
+        ]),
         SizedBox(height: 20.h),
         _buildActionButtons(controller),
         SizedBox(height: 80.h),
@@ -344,7 +342,7 @@ class DietScreen extends StatelessWidget {
         else
           _buildEmptyMealCard(
             'Breakfast',
-            () => controller.showAddMealDialog('Breakfast'),
+            () => controller.openCamara('Breakfast'),
             [Color(0xFFFF8904), Color(0xFFF6339A)],
           ),
 
@@ -363,11 +361,10 @@ class DietScreen extends StatelessWidget {
             false,
           )
         else
-          _buildEmptyMealCard(
-            'Lunch',
-            () => controller.showAddMealDialog('Lunch'),
-            [Color(0xFFC27AFF), Color(0xFF2B7FFF)],
-          ),
+          _buildEmptyMealCard('Lunch', () => controller.openCamara('Lunch'), [
+            Color(0xFFC27AFF),
+            Color(0xFF2B7FFF),
+          ]),
 
         SizedBox(height: 16.h),
 
@@ -386,11 +383,10 @@ class DietScreen extends StatelessWidget {
             // isLogToday: true,
           )
         else
-          _buildEmptyMealCard(
-            'Dinner',
-            () => controller.showAddMealDialog('Dinner'),
-            [Color(0xFFFB64B6), Color(0xFFAD46FF)],
-          ),
+          _buildEmptyMealCard('Dinner', () => controller.openCamara('Dinner'), [
+            Color(0xFFFB64B6),
+            Color(0xFFAD46FF),
+          ]),
 
         SizedBox(height: 20.h),
         _buildActionButtons(controller),
