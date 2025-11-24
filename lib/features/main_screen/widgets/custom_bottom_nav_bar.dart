@@ -42,6 +42,7 @@ class CustomBottomNavBar extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
                 _buildNavItem(
+                  isLogo: false,
                   isSvg: true,
                   imagePath: 'assets/icons/home.svg', // Replace with your image
                   label: 'Home',
@@ -50,15 +51,19 @@ class CustomBottomNavBar extends StatelessWidget {
                   onTap: () => controller.changePage(0),
                 ),
                 _buildNavItem(
+                  isLogo: true,
                   isSvg: false,
-                  imagePath:
-                      'assets/icons/deitNav.png', // Replace with your image
+                  weight: 42.w,
+                  height: 42.h,
+                  imagePath: 'assets/icons/icon.png', // Replace with your image
                   label: 'Diet',
                   index: 1,
                   isActive: controller.currentIndex.value == 1,
                   onTap: () => controller.changePage(1),
                 ),
                 _buildNavItem(
+                  isLogo: false,
+
                   isSvg: true,
                   imagePath:
                       'assets/icons/user_avo.svg', // Replace with your image
@@ -81,6 +86,9 @@ class CustomBottomNavBar extends StatelessWidget {
     required String label,
     required int index,
     required bool isActive,
+    required bool isLogo,
+    double? weight,
+    double? height,
     required VoidCallback onTap,
   }) {
     return GestureDetector(
@@ -123,8 +131,16 @@ class CustomBottomNavBar extends StatelessWidget {
                       ? SvgPicture.asset(imagePath)
                       : Image.asset(
                           imagePath,
-                          width: isActive ? 24.w : 23.w,
-                          height: isActive ? 24.h : 23.h,
+                          width: isLogo
+                              ? weight
+                              : isActive
+                              ? 24.w
+                              : 23.w,
+                          height: isLogo
+                              ? height
+                              : isActive
+                              ? 24.h
+                              : 23.h,
                           fit: BoxFit.contain,
                         ),
                 ),
