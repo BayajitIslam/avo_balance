@@ -188,7 +188,7 @@ class OTPVerificationScreen extends StatelessWidget {
   Widget _buildOTPBox(OTPController controller, int index) {
     return Container(
       width: 56.w,
-      height: 46.w,
+      height: 52.w,
       decoration: BoxDecoration(
         color: AppColors.white,
         borderRadius: BorderRadius.circular(8.r),

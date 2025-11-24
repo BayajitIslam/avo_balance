@@ -162,7 +162,7 @@ class ResetPasswordScreen extends StatelessWidget {
         Text(label, style: AppTextStyles.s16w5i()),
         SizedBox(height: 8.h),
         SizedBox(
-          height: 48.h,
+          height: 56.h,
           child: TextField(
             controller: controller,
             obscureText: obscureText,

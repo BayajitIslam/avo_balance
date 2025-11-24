@@ -7,7 +7,13 @@ import 'package:template/features/main_screen/controllers/navigation_controller.
 import 'package:template/routes/routes_name.dart';
 
 class CustomeHeader extends StatelessWidget {
-  CustomeHeader({super.key, required this.title});
+  CustomeHeader({
+    super.key,
+    required this.title,
+    this.isRightSideIconShow = false,
+  });
+
+  final bool isRightSideIconShow;
 
   final canGoBack = Navigator.of(Get.context!).canPop();
   final String title;
@@ -46,33 +52,35 @@ class CustomeHeader extends StatelessWidget {
             ),
           ),
 
-          Row(
-            children: [
-              InkWell(
-                onTap: () {
-                  // Register the NavigationController lazily using a builder function
-                  NavigationController controller =
-                      Get.find<NavigationController>();
+          isRightSideIconShow
+              ? SizedBox(height: 20)
+              : Row(
+                  children: [
+                    InkWell(
+                      onTap: () {
+                        // Register the NavigationController lazily using a builder function
+                        NavigationController controller =
+                            Get.find<NavigationController>();
 
-                  controller.clearSelection();
-                  Get.toNamed(RoutesName.trackingScreen);
-                },
-                child: Icon(Icons.notifications_outlined, size: 24.sp),
-              ),
-              SizedBox(width: 12.w),
-              InkWell(
-                onTap: () {
-                  // Register the NavigationController lazily using a builder function
-                  NavigationController controller =
-                      Get.find<NavigationController>();
+                        controller.clearSelection();
+                        Get.toNamed(RoutesName.trackingScreen);
+                      },
+                      child: Icon(Icons.notifications_outlined, size: 24.sp),
+                    ),
+                    SizedBox(width: 12.w),
+                    InkWell(
+                      onTap: () {
+                        // Register the NavigationController lazily using a builder function
+                        NavigationController controller =
+                            Get.find<NavigationController>();
 
-                  controller.clearSelection();
-                  Get.toNamed(RoutesName.shoppingList);
-                },
-                child: Icon(Icons.shopping_cart_outlined, size: 24.sp),
-              ),
-            ],
-          ),
+                        controller.clearSelection();
+                        Get.toNamed(RoutesName.shoppingList);
+                      },
+                      child: Icon(Icons.shopping_cart_outlined, size: 24.sp),
+                    ),
+                  ],
+                ),
         ],
       ),
     );

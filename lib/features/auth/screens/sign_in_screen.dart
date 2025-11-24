@@ -205,7 +205,7 @@ class SignInScreen extends StatelessWidget {
         ),
         SizedBox(height: 8.h),
         SizedBox(
-          height: 48.h,
+             height: 56.h,
           child: TextField(
             controller: controller,
             obscureText: obscureText,

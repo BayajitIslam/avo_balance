@@ -635,7 +635,7 @@ class ProfileScreen extends StatelessWidget {
           SizedBox(height: 15.h),
           _buildMenuItem('Privacy Policy', Icons.privacy_tip_outlined, () {
             navController.clearSelection();
-            Get.toNamed(RoutesName.privacyPolicy);
+            Get.toNamed(RoutesName.privacyPolicy,arguments: "login");
           }),
           SizedBox(height: 15.h),
           _buildMenuItem('FAQs', Icons.help_outline, () {

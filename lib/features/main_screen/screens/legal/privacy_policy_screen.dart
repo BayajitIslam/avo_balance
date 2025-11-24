@@ -1,6 +1,7 @@
 // screens/privacy_policy_screen.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/route_manager.dart';
 import 'package:template/core/constants/app_colors.dart';
 import 'package:template/core/themes/app_text_style.dart';
 import 'package:template/features/main_screen/screens/main_screen.dart';
@@ -8,16 +9,21 @@ import 'package:template/features/main_screen/widgets/custom_section_container.d
 import 'package:template/features/main_screen/widgets/custome_header.dart';
 
 class PrivacyPolicyScreen extends StatelessWidget {
-  const PrivacyPolicyScreen({super.key});
+  PrivacyPolicyScreen({super.key});
+
+  final argument = Get.arguments;
 
   @override
   Widget build(BuildContext context) {
     return MainScreen(
+      showBottomNav: argument! == "not_login" ? false : true,
       child: SafeArea(
         child: Column(
           children: [
             // Header
-            CustomeHeader(title: "Privacy Policy"),
+            argument! == "not_login"
+                ? CustomeHeader(title: "Privacy ", isRightSideIconShow: true)
+                : CustomeHeader(title: "Privacy Policy"),
 
             // Scrollable Content
             Expanded(

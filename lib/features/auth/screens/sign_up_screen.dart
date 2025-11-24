@@ -29,7 +29,7 @@ class SignUpScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            SizedBox(height: 40.h),
+            SizedBox(height: 70.h),
 
             // Logo
             Container(
@@ -86,7 +86,7 @@ class SignUpScreen extends StatelessWidget {
                     controller.isPasswordVisible.value
                         ? Icons.visibility_outlined
                         : Icons.visibility_off_outlined,
-                    color: const Color(0xFFBABABA),
+                    color: const Color(0xFF6C6F72),
                   ),
                   onPressed: controller.togglePasswordVisibility,
                 ),
@@ -188,7 +188,10 @@ class SignUpScreen extends StatelessWidget {
                       ..onTap = () {
                         // Navigate to Privacy Policy
                         print('Privacy Policy clicked');
-                        // Get.toNamed('/privacy-policy');
+                        Get.toNamed(
+                          RoutesName.privacyPolicy,
+                          arguments: "not_login",
+                        );
                       },
                   ),
                   TextSpan(text: '.'),
@@ -243,7 +246,7 @@ class SignUpScreen extends StatelessWidget {
         Text(label, style: AppTextStyles.s16w5i()),
         SizedBox(height: 8.h),
         SizedBox(
-          height: 48.h,
+          height: 56.h,
           child: TextField(
             controller: controller,
             obscureText: obscureText,
