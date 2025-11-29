@@ -14,6 +14,12 @@ class AppColors {
     ],
   );
 
+  static const LinearGradient ashGradiant = LinearGradient(
+    begin: Alignment.centerLeft,
+    end: Alignment.centerRight,
+    colors: [Color(0xFF808080), Color(0xFF808080)],
+  );
+
   //-------------------------- App Gradients --------------------------//
   static const LinearGradient secondaryGradient = LinearGradient(
     begin: Alignment.centerLeft,
