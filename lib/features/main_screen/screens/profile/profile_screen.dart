@@ -692,7 +692,7 @@ class ProfileScreen extends StatelessWidget {
         ActionButton(
           onTap: controller.downloadSummary,
           gradient: AppColors.transparentGradiant,
-          leftIcon: "assets/icons/add.png",
+          leftIcon: "assets/icons/export.png",
           leftIconbgColor: AppColors.secondaryGradient,
           title: 'Download Summary',
           titleColor: AppColors.black,
@@ -707,7 +707,7 @@ class ProfileScreen extends StatelessWidget {
         SizedBox(height: 16.h),
         ActionButton(
           onTap: authcontroller.signOut,
-          leftIcon: "assets/icons/fire.png",
+          leftIcon: "assets/icons/el_off.png",
           title: "Log Out",
           leftIconbgColor: AppColors.transparentGradiant,
           rightIconbgColor: AppColors.white.withOpacity(0.20),

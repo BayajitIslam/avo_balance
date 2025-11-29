@@ -3,7 +3,9 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:template/core/constants/app_colors.dart';
 import 'package:template/features/main_screen/screens/camara/camera_capture_screen.dart';
 import 'package:template/features/main_screen/widgets/bottom_shet/extra_meal_selection.dart';
 import 'package:template/features/main_screen/widgets/bottom_shet/log_cheat_meal_bottom_sheet.dart';
@@ -17,13 +19,197 @@ class DietController extends GetxController {
   final Rx<DateTime> currentMonth = DateTime.now().obs;
   final RxMap<String, DayMealPlan> dietPlanData = <String, DayMealPlan>{}.obs;
 
-  // Add to DietController class:
-
   final RxMap<String, bool> expandedMeals = <String, bool>{
     'breakfast': true,
     'lunch': false,
     'dinner': false,
   }.obs;
+
+  // ========== Manage Plan Fields ==========
+  final RxBool repeatCurrentPlan = true.obs;
+  final Rx<File?> newPlanFile = Rx<File?>(null);
+  final RxString newPlanFileName = ''.obs;
+  final Rx<DateTime?> newPlanStartDate = Rx<DateTime?>(null);
+
+  // Current Plan Info
+  final RxString currentPlanName = "Meal Plan 1".obs;
+  final Rx<DateTime> currentPlanEndDate = DateTime(2025, 12, 30).obs;
+
+  // Previous Plan Info (for restore)
+  final RxString previousPlanName = ''.obs;
+  final Rx<DateTime?> previousPlanEndDate = Rx<DateTime?>(null);
+  final RxBool hasPreviousPlan = false.obs;
+
+  // Next Plan Info
+  final RxString nextPlanName = ''.obs;
+  final Rx<DateTime?> nextPlanStartDate = Rx<DateTime?>(null);
+
+  // ========== Manage Plan Methods ==========
+
+  String formatDate(DateTime date) => DateFormat('MMM dd, yyyy').format(date);
+
+  void toggleRepeat(bool value) => repeatCurrentPlan.value = value;
+
+  String get dynamicMessage {
+    if (repeatCurrentPlan.value) {
+      return "The current plan will automatically repeat when it ends.";
+    }
+
+    if (newPlanStartDate.value == null) {
+      return "The new plan will start when the current one ends.";
+    }
+
+    final today = DateTime.now();
+    final isToday =
+        newPlanStartDate.value!.year == today.year &&
+        newPlanStartDate.value!.month == today.month &&
+        newPlanStartDate.value!.day == today.day;
+
+    if (isToday) {
+      return "The new plan will start immediately and replace the current one.";
+    }
+
+    return "The new plan will start on the selected date.";
+  }
+
+  Future<void> pickNewPlanStartDate(BuildContext context) async {
+    final picked = await showDatePicker(
+      context: context,
+      initialDate: newPlanStartDate.value ?? DateTime.now(),
+      firstDate: DateTime.now(),
+      lastDate: DateTime(2030),
+      builder: (context, child) => Theme(
+        data: Theme.of(
+          context,
+        ).copyWith(colorScheme: ColorScheme.light(primary: AppColors.brand)),
+        child: child!,
+      ),
+    );
+
+    if (picked != null) {
+      newPlanStartDate.value = picked;
+    }
+  }
+
+  void setNewPlanFile(File file) {
+    newPlanFile.value = file;
+    newPlanFileName.value = file.path.split('/').last;
+  }
+
+  void clearNewPlanFile() {
+    newPlanFile.value = null;
+    newPlanFileName.value = '';
+  }
+
+  void clearNewPlanDate() => newPlanStartDate.value = null;
+
+  // Check if selected date is today
+  bool get isStartDateToday {
+    if (newPlanStartDate.value == null) return false;
+    final today = DateTime.now();
+    return newPlanStartDate.value!.year == today.year &&
+        newPlanStartDate.value!.month == today.month &&
+        newPlanStartDate.value!.day == today.day;
+  }
+
+  String _getActionType() {
+    if (repeatCurrentPlan.value) return 'repeat_current';
+    if (newPlanStartDate.value == null) return 'start_after_current';
+    if (isStartDateToday) return 'replace_immediately';
+    if (newPlanStartDate.value!.isBefore(currentPlanEndDate.value))
+      return 'replace_on_date';
+    return 'start_on_date';
+  }
+
+  // Save plan changes
+  void savePlanChanges() {
+    final action = _getActionType();
+
+    if (action == 'replace_immediately' && newPlanFile.value != null) {
+      // Store current plan as previous plan
+      previousPlanName.value = currentPlanName.value;
+      previousPlanEndDate.value = currentPlanEndDate.value;
+      hasPreviousPlan.value = true;
+
+      // Set new plan as current
+      currentPlanName.value = newPlanFileName.value.isNotEmpty
+          ? newPlanFileName.value
+                .replaceAll('.pdf', '')
+                .replaceAll('.jpg', '')
+                .replaceAll('.png', '')
+          : "New Meal Plan";
+      currentPlanEndDate.value = DateTime.now().add(
+        Duration(days: 30),
+      ); // Default 30 days
+
+      // Clear new plan fields
+      newPlanFile.value = null;
+      newPlanFileName.value = '';
+      newPlanStartDate.value = null;
+      repeatCurrentPlan.value = true;
+    }
+
+    // TODO: API call
+    /*
+    await ApiService.updatePlan(
+      action: action,
+      repeat: repeatCurrentPlan.value,
+      file: newPlanFile.value,
+      startDate: newPlanStartDate.value,
+    );
+    */
+
+    Get.back();
+
+    Get.snackbar(
+      'Success',
+      'Plan updated successfully.',
+      snackPosition: SnackPosition.BOTTOM,
+      backgroundColor: Colors.green,
+      colorText: Colors.white,
+      margin: EdgeInsets.all(16),
+      borderRadius: 12,
+    );
+  }
+
+  // Restore previous plan
+  void restorePreviousPlan() {
+    if (!hasPreviousPlan.value) return;
+
+    // Swap current and previous
+    final tempName = currentPlanName.value;
+    final tempEndDate = currentPlanEndDate.value;
+
+    currentPlanName.value = previousPlanName.value;
+    currentPlanEndDate.value = previousPlanEndDate.value!;
+
+    previousPlanName.value = tempName;
+    previousPlanEndDate.value = tempEndDate;
+
+    // TODO: API call to restore
+    /*
+    await ApiService.restorePreviousPlan();
+    */
+
+    Get.snackbar(
+      'Success',
+      'Previous plan restored successfully.',
+      snackPosition: SnackPosition.BOTTOM,
+      backgroundColor: Colors.green,
+      colorText: Colors.white,
+      margin: EdgeInsets.all(16),
+      borderRadius: 12,
+    );
+  }
+
+  // Clear previous plan (user doesn't want to keep it)
+  void clearPreviousPlan() {
+    previousPlanName.value = '';
+    previousPlanEndDate.value = null;
+    hasPreviousPlan.value = false;
+  }
+
+  // ========== Existing Methods ==========
 
   void toggleMealExpansion(String mealId) {
     expandedMeals[mealId] = !(expandedMeals[mealId] ?? false);
@@ -60,13 +246,11 @@ class DietController extends GetxController {
 
     DateTime today = DateTime.now();
 
-    // Generate dummy data for multiple scenarios
     for (int i = 0; i < 30; i++) {
       DateTime date = today.add(Duration(days: i));
       String dateKey = _getDateKey(date);
 
       if (i == 0) {
-        // Today - Full meal plan
         dietPlanData[dateKey] = DayMealPlan(
           date: date,
           breakfast: MealData(
@@ -80,7 +264,6 @@ class DietController extends GetxController {
               ),
               MealItem(
                 name: 'Rice',
-
                 weight: 15,
                 calories: 220,
                 color: Color(0xFF3F51B5),
@@ -125,7 +308,6 @@ class DietController extends GetxController {
           totalCalories: 1800,
         );
       } else if (i == 1) {
-        // Tomorrow - Only Breakfast
         dietPlanData[dateKey] = DayMealPlan(
           date: date,
           breakfast: MealData(
@@ -145,7 +327,6 @@ class DietController extends GetxController {
           totalCalories: 500,
         );
       } else if (i == 2) {
-        // Day 3 - Breakfast & Lunch only
         dietPlanData[dateKey] = DayMealPlan(
           date: date,
           breakfast: MealData(
@@ -174,7 +355,6 @@ class DietController extends GetxController {
           totalCalories: 1080,
         );
       } else if (i % 4 == 0) {
-        // Every 4th day - Full meal plan with different items
         dietPlanData[dateKey] = DayMealPlan(
           date: date,
           breakfast: MealData(
@@ -215,7 +395,6 @@ class DietController extends GetxController {
           totalCalories: 1570,
         );
       } else if (i % 3 == 0) {
-        // Every 3rd day - Only Lunch & Dinner
         dietPlanData[dateKey] = DayMealPlan(
           date: date,
           breakfast: null,
@@ -244,71 +423,10 @@ class DietController extends GetxController {
           totalCalories: 1250,
         );
       }
-      // Some days remain empty (no data)
     }
 
     update();
   }
-
-  // When backend is ready, replace loadDietPlanData() with:
-
-  // Future<void> loadDietPlanData() async {
-  //   try {
-  //     // API Call
-  //     final response = await ApiService.getDietPlan();
-
-  //     // Clear existing data
-  //     dietPlanData.clear();
-
-  //     // Parse response
-  //     for (var dayData in response['data']) {
-  //       DateTime date = DateTime.parse(dayData['date']);
-  //       String dateKey = _getDateKey(date);
-
-  //       dietPlanData[dateKey] = DayMealPlan(
-  //         date: date,
-  //         breakfast: dayData['breakfast'] != null
-  //             ? MealData(
-  //                 name: 'Breakfast',
-  //                 items: (dayData['breakfast']['items'] as List)
-  //                     .map((item) => MealItem(
-  //                           name: item['name'],
-  //                           calories: item['calories'],
-  //                         ))
-  //                     .toList(),
-  //               )
-  //             : null,
-  //         lunch: dayData['lunch'] != null
-  //             ? MealData(
-  //                 name: 'Lunch',
-  //                 items: (dayData['lunch']['items'] as List)
-  //                     .map((item) => MealItem(
-  //                           name: item['name'],
-  //                           calories: item['calories'],
-  //                         ))
-  //                     .toList(),
-  //               )
-  //             : null,
-  //         dinner: dayData['dinner'] != null
-  //             ? MealData(
-  //                 name: 'Dinner',
-  //                 items: (dayData['dinner']['items'] as List)
-  //                     .map((item) => MealItem(
-  //                           name: item['name'],
-  //                           calories: item['calories'],
-  //                         ))
-  //                     .toList(),
-  //               )
-  //             : null,
-  //         totalCalories: dayData['total_calories'],
-  //       );
-  //     }
-
-  //     update();
-  //   } catch (e) {
-  //     print('Error loading diet plan: $e');
-  //   }
-  // }
 
   String _getDateKey(DateTime date) {
     return '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}';
@@ -322,7 +440,6 @@ class DietController extends GetxController {
   void selectDate(DateTime date) {
     selectedDate.value = date;
 
-    // Update currentMonth if selected date is in different month
     if (date.month != currentMonth.value.month ||
         date.year != currentMonth.value.year) {
       currentMonth.value = DateTime(date.year, date.month, 1);
@@ -359,15 +476,12 @@ class DietController extends GetxController {
     update();
   }
 
-  //show camara
   void openCamara(String mealType) async {
-    // Directly open camera screen
     final cameraResult = await Get.to(
       () => CameraCaptureScreen(mealType: mealType),
       transition: Transition.downToUp,
     );
 
-    // If user captured image
     if (cameraResult != null && cameraResult is File) {
       await uploadPrescription(cameraResult, mealType);
     }
@@ -380,16 +494,13 @@ class DietController extends GetxController {
       isScrollControlled: true,
       builder: (context) => ReplaceMealBottomSheet(initialMealType: mealType),
     );
-    // final result = await Get.to(CameraCaptureScreen(mealType: "Breakfast"));
 
-    // Handle result
     if (result != null && result is Map) {
       final action = result['action'];
       final selectedMealType = result['mealType'];
       final details = result['details'];
 
       if (action == 'camera') {
-        // Open camera screen
         final cameraResult = await Get.to(
           () => CameraCaptureScreen(mealType: selectedMealType),
           transition: Transition.downToUp,
@@ -403,7 +514,6 @@ class DietController extends GetxController {
           );
         }
       } else if (action == 'gallery') {
-        // Open gallery
         try {
           final ImagePicker picker = ImagePicker();
           final XFile? image = await picker.pickImage(
@@ -438,16 +548,13 @@ class DietController extends GetxController {
       isScrollControlled: true,
       builder: (context) => ExtraMealSelection(initialMealType: mealType),
     );
-    // final result = await Get.to(CameraCaptureScreen(mealType: "Breakfast"));
 
-    // Handle result
     if (result != null && result is Map) {
       final action = result['action'];
       final selectedMealType = result['mealType'];
       final details = result['details'];
 
       if (action == 'camera') {
-        // Open camera screen
         final cameraResult = await Get.to(
           () => CameraCaptureScreen(mealType: selectedMealType),
           transition: Transition.downToUp,
@@ -461,7 +568,6 @@ class DietController extends GetxController {
           );
         }
       } else if (action == 'gallery') {
-        // Open gallery
         try {
           final ImagePicker picker = ImagePicker();
           final XFile? image = await picker.pickImage(
@@ -528,22 +634,13 @@ class DietController extends GetxController {
   Future<void> uploadPrescription(
     File image,
     String mealType, {
-    String? details, // Add this parameter
+    String? details,
   }) async {
     isLoading.value = true;
 
     try {
-      // TODO: Replace with actual API call
-      // final response = await ApiService.uploadPrescription(
-      //   image: image,
-      //   mealType: mealType,
-      //   details: details, // Pass details to API
-      // );
-
-      // Simulate API delay
       await Future.delayed(Duration(seconds: 2));
 
-      // Show success message
       Get.snackbar(
         'Success',
         details != null && details.isNotEmpty
@@ -555,13 +652,11 @@ class DietController extends GetxController {
         duration: Duration(seconds: 2),
       );
 
-      // Save that user has diet plan
       SharedPreferences prefs = await SharedPreferences.getInstance();
       await prefs.setBool('has_diet_plan', true);
 
       hasDietPlan.value = true;
 
-      // Load dummy data
       await loadDietPlanData();
 
       Get.snackbar(
@@ -585,19 +680,16 @@ class DietController extends GetxController {
   }
 
   void navigateToLogCheatMeal() {
-    // TODO: Implement log cheat meal screen
     showModalBottomSheet(
       context: Get.context!,
       backgroundColor: Colors.transparent,
       isScrollControlled: true,
       builder: (context) => LogCheatMealBottomSheet(
         replaceMealTap: () {
-          //Replace Meal
           Navigator.pop(context);
           showReplaceMealDialog("Breakfast");
         },
         extraMealTap: () {
-          //Extra Meal
           Navigator.pop(context);
           showExtraMealAddDialog("Breakfast");
         },
@@ -605,28 +697,13 @@ class DietController extends GetxController {
     );
   }
 
-  void navigateToManagePlan() async {
-    final result = await showModalBottomSheet(
+  void navigateToManagePlan() {
+    showModalBottomSheet(
       context: Get.context!,
       backgroundColor: Colors.transparent,
       isScrollControlled: true,
       builder: (context) => ManageYourPlan(),
     );
-
-    // Handle result
-    if (result != null && result is Map) {
-      final action = result['action'];
-
-      if (action == 'continue') {
-        print('Continue current plan');
-      } else if (action == 'upload') {
-        print('Upload new plan');
-        // TODO: Implement upload logic
-      } else if (action == 'replace') {
-        print('Replace current plan');
-        // TODO: Implement replace logic
-      }
-    }
   }
 }
 
@@ -656,17 +733,16 @@ class MealData {
   int get totalCalories => items.fold(0, (sum, item) => sum + item.calories);
 }
 
-// In diet_controller.dart - MealItem class
 class MealItem {
   final String name;
   final int calories;
   final int? weight;
-  final Color color; // Remove '?' to make it non-nullable
+  final Color color;
 
   MealItem({
     required this.name,
     required this.calories,
     this.weight,
-    required this.color, // Make it required
+    required this.color,
   });
 }
