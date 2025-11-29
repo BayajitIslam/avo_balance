@@ -602,6 +602,11 @@ class ProfileScreen extends StatelessWidget {
             navController.clearSelection();
             Get.toNamed(RoutesName.changePasswordScreen);
           }),
+          SizedBox(height: 15.h),
+          _buildMenuItem('Delete Account', Icons.lock_outline, () {
+            navController.clearSelection();
+            Get.offAllNamed(RoutesName.signup);
+          }, isLast: true),
         ],
       ),
     );
@@ -635,7 +640,7 @@ class ProfileScreen extends StatelessWidget {
           SizedBox(height: 15.h),
           _buildMenuItem('Privacy Policy', Icons.privacy_tip_outlined, () {
             navController.clearSelection();
-            Get.toNamed(RoutesName.privacyPolicy,arguments: "login");
+            Get.toNamed(RoutesName.privacyPolicy, arguments: "login");
           }),
           SizedBox(height: 15.h),
           _buildMenuItem('FAQs', Icons.help_outline, () {
@@ -697,22 +702,6 @@ class ProfileScreen extends StatelessWidget {
           rightIconColor: const Color(0xFF364153),
           borderEnbale: true,
           rightIcon: Icons.download_sharp,
-        ),
-
-        SizedBox(height: 16.h),
-        ActionButton(
-          gradient: AppColors.secondaryGradient,
-          onTap: controller.deleteAccount,
-          leftIcon: "assets/icons/fire.png",
-          title: "Delet Account",
-          leftIconbgColor: AppColors.transparentGradiant,
-          rightIconbgColor: AppColors.white.withOpacity(0.20),
-          desc: "Parmanently Delete Your Account",
-          descColor: const Color(0xFFffffff).withOpacity(0.8),
-          rightIconColor: AppColors.white,
-          iconBorderEnable: true,
-          shadowOn: true,
-          rightIcon: Icons.delete,
         ),
 
         SizedBox(height: 16.h),

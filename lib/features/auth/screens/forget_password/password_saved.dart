@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:template/core/constants/app_colors.dart';
-import 'package:template/core/themes/app_text_style.dart';
 import 'package:template/features/main_screen/controllers/change_password_controller.dart';
 import 'package:template/features/main_screen/screens/main_screen.dart';
 import 'package:template/features/main_screen/widgets/custom_text_field.dart';
@@ -11,8 +10,8 @@ import 'package:template/features/main_screen/widgets/custome_header.dart';
 import 'package:template/routes/routes_name.dart';
 import 'package:template/widget/custome_button.dart';
 
-class ChangePasswordScreen extends StatelessWidget {
-  const ChangePasswordScreen({super.key});
+class PasswordSaved extends StatelessWidget {
+  const PasswordSaved({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -58,33 +57,11 @@ class ChangePasswordScreen extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             SizedBox(height: 8.h),
+
                             Obx(
                               () => CustomTextField(
                                 label: "Enter your old password",
-                                hintText: 'Old Password',
-                                controller:
-                                    controller.currentPasswordController,
-                                obscureText:
-                                    !controller.showCurrentPassword.value,
-                                suffixIcon: IconButton(
-                                  icon: Icon(
-                                    controller.showCurrentPassword.value
-                                        ? Icons.visibility
-                                        : Icons.visibility_off,
-                                    color: Colors.grey,
-                                    size: 20.sp,
-                                  ),
-                                  onPressed: controller.toggleCurrentPassword,
-                                ),
-                              ),
-                            ),
-
-                            SizedBox(height: 20.h),
-
-                            Obx(
-                              () => CustomTextField(
-                                label: "Enter New Password",
-                                hintText: 'New Password',
+                                hintText: 'Password',
                                 controller: controller.newPasswordController,
                                 obscureText: !controller.showNewPassword.value,
                                 suffixIcon: IconButton(
@@ -100,16 +77,12 @@ class ChangePasswordScreen extends StatelessWidget {
                               ),
                             ),
 
-                            SizedBox(height: 20.h),
-
+                            SizedBox(height: 20),
                             Obx(
                               () => CustomTextField(
-                                label: "Re-Enter New Password",
-                                hintText: 'New Password',
-                                controller:
-                                    controller.confirmPasswordController,
-                                obscureText:
-                                    !controller.showConfirmPassword.value,
+                                hintText: 'Re-Type Password',
+                                controller: controller.newPasswordController,
+                                obscureText: !controller.showNewPassword.value,
                                 suffixIcon: IconButton(
                                   icon: Icon(
                                     controller.showConfirmPassword.value
@@ -119,22 +92,6 @@ class ChangePasswordScreen extends StatelessWidget {
                                     size: 20.sp,
                                   ),
                                   onPressed: controller.toggleConfirmPassword,
-                                ),
-                              ),
-                            ),
-
-                            // Forgot Password Link
-                            Align(
-                              alignment: Alignment.center,
-                              child: TextButton(
-                                onPressed: () =>
-                                    Get.toNamed(RoutesName.emailverify),
-                                child: Text(
-                                  'Forgot password?',
-                                  style: AppTextStyles.s14w4i(
-                                    fontweight: FontWeight.w800,
-                                    color: AppColors.black,
-                                  ),
                                 ),
                               ),
                             ),
@@ -152,9 +109,8 @@ class ChangePasswordScreen extends StatelessWidget {
                 child: Obx(
                   () => CustomeButton(
                     gradient: AppColors.primaryGradient,
-                    onTap: controller.isLoading.value
-                        ? () {}
-                        : controller.changePassword,
+                    onTap: () =>
+                        Get.offAllNamed(RoutesName.changePasswordScreen),
                     title: controller.isLoading.value ? "Saving..." : "Save",
                   ),
                 ),

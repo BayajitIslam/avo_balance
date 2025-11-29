@@ -2,6 +2,9 @@ import 'package:get/get.dart';
 import 'package:get/get_navigation/get_navigation.dart';
 import 'package:template/features/auth/bindings/auth_binding.dart';
 import 'package:template/features/auth/bindings/otp_binding.dart';
+import 'package:template/features/auth/screens/forget_password/email_verify.dart';
+import 'package:template/features/auth/screens/forget_password/otp_verify.dart';
+import 'package:template/features/auth/screens/forget_password/password_saved.dart';
 import 'package:template/features/auth/screens/forgot_password_screen.dart';
 import 'package:template/features/auth/screens/otp_verification_screen.dart';
 import 'package:template/features/auth/screens/reset_password_screen.dart';
@@ -165,6 +168,24 @@ class AppRoutes {
       page: () => AfterSubscribeScreen(),
       transition: Transition.rightToLeft,
       binding: DietBinding(),
+    ),
+    GetPage(
+      name: RoutesName.emailverify,
+      page: () => EmailVerify(),
+      transition: Transition.rightToLeft,
+      // binding: DietBinding(),
+    ),
+    GetPage(
+      name: RoutesName.otpVerify,
+      page: () => OtpVerify(),
+      transition: Transition.rightToLeft,
+      // binding: DietBinding(),
+    ),
+    GetPage(
+      name: RoutesName.passwordSaved,
+      page: () => PasswordSaved(),
+      transition: Transition.rightToLeft,
+      // binding: DietBinding(),
     ),
   ];
 }

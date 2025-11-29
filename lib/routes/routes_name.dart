@@ -22,4 +22,7 @@ class RoutesName {
   static const String trackingScreen = "/trackingScreen";
   static const String weightEntryScreen = "/WeightEntryScreen";
   static const String afterSubscribeScreen = "/afterSubscribeScreen";
+  static const String emailverify = "/emailverify";
+  static const String otpVerify = "/otpVerify";
+  static const String passwordSaved = "/passwordSaved";
 }
