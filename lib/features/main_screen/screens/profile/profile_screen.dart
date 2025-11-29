@@ -598,6 +598,11 @@ class ProfileScreen extends StatelessWidget {
       ),
       child: Column(
         children: [
+          _buildMenuItem('Sign Up to Save Progress', Icons.lock_outline, () {
+            navController.clearSelection();
+            Get.toNamed(RoutesName.signup);
+          }),
+          SizedBox(height: 15.h),
           _buildMenuItem('Change Password', Icons.lock_outline, () {
             navController.clearSelection();
             Get.toNamed(RoutesName.changePasswordScreen);
