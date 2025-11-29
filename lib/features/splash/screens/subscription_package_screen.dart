@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:template/core/constants/app_colors.dart';
 import 'package:template/core/themes/app_text_style.dart';
+import 'package:template/features/main_screen/controllers/navigation_controller.dart';
 import 'package:template/features/splash/controllers/subscription_controller.dart';
 import 'package:template/features/splash/widgets/subscription_card.dart';
 import 'package:template/routes/routes_name.dart';
@@ -134,8 +135,13 @@ class SubscriptionPackageScreen extends StatelessWidget {
 
                   //save after subscribe
                   await prefs.setBool('plan_active', true);
-                  Get.toNamed(RoutesName.dietScreen);
+                  NavigationController navController =
+                      Get.find<NavigationController>();
 
+                  navController.currentIndex(1);
+                  Get.toNamed(RoutesName.afterSubscribeScreen);
+
+                  debugPrint("${controller.selectedPlanId}");
                   debugPrint('Click : Start Your Free Trail');
                 },
                 title: "Start Your 7-Day Free Trial",

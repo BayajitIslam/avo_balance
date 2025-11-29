@@ -33,15 +33,12 @@ class SplashController extends GetxService {
       if (!onboardingCompleted) {
         // First time user → Show onboarding
         Get.offAllNamed(RoutesName.onboarding);
-      } else if (isLoggedIn && isplanActive) {
+      } else if (isplanActive) {
         // User is logged in → Go to HomePage
         Get.offAllNamed(RoutesName.home);
-      } else if (!isplanActive && isLoggedIn) {
-        // User is logged in → Go to HomePage
-        Get.offAllNamed(RoutesName.subscriptionPackage);
       } else {
         // User completed onboarding but not logged in → LoginPage
-        Get.offAllNamed(RoutesName.login);
+        Get.offAllNamed(RoutesName.subscriptionPackage);
       }
     });
   }

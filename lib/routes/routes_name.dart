@@ -21,4 +21,5 @@ class RoutesName {
   static const String shoppingList = "/shoppingList";
   static const String trackingScreen = "/trackingScreen";
   static const String weightEntryScreen = "/WeightEntryScreen";
+  static const String afterSubscribeScreen = "/afterSubscribeScreen";
 }

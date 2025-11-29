@@ -547,8 +547,8 @@ class DietController extends GetxController {
       Get.snackbar(
         'Success',
         details != null && details.isNotEmpty
-            ? 'Extra Meal uploaded with details!'
-            : 'Extra Meal uploaded successfully!',
+            ? 'Meal uploaded with details!'
+            : 'Meal uploaded successfully!',
         backgroundColor: Colors.green,
         colorText: Colors.white,
         snackPosition: SnackPosition.BOTTOM,
@@ -566,7 +566,7 @@ class DietController extends GetxController {
 
       Get.snackbar(
         'Ready!',
-        'Extra Meal Add successfully!',
+        'Meal Add successfully!',
         backgroundColor: Colors.green,
         colorText: Colors.white,
         snackPosition: SnackPosition.BOTTOM,

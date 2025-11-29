@@ -56,7 +56,7 @@ class OnboardingController extends GetxController {
   Future<void> finishOnboarding() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setBool('onboarding_completed', true);
-    Get.toNamed(RoutesName.signup);
+    Get.toNamed(RoutesName.subscriptionPackage);
   }
 
   @override

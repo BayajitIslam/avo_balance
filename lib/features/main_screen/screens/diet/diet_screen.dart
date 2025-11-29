@@ -9,6 +9,7 @@ import 'package:template/features/main_screen/controllers/navigation_controller.
 import 'package:template/features/main_screen/screens/main_screen.dart';
 import 'package:intl/intl.dart';
 import 'package:template/features/main_screen/widgets/action_button.dart';
+import 'package:template/features/main_screen/widgets/build_empty_meal_card.dart';
 import 'package:template/features/main_screen/widgets/multi_segment_circular_progress.dart';
 import 'package:template/routes/routes_name.dart';
 
@@ -294,21 +295,24 @@ class DietScreen extends StatelessWidget {
     return ListView(
       padding: EdgeInsets.symmetric(horizontal: 20.w),
       children: [
-        _buildEmptyMealCard(
-          'Breakfast',
-          () => controller.openCamara('Breakfast'),
-          [Color(0xFFFF9800), Color(0xFFFF6B6B)],
+        BuildEmptyMealCard(
+          borderGradient: [Color(0xFFFF8904), Color(0xFFF6339A)],
+          onTap: () => controller.openCamara('Breakfast'),
+          mealType: 'Breakfast',
         ),
         SizedBox(height: 16.h),
-        _buildEmptyMealCard('Lunch', () => controller.openCamara('Lunch'), [
-          Color(0xFF2196F3),
-          Color(0xFF00BCD4),
-        ]),
+        BuildEmptyMealCard(
+          borderGradient: [Color(0xFFC27AFF), Color(0xFF2B7FFF)],
+          onTap: () => controller.openCamara('Lunch'),
+          mealType: "Lunch",
+        ),
+
         SizedBox(height: 16.h),
-        _buildEmptyMealCard('Dinner', () => controller.openCamara('Dinner'), [
-          Color(0xFF9C27B0),
-          Color(0xFFE91E63),
-        ]),
+        BuildEmptyMealCard(
+          borderGradient: [Color(0xFFFB64B6), Color(0xFFAD46FF)],
+          onTap: () => controller.openCamara('Dinner'),
+          mealType: "Dinner",
+        ),
         SizedBox(height: 20.h),
         _buildActionButtons(controller),
         SizedBox(height: 80.h),
@@ -340,10 +344,10 @@ class DietScreen extends StatelessWidget {
             true, // Has warning
           )
         else
-          _buildEmptyMealCard(
-            'Breakfast',
-            () => controller.openCamara('Breakfast'),
-            [Color(0xFFFF8904), Color(0xFFF6339A)],
+          BuildEmptyMealCard(
+            borderGradient: [Color(0xFFFF8904), Color(0xFFF6339A)],
+            onTap: () => controller.openCamara('Breakfast'),
+            mealType: 'Breakfast',
           ),
 
         SizedBox(height: 16.h),
@@ -361,10 +365,11 @@ class DietScreen extends StatelessWidget {
             false,
           )
         else
-          _buildEmptyMealCard('Lunch', () => controller.openCamara('Lunch'), [
-            Color(0xFFC27AFF),
-            Color(0xFF2B7FFF),
-          ]),
+          BuildEmptyMealCard(
+            borderGradient: [Color(0xFFC27AFF), Color(0xFF2B7FFF)],
+            onTap: () => controller.openCamara('Lunch'),
+            mealType: "Lunch",
+          ),
 
         SizedBox(height: 16.h),
 
@@ -383,10 +388,11 @@ class DietScreen extends StatelessWidget {
             // isLogToday: true,
           )
         else
-          _buildEmptyMealCard('Dinner', () => controller.openCamara('Dinner'), [
-            Color(0xFFFB64B6),
-            Color(0xFFAD46FF),
-          ]),
+          BuildEmptyMealCard(
+            borderGradient: [Color(0xFFFB64B6), Color(0xFFAD46FF)],
+            onTap: () => controller.openCamara('Dinner'),
+            mealType: "Dinner",
+          ),
 
         SizedBox(height: 20.h),
         _buildActionButtons(controller),
@@ -1013,118 +1019,6 @@ class DietScreen extends StatelessWidget {
       default:
         return [Color(0xFF00BFA5), Color(0xFF00E676)];
     }
-  }
-
-  //empty meal card
-  Widget _buildEmptyMealCard(
-    String mealType,
-    VoidCallback onTap,
-    List<Color> borderGradient,
-  ) {
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(20.r),
-      child: Container(
-        height: 124.h,
-        padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 18.h),
-        decoration: BoxDecoration(
-          color: AppColors.white,
-          borderRadius: BorderRadius.circular(32),
-          boxShadow: [
-            BoxShadow(
-              // ignore: deprecated_member_use
-              color: Colors.black.withOpacity(0.1),
-              blurRadius: 10,
-              offset: Offset(0, 8),
-              spreadRadius: -6,
-            ),
-          ],
-        ),
-        child: Stack(
-          clipBehavior: Clip.none,
-          children: [
-            // Left gradient border
-            Positioned(
-              left: -24.w,
-              top: 14,
-              bottom: 14,
-              child: Container(
-                width: 4.w,
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                    colors: borderGradient,
-                  ),
-                  borderRadius: BorderRadius.only(
-                    topRight: Radius.circular(33554400),
-                    bottomRight: Radius.circular(33554400),
-                  ),
-                ),
-              ),
-            ),
-
-            // Content
-            Padding(
-              padding: EdgeInsets.only(left: 12.w),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // Title
-                  Text(
-                    mealType,
-                    style: AppTextStyles.s22w7i(
-                      fontweight: FontWeight.w900,
-                      fontSize: 20.sp,
-                    ),
-                  ),
-
-                  // Add button with text
-                  Center(
-                    child: Column(
-                      children: [
-                        Container(
-                          width: 44.w,
-                          height: 44.h,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(16),
-                            gradient: AppColors.container,
-                            boxShadow: [
-                              BoxShadow(
-                                // ignore: deprecated_member_use
-                                color: const Color(0xFFAD46FF).withOpacity(0.3),
-                                blurRadius: 12,
-                                spreadRadius: -4,
-                                offset: Offset(0, 1),
-                              ),
-                            ],
-                          ),
-                          child: Icon(
-                            Icons.add,
-                            color: Colors.white,
-                            size: 30.sp,
-                          ),
-                        ),
-
-                        SizedBox(height: 6.h),
-
-                        Text(
-                          'Upload Your Free Meal',
-                          style: AppTextStyles.s16w5i(
-                            color: const Color(0xFFB9B9B9),
-                            fontSize: 12.sp,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
   }
 
   // Action Buttons

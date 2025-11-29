@@ -27,6 +27,7 @@ import 'package:template/features/main_screen/screens/tracking/tracking_screen.d
 import 'package:template/features/splash/bindings/onboarding_binding.dart';
 import 'package:template/features/splash/bindings/splash_binding.dart';
 import 'package:template/features/splash/bindings/subscription_binding.dart';
+import 'package:template/features/splash/screens/after_subscribe_screen.dart';
 import 'package:template/features/splash/screens/onboarding_screen.dart';
 import 'package:template/features/splash/screens/splash_screen.dart';
 import 'package:template/features/splash/screens/subscription_package_screen.dart';
@@ -154,10 +155,16 @@ class AppRoutes {
       transition: Transition.rightToLeft,
       binding: TrackingBinding(),
     ),
-     GetPage(
+    GetPage(
       name: RoutesName.weightEntryScreen,
       page: () => WeightEntryScreen(),
       transition: Transition.rightToLeft,
+    ),
+    GetPage(
+      name: RoutesName.afterSubscribeScreen,
+      page: () => AfterSubscribeScreen(),
+      transition: Transition.rightToLeft,
+      binding: DietBinding(),
     ),
   ];
 }
