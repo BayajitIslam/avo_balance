@@ -26,7 +26,7 @@ class SplashController extends GetxService {
           prefs.getBool('onboarding_completed') ?? false;
 
       // Check if user is logged in
-      bool? isLoggedIn = prefs.getBool('is_logged_in') ?? false;
+      // bool? isLoggedIn = prefs.getBool('is_logged_in') ?? false;
       // Check if user is Active plan
       bool? isplanActive = prefs.getBool('plan_active') ?? false;
 

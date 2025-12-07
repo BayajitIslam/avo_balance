@@ -59,22 +59,22 @@ class ManageYourPlan extends StatelessWidget {
               Text(
                 'Continue your current plan or schedule your next one.',
                 style: AppTextStyles.s14w4i(
-                  fontSize: 13.sp,
+                  fontSize: 12.sp,
                   color: Colors.grey.shade600,
                 ),
               ),
 
               SizedBox(height: 20.h),
 
-              // 1. Current Status Box (always visible)
-              _buildCurrentStatusBox(),
+              // Current Plan Box (always visible)
+              _buildCurrentPlanBox(),
 
               SizedBox(height: 20.h),
 
-              // 2. Repeat Current Plan Toggle
+              // Repeat Current Plan Toggle
               _buildRepeatToggle(),
 
-              // 3. New Plan Section (visible only when toggle OFF)
+              // New Plan Section (visible only when toggle OFF)
               Obx(
                 () => !controller.repeatCurrentPlan.value
                     ? Column(
@@ -88,20 +88,9 @@ class ManageYourPlan extends StatelessWidget {
 
               SizedBox(height: 16.h),
 
-              // 4. Dynamic Message (always ONE message)
+              // Dynamic Message (always visible)
               _buildDynamicMessage(),
 
-              // Previous Plan Section (if exists - for restore)
-              // Obx(
-              //   () => controller.hasPreviousPlan.value
-              //       ? Column(
-              //           children: [
-              //             SizedBox(height: 20.h),
-              //             _buildPreviousPlanSection(),
-              //           ],
-              //         )
-              //       : SizedBox.shrink(),
-              // ),
               SizedBox(height: 24.h),
 
               // Bottom Buttons
@@ -115,8 +104,8 @@ class ManageYourPlan extends StatelessWidget {
     );
   }
 
-  // 1. Current Status Box - Always visible
-  Widget _buildCurrentStatusBox() {
+  // Current Plan Box
+  Widget _buildCurrentPlanBox() {
     return Container(
       width: double.infinity,
       padding: EdgeInsets.all(16.w),
@@ -136,97 +125,145 @@ class ManageYourPlan extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Plan Name + Red Dot
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Expanded(
-                child: Obx(
-                  () => RichText(
-                    text: TextSpan(
-                      children: [
-                        TextSpan(
-                          text: controller.currentPlanName.value,
-                          style: AppTextStyles.s16w5i(
-                            fontweight: FontWeight.w700,
-                          ),
-                        ),
-                        TextSpan(
-                          text: ' (Current Plan)',
-                          style: AppTextStyles.s14w4i(
-                            color: Colors.grey.shade600,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-              Image.asset("assets/icons/akar-icons_radio-fill.png"),
-            ],
+          // "Current Plan" Label
+          Text(
+            'Current Plan',
+            style: AppTextStyles.s14w4i(
+              fontSize: 11.sp,
+              color: Color(0xFFEA580C),
+              fontweight: FontWeight.w700,
+            ),
           ),
 
           SizedBox(height: 8.h),
 
-          // Current Plan End Date
+          // Plan Name
           Obx(
             () => Text(
-              'From ${controller.formatDate(controller.currentPlanStartDate.value)} to ${controller.formatDate(controller.currentPlanEndDate.value)}',
-              style: AppTextStyles.s14w4i(),
+              controller.currentPlanName.value,
+              style: AppTextStyles.s16w5i(
+                fontweight: FontWeight.w700,
+                fontSize: 24.sp,
+              ),
             ),
           ),
 
-          // Next Plan Info (if scheduled)
-          Obx(
-            () => controller.nextPlanName.isNotEmpty
-                ? Padding(
-                    padding: EdgeInsets.only(top: 6.h),
-                    child: Text(
-                      'Next plan: ${controller.nextPlanName.value} Starts on ${controller.formatDate(controller.nextPlanStartDate.value!)}',
-                      style: AppTextStyles.s14w4i(),
-                    ),
-                  )
-                : SizedBox.shrink(),
+          SizedBox(height: 8.h),
+
+          // Current Plan Date Range with Calendar Icon
+          Row(
+            children: [
+              SvgPicture.asset("assets/icons/calander.svg"),
+              SizedBox(width: 6.w),
+              Obx(
+                () => Text(
+                  '${controller.formatDate(controller.currentPlanStartDate.value)} — ${controller.formatDate(controller.currentPlanEndDate.value)}',
+                  style: AppTextStyles.s14w4i(
+                    fontSize: 12.sp,
+                    color: Colors.grey.shade700,
+                  ),
+                ),
+              ),
+            ],
           ),
 
           SizedBox(height: 12.h),
 
-          // Selected Plan Button
-          InkWell(
-            child: Container(
-              height: 37.h,
+          // Up Next Section - Show in 2 cases:
+          // 1. Toggle ON (repeat current plan)
+          // 2. Toggle OFF + Next plan exists
+          Obx(() {
+            final isRepeat = controller.repeatCurrentPlan.value;
+            final hasNextPlan = controller.nextPlanName.isNotEmpty;
+
+            // Determine what to show
+            String upNextPlanName;
+            DateTime upNextStartDate;
+
+            if (isRepeat) {
+              // Show current plan repeating
+              upNextPlanName = controller.currentPlanName.value;
+              upNextStartDate = controller.currentPlanEndDate.value.add(
+                Duration(days: 1),
+              );
+            } else if (hasNextPlan) {
+              // Show actual next plan
+              upNextPlanName = controller.nextPlanName.value;
+              upNextStartDate = controller.nextPlanStartDate.value!;
+            } else {
+              // Don't show Up Next section
+              return SizedBox.shrink();
+            }
+
+            return Container(
+              height: 62.h,
+              padding: EdgeInsets.all(12.w),
               decoration: BoxDecoration(
-                boxShadow: [
-                  BoxShadow(
-                    color: AppColors.black.withOpacity(0.3),
-                    blurRadius: 2,
+                color: const Color(0xFFF9FAFB),
+                borderRadius: BorderRadius.circular(12.r),
+                border: Border.all(color: const Color(0xFFF3F4F6)),
+              ),
+              child: Row(
+                children: [
+                  // Clock Icon in Circle
+                  Container(
+                    height: 34.h,
+                    width: 34.w,
+                    padding: EdgeInsets.all(8.w),
+                    decoration: BoxDecoration(
+                      color: Color(0xFFFFE0E0),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: SvgPicture.asset("assets/icons/time.svg"),
                   ),
-                  BoxShadow(
-                    color: AppColors.black.withOpacity(0.3),
-                    blurRadius: 10,
-                    offset: Offset(0, 1),
+
+                  SizedBox(width: 10.w),
+
+                  // Up Next Info
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        // "Up Next" Label
+                        Text(
+                          'Up Next',
+                          style: AppTextStyles.s14w4i(
+                            fontSize: 12.sp,
+                            fontweight: FontWeight.w600,
+                          ),
+                        ),
+
+                        // Next Plan Name + Start Date
+                        Row(
+                          children: [
+                            Text(
+                              '$upNextPlanName ',
+                              style: AppTextStyles.s22w7i(fontSize: 12.sp),
+                            ),
+                            Text(
+                              'Starts From ${controller.formatDate(upNextStartDate)}',
+                              style: AppTextStyles.s14w4i(
+                                fontSize: 12.sp,
+                                fontweight: FontWeight.w400,
+                                color: AppColors.textBlack,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
                   ),
                 ],
-                gradient: AppColors.secondaryGradient,
-                borderRadius: BorderRadius.circular(16.r),
               ),
-              child: Center(
-                child: Text(
-                  'Replace Meal',
-                  style: AppTextStyles.s14w4i(
-                    color: Colors.white,
-                    fontweight: FontWeight.w700,
-                  ),
-                ),
-              ),
-            ),
-          ),
+            );
+          }),
         ],
       ),
     );
   }
 
-  // 2. Repeat Current Plan Toggle
+  // Repeat Current Plan Toggle
   Widget _buildRepeatToggle() {
     return Container(
       width: double.infinity,
@@ -244,7 +281,6 @@ class ManageYourPlan extends StatelessWidget {
           ),
         ],
       ),
-
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -266,14 +302,23 @@ class ManageYourPlan extends StatelessWidget {
           SizedBox(height: 6.h),
           Text(
             'Automatically continue with the same plan',
-            style: AppTextStyles.s14w4i(fontSize: 12.sp),
+            style: AppTextStyles.s14w4i(
+              fontSize: 12.sp,
+              color: Colors.grey.shade600,
+            ),
           ),
         ],
       ),
     );
   }
 
-  // 3. New Plan Section (visible only when toggle OFF)
+  // New Plan Section
+  // widgets/bottom_shet/manage_your_plan.dart
+
+  // New Plan Section
+  // widgets/bottom_shet/manage_your_plan.dart
+
+  // New Plan Section - ALWAYS shows same UI
   Widget _buildNewPlanSection(BuildContext context) {
     return Container(
       width: double.infinity,
@@ -294,6 +339,7 @@ class ManageYourPlan extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          // "New Plan" header
           Text(
             'New Plan',
             style: AppTextStyles.s16w5i(fontweight: FontWeight.w700),
@@ -301,91 +347,60 @@ class ManageYourPlan extends StatelessWidget {
 
           SizedBox(height: 12.h),
 
-          // A) No file uploaded OR B) File uploaded
-          Obx(
-            () => controller.hasFileUploaded
-                ? _buildFileUploadedSection(context)
-                : _buildNoFileSection(context),
-          ),
+          // File Info Box (always visible)
+          _buildPlanFileBox(context),
+
+          SizedBox(height: 16.h),
+
+          // Start Date Picker (always visible)
+          _buildStartDatePicker(context),
         ],
       ),
     );
   }
 
-  // 3A) No File Uploaded - Show upload button only
-  Widget _buildNoFileSection(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text('No file uploaded', style: AppTextStyles.s14w4i()),
+  Widget _buildPlanFileBox(BuildContext context) {
+    return Obx(() {
+      final hasNextPlan = controller.nextPlanName.isNotEmpty;
+      final hasFileUploaded = controller.hasFileUploaded;
 
-        SizedBox(height: 12.h),
+      String displayText;
+      bool isPlaceholder = false;
 
-        // Upload Button
-        InkWell(
-          onTap: () async {
-            Navigator.pop(context);
+      if (hasNextPlan) {
+        displayText = 'New plan: ${controller.nextPlanName.value}';
+      } else if (hasFileUploaded) {
+        displayText = 'New plan: ${controller.newPlanFileName.value}';
+      } else {
+        displayText = 'Add Another Plan';
+        isPlaceholder = true;
+      }
+
+      return InkWell(
+        onTap: () async {
+          if (isPlaceholder) {
+            // Direct camera open - no bottom sheet
+            Navigator.pop(context); // Close manage plan
+
             final result = await Get.to(
               () => CameraCaptureScreen(mealType: 'New Plan'),
               transition: Transition.downToUp,
             );
+
             if (result != null && result is File) {
               controller.setNewPlanFile(result);
             }
-            controller.navigateToManagePlan();
-          },
-          child: Container(
-            width: double.infinity,
-            height: 44.h,
-            decoration: BoxDecoration(
-              boxShadow: [
-                BoxShadow(
-                  color: AppColors.black.withOpacity(0.3),
-                  blurRadius: 2,
-                ),
-                BoxShadow(
-                  color: AppColors.black.withOpacity(0.3),
-                  blurRadius: 10,
-                  offset: Offset(0, 1),
-                ),
-              ],
-              gradient: AppColors.secondaryGradient,
-              borderRadius: BorderRadius.circular(16.r),
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(
-                  Icons.cloud_upload_outlined,
-                  color: Colors.white,
-                  size: 20.sp,
-                ),
-                SizedBox(width: 8.w),
-                Text(
-                  'Upload new plan',
-                  style: AppTextStyles.s14w4i(
-                    color: Colors.white,
-                    fontweight: FontWeight.w600,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
-      ],
-    );
-  }
 
-  Widget _buildFileUploadedSection(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        // File Info with Replace Button
-        Container(
+            controller.navigateToManagePlan(); // Reopen manage plan
+          }
+        },
+        child: Container(
           padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 12.h),
           decoration: BoxDecoration(
-            color: Colors.grey.shade50,
-            borderRadius: BorderRadius.circular(16.r),
+            color: isPlaceholder ? Colors.grey.shade100 : Colors.grey.shade50,
+            borderRadius: isPlaceholder
+                ? BorderRadius.circular(8)
+                : BorderRadius.circular(16.r),
             boxShadow: [
               BoxShadow(
                 color: Color(0XffF3F3F3).withOpacity(0.25),
@@ -395,85 +410,71 @@ class ManageYourPlan extends StatelessWidget {
           ),
           child: Row(
             children: [
-              // // File Icon
-              // Container(
-              //   padding: EdgeInsets.all(8.w),
-              //   decoration: BoxDecoration(
-              //     color: Colors.grey.shade200,
-              //     borderRadius: BorderRadius.circular(8.r),
-              //   ),
-              //   child: Icon(
-              //     Icons.insert_drive_file_outlined,
-              //     size: 18.sp,
-              //     color: Colors.grey.shade700,
-              //   ),
-              // ),
-
-              // SizedBox(width: 10.w),
-
-              // File Name
               Expanded(
-                child: Obx(
-                  () => Text(
-                    'New plan: ${controller.newPlanFileName.value}',
-                    style: AppTextStyles.s14w4i(
-                      fontweight: FontWeight.w600,
-                      color: AppColors.black,
-                    ),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
+                child: Text(
+                  displayText,
+                  style: AppTextStyles.s14w4i(
+                    fontweight: FontWeight.w500,
+                    color: isPlaceholder ? AppColors.ash : AppColors.textBlack,
                   ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                 ),
               ),
 
               SizedBox(width: 8.w),
 
-              // Replace Button (⟳ icon)
+              // Refresh Button - Direct camera
               InkWell(
-                onTap: () => controller.replaceNewPlanFile(context),
-                child: SvgPicture.asset("assets/icons/refresh.svg"),
+                onTap: () async {
+                  Navigator.pop(context); // Close manage plan
+
+                  final result = await Get.to(
+                    () => CameraCaptureScreen(mealType: 'New Plan'),
+                    transition: Transition.downToUp,
+                  );
+
+                  if (result != null && result is File) {
+                    controller.setNewPlanFile(result);
+                  }
+
+                  controller.navigateToManagePlan(); // Reopen manage plan
+                },
+                child: SvgPicture.asset(
+                  "assets/icons/refresh.svg",
+                  colorFilter: ColorFilter.mode(
+                    AppColors.black,
+                    BlendMode.srcIn,
+                  ),
+                ),
               ),
             ],
           ),
         ),
-
-        SizedBox(height: 16.h),
-
-        // Start Date & End Date Pickers (Side by Side)
-        Row(
-          children: [
-            // Start Date
-            Expanded(child: _buildDatePicker(context, 'Start Date', true)),
-            SizedBox(width: 12.w),
-            // End Date
-            Expanded(child: _buildDatePicker(context, 'End Date', false)),
-          ],
-        ),
-      ],
-    );
+      );
+    });
   }
 
-  // Date Picker Widget (Reusable for both Start & End)
-  Widget _buildDatePicker(
-    BuildContext context,
-    String label,
-    bool isStartDate,
-  ) {
+  // Start Date Picker (always visible)
+  Widget _buildStartDatePicker(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          label,
+          'Start Date',
           style: AppTextStyles.s14w4i(
             fontweight: FontWeight.w500,
-            color: AppColors.black,
+            color: AppColors.textBlack,
           ),
         ),
         SizedBox(height: 6.h),
         InkWell(
-          onTap: () => isStartDate
-              ? controller.pickNewPlanStartDate(context)
-              : controller.pickNewPlanEndDate(context),
+          onTap: () {
+            // Always allow date selection when toggle is OFF
+            if (!controller.repeatCurrentPlan.value) {
+              _selectStartDate(context);
+            }
+          },
           child: Container(
             padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 12.h),
             decoration: BoxDecoration(
@@ -496,16 +497,26 @@ class ManageYourPlan extends StatelessWidget {
                 SizedBox(width: 8.w),
                 Expanded(
                   child: Obx(() {
-                    final date = isStartDate
-                        ? controller.newPlanStartDate.value
-                        : controller.newPlanEndDate.value;
+                    final hasNextPlan = controller.nextPlanName.isNotEmpty;
+
+                    DateTime? date;
+
+                    if (hasNextPlan) {
+                      // Show existing next plan date
+                      date = controller.nextPlanStartDate.value;
+                    } else {
+                      // Show new plan date
+                      date = controller.newPlanStartDate.value;
+                    }
 
                     return Text(
                       date != null
                           ? controller.formatDate(date)
                           : 'Pick a date',
                       style: AppTextStyles.s14w4i(
-                        color: date != null ? AppColors.black : AppColors.ash,
+                        color: date != null
+                            ? AppColors.textBlack
+                            : AppColors.ash,
                       ),
                     );
                   }),
@@ -518,7 +529,45 @@ class ManageYourPlan extends StatelessWidget {
     );
   }
 
-  // 4. Dynamic Message - Always ONE message based on state
+  // Separate method to handle date selection
+  void _selectStartDate(BuildContext context) async {
+    final hasNextPlan = controller.nextPlanName.isNotEmpty;
+
+    // Determine initial date
+    DateTime initialDate;
+    if (hasNextPlan && controller.nextPlanStartDate.value != null) {
+      initialDate = controller.nextPlanStartDate.value!;
+    } else if (controller.newPlanStartDate.value != null) {
+      initialDate = controller.newPlanStartDate.value!;
+    } else {
+      initialDate = DateTime.now();
+    }
+
+    final picked = await showDatePicker(
+      context: context,
+      initialDate: initialDate,
+      firstDate: DateTime.now(),
+      lastDate: DateTime(2030),
+      builder: (context, child) => Theme(
+        data: Theme.of(
+          context,
+        ).copyWith(colorScheme: ColorScheme.light(primary: AppColors.brand)),
+        child: child!,
+      ),
+    );
+
+    if (picked != null) {
+      if (hasNextPlan) {
+        // Update existing next plan start date
+        controller.updateNextPlanStartDate(picked);
+      } else {
+        // Update new plan start date
+        controller.newPlanStartDate.value = picked;
+      }
+    }
+  }
+
+  // Dynamic Message
   Widget _buildDynamicMessage() {
     return Obx(() {
       final isRepeat = controller.repeatCurrentPlan.value;
@@ -527,187 +576,36 @@ class ManageYourPlan extends StatelessWidget {
       // Determine colors based on state
       Color bgColor;
       Color textColor;
-      IconData icon;
 
       if (isRepeat) {
-        bgColor = Colors.green.shade50;
-        textColor = Colors.green.shade700;
-        icon = Icons.check_circle_outline;
+        bgColor = Color(0xFFF0F9FF);
+        textColor = Color(0xFF0369A1);
       } else if (isToday) {
         bgColor = Colors.red.shade50;
         textColor = Colors.red.shade700;
-        icon = Icons.warning_amber_outlined;
       } else {
         bgColor = Colors.orange.shade50;
         textColor = Colors.orange.shade700;
-        icon = Icons.info_outline;
       }
 
       return Container(
-        padding: EdgeInsets.all(12.w),
+        padding: EdgeInsets.symmetric(horizontal: 6, vertical: 12),
         decoration: BoxDecoration(
           color: bgColor,
-          borderRadius: BorderRadius.circular(8.r),
+          borderRadius: BorderRadius.circular(6.r),
         ),
-        child: Row(
-          children: [
-            Icon(icon, size: 18.sp, color: textColor),
-            SizedBox(width: 10.w),
-            Expanded(
-              child: Text(
-                controller.dynamicMessage,
-                style: AppTextStyles.s14w4i(fontSize: 12.sp, color: textColor),
-              ),
-            ),
-          ],
+        child: Text(
+          controller.dynamicMessage,
+          style: AppTextStyles.s14w4i(fontSize: 12.sp, color: textColor),
+          textAlign: TextAlign.center,
         ),
       );
     });
   }
 
-  // Previous Plan Section (for restore after immediate replacement)
-  Widget _buildPreviousPlanSection() {
-    return Container(
-      padding: EdgeInsets.all(16.w),
-      decoration: BoxDecoration(
-        color: Colors.grey.shade50,
-        borderRadius: BorderRadius.circular(12.r),
-        border: Border.all(color: Colors.grey.shade200),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            'Previous Plan',
-            style: AppTextStyles.s16w5i(fontweight: FontWeight.w600),
-          ),
-
-          SizedBox(height: 12.h),
-
-          // Previous Plan Info
-          Row(
-            children: [
-              Container(
-                padding: EdgeInsets.all(8.w),
-                decoration: BoxDecoration(
-                  color: Colors.grey.shade200,
-                  borderRadius: BorderRadius.circular(8.r),
-                ),
-                child: Icon(
-                  Icons.history,
-                  color: Colors.grey.shade700,
-                  size: 20.sp,
-                ),
-              ),
-              SizedBox(width: 12.w),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Obx(
-                      () => Text(
-                        controller.previousPlanName.value,
-                        style: AppTextStyles.s14w4i(
-                          fontweight: FontWeight.w600,
-                        ),
-                      ),
-                    ),
-                    Obx(
-                      () => Text(
-                        'Was: ${controller.formatDate(controller.previousPlanStartDate.value!)} to ${controller.formatDate(controller.previousPlanEndDate.value!)}',
-                        style: AppTextStyles.s14w4i(
-                          fontSize: 11.sp,
-                          color: Colors.grey.shade600,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-
-          SizedBox(height: 12.h),
-
-          // Restore Button
-          InkWell(
-            onTap: () => _showRestoreConfirmation(),
-            child: Container(
-              width: double.infinity,
-              height: 40.h,
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(20.r),
-                border: Border.all(color: AppColors.brand, width: 1.5),
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(Icons.restore, color: AppColors.brand, size: 18.sp),
-                  SizedBox(width: 8.w),
-                  Text(
-                    'Restore This Plan',
-                    style: AppTextStyles.s14w4i(
-                      color: AppColors.brand,
-                      fontweight: FontWeight.w600,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  // Restore Confirmation Dialog
-  void _showRestoreConfirmation() {
-    Get.dialog(
-      AlertDialog(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16.r),
-        ),
-        title: Text(
-          'Restore Previous Plan?',
-          style: AppTextStyles.s16w5i(fontweight: FontWeight.w700),
-        ),
-        content: Text(
-          'This will replace your current plan "${controller.currentPlanName.value}" with "${controller.previousPlanName.value}".',
-          style: AppTextStyles.s14w4i(),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Get.back(),
-            child: Text(
-              'Cancel',
-              style: AppTextStyles.s14w4i(color: Colors.grey),
-            ),
-          ),
-          TextButton(
-            onPressed: () {
-              Get.back();
-              Get.back(); // Close bottom sheet
-              controller.restorePreviousPlan();
-            },
-            child: Text(
-              'Restore',
-              style: AppTextStyles.s14w4i(
-                color: AppColors.brand,
-                fontweight: FontWeight.w600,
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
   // Bottom Buttons
   Widget _buildBottomButtons(BuildContext context) {
-    return
-    // Bottom Buttons
-    Row(
+    return Row(
       children: [
         // Back Button
         Expanded(
@@ -746,10 +644,10 @@ class ManageYourPlan extends StatelessWidget {
 
         SizedBox(width: 12.w),
 
-        // Log Meal Button
+        // Save Button
         Expanded(
           child: InkWell(
-            onTap: () => controller.savePlanChanges,
+            onTap: () => controller.savePlanChanges(),
             child: Container(
               height: 50.h,
               decoration: BoxDecoration(

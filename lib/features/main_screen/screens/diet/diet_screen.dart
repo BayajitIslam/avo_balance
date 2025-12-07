@@ -1,4 +1,3 @@
-// screens/diet_screen.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -63,7 +62,7 @@ class DietScreen extends StatelessWidget {
                         ),
                         SizedBox(height: 16.h),
                         Text(
-                          'Processing your prescription...',
+                          'Loading...',
                           style: AppTextStyles.s16w5i(color: Colors.white),
                         ),
                       ],
@@ -320,6 +319,8 @@ class DietScreen extends StatelessWidget {
     );
   }
 
+  // In diet_screen.dart - Update all method calls:
+
   Widget _buildMealsList(DietController controller) {
     DayMealPlan? dayPlan = controller.getCurrentDayPlan();
 
@@ -328,7 +329,6 @@ class DietScreen extends StatelessWidget {
       children: [
         // Daily Goal Card
         if (dayPlan != null) _buildDailyGoalCard(2000, dayPlan.totalCalories),
-
         if (dayPlan != null) SizedBox(height: 20.h),
 
         // Breakfast
@@ -339,9 +339,9 @@ class DietScreen extends StatelessWidget {
             dayPlan!.breakfast!.name,
             'TRACKED',
             dayPlan.breakfast!.totalCalories,
-            dayPlan.breakfast!.items,
+            dayPlan.breakfast!, // Pass whole MealData
             "Planned",
-            true, // Has warning
+            true,
           )
         else
           BuildEmptyMealCard(
@@ -360,7 +360,7 @@ class DietScreen extends StatelessWidget {
             dayPlan!.lunch!.name,
             'TRACKED',
             dayPlan.lunch!.totalCalories,
-            dayPlan.lunch!.items,
+            dayPlan.lunch!, // Pass whole MealData
             "Rebalance",
             false,
           )
@@ -381,11 +381,10 @@ class DietScreen extends StatelessWidget {
             dayPlan!.dinner!.name,
             'NOT TRACKED',
             dayPlan.dinner!.totalCalories,
-            dayPlan.dinner!.items,
+            dayPlan.dinner!, // Pass whole MealData
             "CheatMeal",
             false,
             isNotTracked: true,
-            // isLogToday: true,
           )
         else
           BuildEmptyMealCard(
@@ -621,13 +620,15 @@ class DietScreen extends StatelessWidget {
   }
 
   //If  Plan Availabel
+  // In diet_screen.dart, replace _buildExpandableMealSection with this:
+
   Widget _buildExpandableMealSection(
     DietController controller,
     String mealId,
     String title,
     String status,
     int totalCalories,
-    List<MealItem> items,
+    MealData mealData,
     String mealMode,
     bool hasWarning, {
     bool isNotTracked = false,
@@ -635,25 +636,24 @@ class DietScreen extends StatelessWidget {
     Color badgeColor = isNotTracked ? const Color(0xFFFF6504) : AppColors.brand;
     String badgeText = isNotTracked ? 'NOT TRACKED' : status;
     Color mealModeColor;
+    String displayMealMode;
+
     switch (mealMode) {
       case "Planned":
         mealModeColor = AppColors.brand;
-        mealMode = "Planned";
+        displayMealMode = "Planned";
         break;
-
       case "Rebalance":
         mealModeColor = const Color(0xFFFF6504);
-        mealMode = "Rebalance";
+        displayMealMode = "Rebalance";
         break;
-
       case "CheatMeal":
         mealModeColor = const Color(0xFFF82F68);
-        mealMode = "Cheat Meal";
+        displayMealMode = "Cheat Meal";
         break;
-
       default:
         mealModeColor = Colors.transparent;
-        mealMode = "Unknown";
+        displayMealMode = "Unknown";
     }
 
     return Container(
@@ -667,7 +667,6 @@ class DietScreen extends StatelessWidget {
             spreadRadius: -6,
             offset: Offset(0, 8),
           ),
-
           BoxShadow(
             color: Colors.black.withOpacity(0.1),
             blurRadius: 25,
@@ -699,7 +698,6 @@ class DietScreen extends StatelessWidget {
             ),
           ),
 
-          //all info i need
           Column(
             children: [
               InkWell(
@@ -747,7 +745,6 @@ class DietScreen extends StatelessWidget {
                                 ),
                               ],
                             ),
-
                             Padding(
                               padding: EdgeInsets.only(top: 10.h),
                               child: Row(
@@ -780,7 +777,7 @@ class DietScreen extends StatelessWidget {
                                   ),
                                   SizedBox(width: 8.w),
                                   Text(
-                                    mealMode,
+                                    displayMealMode,
                                     style: AppTextStyles.s14w4i(
                                       color: AppColors.black,
                                       fontweight: FontWeight.w700,
@@ -793,15 +790,29 @@ class DietScreen extends StatelessWidget {
                         ),
                       ),
                       SizedBox(width: 16.w),
-                      MultiSegmentCircularProgress(
-                        size: 100,
-                        totalCalories: totalCalories,
-                        segments: _getMealSegments(items),
+
+                      // Updated MultiSegmentCircularProgress - Stateless
+                      GetBuilder<DietController>(
+                        builder: (ctrl) {
+                          return MultiSegmentCircularProgress(
+                            size: 100,
+                            totalCalories: totalCalories,
+                            segments: _getMealSegments(
+                              mealData,
+                            ), // Pass mealData
+                            selectedIndex: ctrl.getNutritionSelection(mealId),
+                            onSegmentChange: (index) {
+                              ctrl.updateNutritionSelection(mealId, index);
+                            },
+                          );
+                        },
                       ),
                     ],
                   ),
                 ),
               ),
+
+              // Rest of expandable content stays the same
               Obx(() {
                 bool isExpanded = controller.expandedMeals[mealId] ?? false;
 
@@ -812,10 +823,6 @@ class DietScreen extends StatelessWidget {
                       : CrossFadeState.showSecond,
                   firstChild: Column(
                     children: [
-                      // Padding(
-                      //   // padding: EdgeInsets.symmetric(horizontal: 20.w),
-                      //   child: Divider(height: 1, color: Colors.grey.shade200),
-                      // ),
                       Padding(
                         padding: EdgeInsetsGeometry.only(
                           left: 20,
@@ -824,7 +831,9 @@ class DietScreen extends StatelessWidget {
                         ),
                         child: Column(
                           children: [
-                            ...items.map((item) => _buildMealItemRow(item)),
+                            ...mealData.items.map(
+                              (item) => _buildMealItemRow(item),
+                            ),
                             if (hasWarning)
                               Container(
                                 margin: EdgeInsets.only(top: 16.h),
@@ -896,6 +905,32 @@ class DietScreen extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  // In diet_screen.dart - Replace _getMealSegments:
+
+  List<NutritionSegment> _getMealSegments(MealData mealData) {
+    // Just use the percentages from model - no calculation
+    return [
+      NutritionSegment(
+        name: 'Carbs',
+        color: const Color(0xFFF7C948), // Yellow
+        percentage: mealData.carbsPercentage ?? 0.33,
+        grams: 0, // Not needed anymore
+      ),
+      NutritionSegment(
+        name: 'Proteins',
+        color: const Color(0xFF2D6DF6), // Blue
+        percentage: mealData.proteinsPercentage ?? 0.33,
+        grams: 0,
+      ),
+      NutritionSegment(
+        name: 'Fats',
+        color: const Color(0xFFF2853F), // Orange
+        percentage: mealData.fatsPercentage ?? 0.34,
+        grams: 0,
+      ),
+    ];
   }
 
   Widget _buildMealItemRow(MealItem item) {
@@ -987,25 +1022,6 @@ class DietScreen extends StatelessWidget {
         ],
       ),
     );
-  }
-
-  // Helper method in diet_screen.dart
-  List<MealSegment> _getMealSegments(List<MealItem> items) {
-    final itemsWithCalories = items.where((item) => item.calories > 0).toList();
-
-    if (itemsWithCalories.isEmpty) {
-      return [MealSegment(color: Colors.grey.shade300, percentage: 1.0)];
-    }
-
-    int totalCalories = itemsWithCalories.fold(
-      0,
-      (sum, item) => sum + item.calories,
-    );
-
-    return itemsWithCalories.map((item) {
-      double percentage = item.calories / totalCalories;
-      return MealSegment(color: item.color, percentage: percentage);
-    }).toList();
   }
 
   List<Color> _getMealGradientColors(String mealType) {

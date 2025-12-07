@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:template/core/constants/app_colors.dart';
 import 'package:template/core/themes/app_text_style.dart';
 
@@ -19,6 +20,8 @@ class ActionButton extends StatelessWidget {
   final bool iconBorderEnable;
   final bool shadowOn;
   final int padding;
+  final bool isSvg;
+  final double descFontSize;
   const ActionButton({
     super.key,
     required this.onTap,
@@ -36,6 +39,8 @@ class ActionButton extends StatelessWidget {
     this.borderEnbale = false,
     this.shadowOn = false,
     this.padding = 16,
+    this.isSvg = false,
+    this.descFontSize = 12,
   });
 
   @override
@@ -79,7 +84,8 @@ class ActionButton extends StatelessWidget {
                       )
                     : null,
               ),
-              child: Image.asset(leftIcon),
+              padding: EdgeInsets.all(10),
+              child: isSvg ? SvgPicture.asset(leftIcon) : Image.asset(leftIcon),
             ),
             SizedBox(width: 12.w),
             Expanded(
@@ -101,7 +107,7 @@ class ActionButton extends StatelessWidget {
                           desc,
                           style: AppTextStyles.s14w4i(
                             color: descColor,
-                            fontSize: 12.sp,
+                            fontSize: descFontSize,
                           ),
                         ),
                 ],

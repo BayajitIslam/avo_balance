@@ -7,10 +7,11 @@ import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:template/core/constants/app_colors.dart';
 import 'package:template/features/main_screen/screens/camara/camera_capture_screen.dart';
+import 'package:template/features/main_screen/screens/diet/analyzing_meal_screen.dart.dart';
 import 'package:template/features/main_screen/widgets/bottom_sheet/extra_meal_selection.dart';
-import 'package:template/features/main_screen/widgets/bottom_sheet/log_cheat_meal_bottom_sheet.dart';
 import 'package:template/features/main_screen/widgets/bottom_sheet/manage_your_plan.dart';
 import 'package:template/features/main_screen/widgets/bottom_sheet/replace_meal_bottom_sheet.dart';
+import 'package:template/features/main_screen/widgets/bottom_sheet/upload_plan.dart';
 
 class DietController extends GetxController {
   final RxBool hasDietPlan = false.obs;
@@ -28,6 +29,20 @@ class DietController extends GetxController {
   // ==========================================
   // ========== MANAGE PLAN FIELDS ===========
   // ==========================================
+
+  // Add this new state for nutrition selection
+  final RxMap<String, int?> selectedNutritionIndexes = <String, int?>{}.obs;
+
+  // Add method to update nutrition selection
+  void updateNutritionSelection(String mealId, int? index) {
+    selectedNutritionIndexes[mealId] = index;
+    update(); // Trigger UI rebuild
+  }
+
+  // Add method to get nutrition selection
+  int? getNutritionSelection(String mealId) {
+    return selectedNutritionIndexes[mealId];
+  }
 
   // Toggle state (default = ON)
   final RxBool repeatCurrentPlan = true.obs;
@@ -116,7 +131,7 @@ class DietController extends GetxController {
 
     // State 2: Toggle OFF + no file uploaded
     if (!hasFileUploaded) {
-      return "The new plan will start when the current one ends.";
+      return "The current plan will automatically repeat when it ends.";
     }
 
     // State 3: Toggle OFF + file uploaded + no date selected
@@ -472,12 +487,19 @@ class DietController extends GetxController {
 
   /// Navigate to manage plan bottom sheet
   void navigateToManagePlan() {
-    showModalBottomSheet(
-      context: Get.context!,
-      backgroundColor: Colors.transparent,
-      isScrollControlled: true,
-      builder: (context) => ManageYourPlan(),
-    );
+    hasDietPlan.value
+        ? showModalBottomSheet(
+            context: Get.context!,
+            backgroundColor: Colors.transparent,
+            isScrollControlled: true,
+            builder: (context) => ManageYourPlan(),
+          )
+        : showModalBottomSheet(
+            context: Get.context!,
+            backgroundColor: Colors.transparent,
+            isScrollControlled: true,
+            builder: (context) => UploadPlan(),
+          );
   }
 
   // ==========================================
@@ -526,8 +548,13 @@ class DietController extends GetxController {
       if (i == 0) {
         dietPlanData[dateKey] = DayMealPlan(
           date: date,
+
+          // BREAKFAST
           breakfast: MealData(
             name: 'Breakfast',
+            carbsPercentage: 0.55, // 55% Carbs
+            proteinsPercentage: 0.30, // 30% Proteins
+            fatsPercentage: 0.15, // 15% Fats
             items: [
               MealItem(
                 name: 'Oatmeal',
@@ -555,117 +582,41 @@ class DietController extends GetxController {
               ),
             ],
           ),
+
+          // LUNCH
           lunch: MealData(
             name: 'Lunch',
+            carbsPercentage: 0.40, // 40% Carbs
+            proteinsPercentage: 0.35, // 35% Proteins
+            fatsPercentage: 0.25, // 25% Fats
             items: [
               MealItem(
-                name: 'Oatmeal',
+                name: 'Chicken',
                 calories: 220,
                 color: Color(0xffFF73A3),
               ),
               MealItem(name: 'Rice', calories: 220, color: Color(0xFF3F51B5)),
-              MealItem(name: 'Butter', calories: 220, color: Color(0xFF9C28B1)),
+              MealItem(
+                name: 'Vegetables',
+                calories: 220,
+                color: Color(0xFF9C28B1),
+              ),
             ],
           ),
+
+          // DINNER
           dinner: MealData(
             name: 'Dinner',
+            carbsPercentage: 0.30, // 30% Carbs
+            proteinsPercentage: 0.45, // 45% Proteins
+            fatsPercentage: 0.25, // 25% Fats
             items: [
-              MealItem(
-                name: 'Oatmeal',
-                calories: 220,
-                color: Color(0xffFF73A3),
-              ),
-              MealItem(name: 'Rice', calories: 220, color: Color(0xFF3F51B5)),
+              MealItem(name: 'Salmon', calories: 220, color: Color(0xffFF73A3)),
+              MealItem(name: 'Quinoa', calories: 220, color: Color(0xFF3F51B5)),
             ],
           ),
+
           totalCalories: 1800,
-        );
-      } else if (i == 1) {
-        dietPlanData[dateKey] = DayMealPlan(
-          date: date,
-          breakfast: MealData(
-            name: 'Breakfast',
-            items: [
-              MealItem(
-                name: 'Oatmeal',
-                calories: 220,
-                color: Color(0xffFF73A3),
-              ),
-              MealItem(name: 'Rice', calories: 220, color: Color(0xFF3F51B5)),
-              MealItem(name: 'Butter', calories: 220, color: Color(0xFF9C28B1)),
-            ],
-          ),
-          lunch: null,
-          dinner: null,
-          totalCalories: 500,
-        );
-      } else if (i == 2) {
-        dietPlanData[dateKey] = DayMealPlan(
-          date: date,
-          breakfast: MealData(
-            name: 'Breakfast',
-            items: [
-              MealItem(
-                name: 'Oatmeal',
-                calories: 220,
-                color: Color(0xffFF73A3),
-              ),
-              MealItem(name: 'Rice', calories: 220, color: Color(0xFF3F51B5)),
-            ],
-          ),
-          lunch: MealData(
-            name: 'Lunch',
-            items: [
-              MealItem(
-                name: 'Oatmeal',
-                calories: 220,
-                color: Color(0xffFF73A3),
-              ),
-              MealItem(name: 'Rice', calories: 220, color: Color(0xFF3F51B5)),
-            ],
-          ),
-          dinner: null,
-          totalCalories: 1080,
-        );
-      } else if (i % 4 == 0) {
-        dietPlanData[dateKey] = DayMealPlan(
-          date: date,
-          breakfast: MealData(
-            name: 'Breakfast',
-            items: [
-              MealItem(
-                name: 'Oatmeal',
-                calories: 220,
-                color: Color(0xffFF73A3),
-              ),
-              MealItem(name: 'Rice', calories: 220, color: Color(0xFF3F51B5)),
-              MealItem(name: 'Butter', calories: 220, color: Color(0xFF9C28B1)),
-            ],
-          ),
-          lunch: MealData(
-            name: 'Lunch',
-            items: [
-              MealItem(
-                name: 'Oatmeal',
-                calories: 220,
-                color: Color(0xffFF73A3),
-              ),
-              MealItem(name: 'Rice', calories: 220, color: Color(0xFF3F51B5)),
-              MealItem(name: 'Butter', calories: 220, color: Color(0xFF9C28B1)),
-            ],
-          ),
-          dinner: MealData(
-            name: 'Dinner',
-            items: [
-              MealItem(
-                name: 'Oatmeal',
-                calories: 220,
-                color: Color(0xffFF73A3),
-              ),
-              MealItem(name: 'Rice', calories: 220, color: Color(0xFF3F51B5)),
-            ],
-          ),
-          totalCalories: 1570,
         );
       } else if (i % 3 == 0) {
         dietPlanData[dateKey] = DayMealPlan(
@@ -952,21 +903,53 @@ class DietController extends GetxController {
     }
   }
 
-  void navigateToLogCheatMeal() {
-    showModalBottomSheet(
-      context: Get.context!,
-      backgroundColor: Colors.transparent,
-      isScrollControlled: true,
-      builder: (context) => LogCheatMealBottomSheet(
-        replaceMealTap: () {
-          Navigator.pop(context);
-          showReplaceMealDialog("Breakfast");
-        },
-        extraMealTap: () {
-          Navigator.pop(context);
-          showExtraMealAddDialog("Breakfast");
-        },
-      ),
+  // controllers/diet_controller.dart
+  void navigateToLogCheatMeal() async {
+    final result = await Get.to(
+      () => CameraCaptureScreen(mealType: 'Cheat Meal'),
+      transition: Transition.downToUp,
+    );
+
+    if (result != null && result is File) {
+      // Navigate to analyzing screen
+      Get.to(
+        () => AnalyzingMealScreen(imageFile: result),
+        transition: Transition.fadeIn,
+      );
+    }
+  }
+
+  // Add this method to diet_controller.dart
+
+  /// Clear next plan (to allow replacing with new one)
+  void clearNextPlan() {
+    nextPlanName.value = '';
+    nextPlanStartDate.value = null;
+
+    Get.snackbar(
+      'Plan Cleared',
+      'You can now upload a new plan.',
+      snackPosition: SnackPosition.BOTTOM,
+      backgroundColor: Colors.blue,
+      colorText: Colors.white,
+      margin: EdgeInsets.all(16),
+      borderRadius: 12,
+    );
+  }
+
+  /// Update next plan start date (for existing scheduled plan)
+  void updateNextPlanStartDate(DateTime newDate) {
+    nextPlanStartDate.value = newDate;
+
+    Get.snackbar(
+      'Date Updated',
+      'Start date changed to ${formatDate(newDate)}',
+      snackPosition: SnackPosition.BOTTOM,
+      backgroundColor: Colors.blue,
+      colorText: Colors.white,
+      margin: EdgeInsets.all(16),
+      borderRadius: 12,
+      duration: Duration(seconds: 2),
     );
   }
 }
@@ -991,25 +974,46 @@ class DayMealPlan {
   });
 }
 
+// In diet_controller.dart - Update MealData class:
+
 class MealData {
   final String name;
   final List<MealItem> items;
 
-  MealData({required this.name, required this.items});
+  // Add these macro percentage fields
+  final double? carbsPercentage; // 0.0 to 1.0 (e.g., 0.55 = 55%)
+  final double? proteinsPercentage; // 0.0 to 1.0
+  final double? fatsPercentage; // 0.0 to 1.0
 
-  int get totalCalories => items.fold(0, (sum, item) => sum + item.calories);
+  MealData({
+    required this.name,
+    required this.items,
+    this.carbsPercentage,
+    this.proteinsPercentage,
+    this.fatsPercentage,
+  });
+
+  int get totalCalories {
+    return items.fold(0, (sum, item) => sum + item.calories);
+  }
 }
 
 class MealItem {
   final String name;
   final int calories;
-  final int? weight;
   final Color color;
+  final int? weight;
+  final int? carbs; // Add these
+  final int? protein; // Add these
+  final int? fats; // Add these
 
   MealItem({
     required this.name,
     required this.calories,
-    this.weight,
     required this.color,
+    this.weight,
+    this.carbs,
+    this.protein,
+    this.fats,
   });
 }
