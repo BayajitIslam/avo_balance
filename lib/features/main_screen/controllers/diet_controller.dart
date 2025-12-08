@@ -46,6 +46,7 @@ class DietController extends GetxController {
 
   // Toggle state (default = ON)
   final RxBool repeatCurrentPlan = true.obs;
+  final RxBool tempRepeatCurrentPlan = true.obs;
 
   // New Plan data (NEVER deleted when toggle changes)
   final Rx<File?> newPlanFile = Rx<File?>(null);
@@ -211,6 +212,28 @@ class DietController extends GetxController {
   }
 
   /// Get action type based on current state
+  void changeToggleForOnlyDevlopment() {
+    final actionType = _getActionType();
+
+    // ------- YOUR REQUESTED LOGIC -------
+    // If user added new plan → repeat must be false
+    if (actionType == 'start_after_current' ||
+        actionType == 'start_on_date' ||
+        actionType == 'replace_on_date' ||
+        actionType == 'replace_immediately') {
+      repeatCurrentPlan.value = false;
+    }
+    // Else → keep user's toggle selection
+    else {
+      repeatCurrentPlan.value = tempRepeatCurrentPlan.value;
+    }
+    // ------------------------------------
+
+    // (Any other save logic you already have)
+    print("Saved action type: $actionType");
+    print("Final repeatCurrentPlan: ${repeatCurrentPlan.value}");
+  }
+
   String _getActionType() {
     // Toggle ON = repeat current plan
     if (repeatCurrentPlan.value) {

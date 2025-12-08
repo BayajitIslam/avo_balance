@@ -943,29 +943,6 @@ class DietScreen extends StatelessWidget {
       padding: EdgeInsets.symmetric(horizontal: 12, vertical: 4),
       child: Row(
         children: [
-          Container(
-            width: 12.w,
-            height: 12.w,
-            decoration: BoxDecoration(
-              color: item.color,
-              shape: BoxShape.circle,
-              boxShadow: [
-                BoxShadow(
-                  color: AppColors.black.withOpacity(0.3),
-                  spreadRadius: -4,
-                  blurRadius: 6,
-                  offset: Offset(0, 10),
-                ),
-                BoxShadow(
-                  color: AppColors.black.withOpacity(0.3),
-                  spreadRadius: -3,
-                  blurRadius: 15,
-                  offset: Offset(0, 10),
-                ),
-              ],
-            ),
-          ),
-          SizedBox(width: 14.w),
           Expanded(
             child: Text(
               item.name,

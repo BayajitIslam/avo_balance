@@ -647,7 +647,13 @@ class ManageYourPlan extends StatelessWidget {
         // Save Button
         Expanded(
           child: InkWell(
-            onTap: () => controller.savePlanChanges(),
+            onTap: () {
+              //Development Fuction
+              controller.changeToggleForOnlyDevlopment();
+
+              //Actual Function
+              controller.savePlanChanges();
+            },
             child: Container(
               height: 50.h,
               decoration: BoxDecoration(

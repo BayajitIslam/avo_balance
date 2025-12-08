@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:template/core/constants/app_colors.dart';
 import 'package:template/core/themes/app_text_style.dart';
@@ -116,46 +117,43 @@ class _MealSummaryScreenState extends State<MealSummaryScreen> {
             ),
           ),
 
-          // Status Bar Area
-          SafeArea(
-            child: Padding(
-              padding: EdgeInsets.all(16.w),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    '9:41',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 14.sp,
-                      fontWeight: FontWeight.w600,
-                      shadows: [
-                        Shadow(
-                          color: Colors.black.withOpacity(0.5),
-                          blurRadius: 8,
-                        ),
-                      ],
+          //Upload Another Image
+          Positioned(
+            top: 350.h,
+            left: 25.h,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                //Upload Button
+                InkWell(
+                  onTap: () {
+                    //Only For Devlopment
+                    if (Get.context != null) {
+                      Get.snackbar(
+                        "Successfull",
+                        "Function Under Development",
+                        snackPosition: SnackPosition.BOTTOM,
+                        backgroundColor: Colors.blue,
+                        colorText: Colors.white,
+                      );
+                    } else {
+                      print("Cannot show snackbar: No valid overlay context");
+                    }
+                  },
+                  child: Container(
+                    width: 50.h,
+                    height: 50.h,
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFFFFFFF),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    padding: EdgeInsets.all(8),
+                    child: SvgPicture.asset(
+                      "assets/icons/fluent_image-add-20-regular.svg",
                     ),
                   ),
-                  Row(
-                    children: [
-                      Icon(
-                        Icons.signal_cellular_4_bar,
-                        color: Colors.white,
-                        size: 16.sp,
-                      ),
-                      SizedBox(width: 4.w),
-                      Icon(Icons.wifi, color: Colors.white, size: 16.sp),
-                      SizedBox(width: 4.w),
-                      Icon(
-                        Icons.battery_full,
-                        color: Colors.white,
-                        size: 16.sp,
-                      ),
-                    ],
-                  ),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
 
@@ -178,13 +176,13 @@ class _MealSummaryScreenState extends State<MealSummaryScreen> {
                     borderRadius: BorderRadius.vertical(
                       top: Radius.circular(24.r),
                     ),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.2),
-                        blurRadius: 20,
-                        offset: Offset(0, -5),
-                      ),
-                    ],
+                    // boxShadow: [
+                    //   BoxShadow(
+                    //     color: Colors.black.withOpacity(0.2),
+                    //     blurRadius: 20,
+                    //     offset: Offset(0, -5),
+                    //   ),
+                    // ],
                   ),
                   child: Column(
                     children: [

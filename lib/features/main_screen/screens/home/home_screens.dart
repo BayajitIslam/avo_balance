@@ -200,7 +200,7 @@ class HomeScreen extends StatelessWidget {
               children: [
                 ClipRRect(
                   borderRadius: BorderRadius.circular(10.r),
-                  child: Container(
+                  child: SizedBox(
                     height: 12.h,
                     child: Row(
                       children: [
