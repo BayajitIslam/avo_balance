@@ -235,10 +235,12 @@ class ManageYourPlan extends StatelessWidget {
                         ),
 
                         // Next Plan Name + Start Date
-                        Row(
+                        Wrap(
                           children: [
                             Text(
-                              '$upNextPlanName ',
+                              upNextPlanName.length > 9
+                                  ? '${upNextPlanName.substring(0, 9)}... '
+                                  : upNextPlanName,
                               style: AppTextStyles.s22w7i(fontSize: 12.sp),
                             ),
                             Text(
@@ -594,10 +596,12 @@ class ManageYourPlan extends StatelessWidget {
           color: bgColor,
           borderRadius: BorderRadius.circular(6.r),
         ),
-        child: Text(
-          controller.dynamicMessage,
-          style: AppTextStyles.s14w4i(fontSize: 12.sp, color: textColor),
-          textAlign: TextAlign.center,
+        child: Center(
+          child: Text(
+            controller.dynamicMessage,
+            style: AppTextStyles.s14w4i(fontSize: 12.sp, color: textColor),
+            textAlign: TextAlign.center,
+          ),
         ),
       );
     });
@@ -648,9 +652,6 @@ class ManageYourPlan extends StatelessWidget {
         Expanded(
           child: InkWell(
             onTap: () {
-              //Development Fuction
-              controller.changeToggleForOnlyDevlopment();
-
               //Actual Function
               controller.savePlanChanges();
             },

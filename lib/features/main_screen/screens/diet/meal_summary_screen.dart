@@ -1,3 +1,4 @@
+// meal_summary_screen.dart
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -5,170 +6,97 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:template/core/constants/app_colors.dart';
 import 'package:template/core/themes/app_text_style.dart';
+import 'package:template/features/main_screen/controllers/meal_summary_controller.dart';
 import 'package:template/features/main_screen/screens/diet/rebalancing_screen.dart';
 import 'package:template/features/main_screen/widgets/action_button.dart';
 import 'package:template/features/main_screen/widgets/bottom_sheet/replace_meal_bottom_sheet.dart';
 import 'package:template/features/main_screen/widgets/multi_segment_circular_progress.dart';
 
-class FoodItem {
-  final String name;
-  final int calories;
-  final Color color;
-  final int? weight;
-
-  FoodItem({
-    required this.name,
-    required this.calories,
-    required this.color,
-    this.weight,
-  });
-}
-
-class MealSummaryScreen extends StatefulWidget {
+class MealSummaryScreen extends StatelessWidget {
   final File imageFile;
 
   const MealSummaryScreen({super.key, required this.imageFile});
 
   @override
-  State<MealSummaryScreen> createState() => _MealSummaryScreenState();
-}
+  Widget build(BuildContext context) {
+    // Initialize controller
+    final controller = Get.put(MealSummaryController());
+    controller.initializeWithImage(imageFile);
 
-class _MealSummaryScreenState extends State<MealSummaryScreen> {
-  final TextEditingController _ingredientController = TextEditingController();
-  final List<Map<String, String>> _additionalItems = [];
-
-  double _sheetPosition = 0.5; // Track bottom sheet position (0.5 = 50%)
-
-  @override
-  void dispose() {
-    _ingredientController.dispose();
-    super.dispose();
-  }
-
-  // void _showExitWarning() {
-  //   showDialog(
-  //     context: context,
-  //     builder: (context) => AlertDialog(
-  //       shape: RoundedRectangleBorder(
-  //         borderRadius: BorderRadius.circular(16.r),
-  //       ),
-  //       title: Text(
-  //         'Discard Changes?',
-  //         style: TextStyle(fontSize: 18.sp, fontWeight: FontWeight.w700),
-  //       ),
-  //       content: Text(
-  //         'Are you sure you want to go back? Your meal data will be lost.',
-  //         style: TextStyle(fontSize: 14.sp, color: Colors.grey.shade700),
-  //       ),
-  //       actions: [
-  //         TextButton(
-  //           onPressed: () => Navigator.pop(context),
-  //           child: Text(
-  //             'Cancel',
-  //             style: TextStyle(
-  //               fontSize: 14.sp,
-  //               fontWeight: FontWeight.w600,
-  //               color: Colors.grey.shade600,
-  //             ),
-  //           ),
-  //         ),
-  //         TextButton(
-  //           onPressed: () {
-  //             Navigator.pop(context);
-  //             Get.offAll(() => DietScreen());
-  //           },
-  //           child: Text(
-  //             'OK',
-  //             style: TextStyle(
-  //               fontSize: 14.sp,
-  //               fontWeight: FontWeight.w700,
-  //               color: Colors.red,
-  //             ),
-  //           ),
-  //         ),
-  //       ],
-  //     ),
-  //   );
-  // }
-
-  void _handleAction(String action) {
-    Get.off(
-      () => RebalancingScreen(action: action),
-      transition: Transition.fadeIn,
+    return Scaffold(
+      backgroundColor: Colors.black,
+      body: Obx(
+        () => PageView.builder(
+          controller: controller.pageController,
+          onPageChanged: controller.updateCurrentPage,
+          itemCount: controller.uploadedImages.length,
+          itemBuilder: (context, index) {
+            return _buildMealPage(controller, index);
+          },
+        ),
+      ),
     );
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.black,
-      body: Stack(
-        children: [
-          // Background Image (Full Screen)
-          Positioned.fill(
-            child: Image.file(widget.imageFile, fit: BoxFit.cover),
-          ),
+  Widget _buildMealPage(MealSummaryController controller, int index) {
+    final imageFile = controller.uploadedImages[index];
 
-          // Dynamic Dark Overlay (increases as bottom sheet goes up)
+    return Obx(() {
+      final pageState = controller.mealStates[index];
+
+      return Stack(
+        children: [
+          // Background Image
+          Positioned.fill(child: Image.file(imageFile, fit: BoxFit.cover)),
+
+          // Dynamic Dark Overlay
           Positioned.fill(
             child: AnimatedContainer(
               duration: Duration(milliseconds: 50),
-              color: Colors.black.withOpacity(_calculateOverlayOpacity()),
+              color: Colors.black.withOpacity(
+                controller.calculateOverlayOpacity(pageState.sheetPosition),
+              ),
             ),
           ),
 
-          //Upload Another Image
+          // Upload Another Image Button
           Positioned(
             top: 350.h,
-            left: 25.h,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                //Upload Button
-                InkWell(
-                  onTap: () {
-                    //Only For Devlopment
-                    if (Get.context != null) {
-                      Get.snackbar(
-                        "Successfull",
-                        "Function Under Development",
-                        snackPosition: SnackPosition.BOTTOM,
-                        backgroundColor: Colors.blue,
-                        colorText: Colors.white,
-                      );
-                    } else {
-                      print("Cannot show snackbar: No valid overlay context");
-                    }
-                  },
-                  child: Container(
-                    width: 50.h,
-                    height: 50.h,
-                    decoration: BoxDecoration(
-                      color: const Color(0xFFFFFFFF),
-                      borderRadius: BorderRadius.circular(8),
+            left: 25.w,
+            child: InkWell(
+              onTap: controller.uploadAnotherImage,
+              child: Container(
+                width: 50.w,
+                height: 50.h,
+                decoration: BoxDecoration(
+                  color: const Color(0xCCFFFFFF),
+                  borderRadius: BorderRadius.circular(8.r),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.2),
+                      blurRadius: 8,
+                      offset: Offset(0, 2),
                     ),
-                    padding: EdgeInsets.all(8),
-                    child: SvgPicture.asset(
-                      "assets/icons/fluent_image-add-20-regular.svg",
-                    ),
-                  ),
+                  ],
                 ),
-              ],
+                padding: EdgeInsets.all(12.w),
+                child: SvgPicture.asset(
+                  "assets/icons/fluent_image-add-20-regular.svg",
+                ),
+              ),
             ),
           ),
 
           // Draggable Bottom Sheet
           NotificationListener<DraggableScrollableNotification>(
             onNotification: (notification) {
-              setState(() {
-                _sheetPosition = notification.extent;
-              });
+              controller.updateSheetPosition(index, notification.extent);
               return true;
             },
             child: DraggableScrollableSheet(
-              initialChildSize: 0.5, // Start at 50%
-              minChildSize: 0.5, // Minimum 50%
-              maxChildSize: 0.95, // Maximum 95%
+              initialChildSize: 0.5,
+              minChildSize: 0.5,
+              maxChildSize: 0.95,
               builder: (context, scrollController) {
                 return Container(
                   decoration: BoxDecoration(
@@ -176,13 +104,6 @@ class _MealSummaryScreenState extends State<MealSummaryScreen> {
                     borderRadius: BorderRadius.vertical(
                       top: Radius.circular(24.r),
                     ),
-                    // boxShadow: [
-                    //   BoxShadow(
-                    //     color: Colors.black.withOpacity(0.2),
-                    //     blurRadius: 20,
-                    //     offset: Offset(0, -5),
-                    //   ),
-                    // ],
                   ),
                   child: Column(
                     children: [
@@ -203,32 +124,19 @@ class _MealSummaryScreenState extends State<MealSummaryScreen> {
                           controller: scrollController,
                           padding: EdgeInsets.symmetric(horizontal: 16.w),
                           children: [
-                            // Header
-                            _buildHeader(),
+                            _buildHeader(controller, index),
                             SizedBox(height: 8.h),
-
-                            // Dots
-                            _buildDotsIndicator(),
+                            _buildDotsIndicator(controller),
                             SizedBox(height: 20.h),
-
-                            // Main Item
-                            _buildMainItem(),
+                            _buildMainItem(controller, index, pageState),
                             SizedBox(height: 16.h),
-
-                            // Detected Items
                             _buildDetectedItems(),
                             SizedBox(height: 16.h),
-
-                            // Warning
                             _buildWarning(),
                             SizedBox(height: 20.h),
-
-                            // Improve Accuracy
-                            _buildImproveAccuracy(),
+                            _buildImproveAccuracy(controller, index, pageState),
                             SizedBox(height: 20.h),
-
-                            // Action Buttons
-                            _buildActionButtons(),
+                            _buildActionButtons(controller, index),
                             SizedBox(height: 40.h),
                           ],
                         ),
@@ -240,51 +148,27 @@ class _MealSummaryScreenState extends State<MealSummaryScreen> {
             ),
           ),
         ],
-      ),
-    );
+      );
+    });
   }
 
-  double _calculateOverlayOpacity() {
-    // When sheet is at 50% = 0.0 opacity (fully clear)
-    // When sheet is at 95% = 0.7 opacity (dark)
-
-    if (_sheetPosition <= 0.5) {
-      return 0.0; // Fully visible when at 50% or below
-    }
-
-    // Calculate progress from 50% to 95%
-    double progress = (_sheetPosition - 0.5) / (0.95 - 0.5);
-
-    // Apply easing curve for smoother transition
-    double easedProgress = progress * progress; // Quadratic easing
-
-    return (easedProgress * 0.7).clamp(0.0, 0.7);
-  }
-
-  // Header
-  Widget _buildHeader() {
+  Widget _buildHeader(MealSummaryController controller, int pageIndex) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        //dummy contyainer
         Container(
           padding: EdgeInsets.all(8.w),
-          decoration: BoxDecoration(
-            color: Colors.transparent,
-            shape: BoxShape.circle,
-          ),
           child: Icon(Icons.close, size: 20.sp, color: Colors.transparent),
         ),
-
-        //Text
         Text(
           'Meal Summary',
           style: TextStyle(fontSize: 20.sp, fontWeight: FontWeight.w700),
         ),
-
-        //cross button
         InkWell(
-          onTap: () => Navigator.pop(context),
+          onTap: () {
+            Get.delete<MealSummaryController>();
+            Get.back();
+          },
           child: Container(
             padding: EdgeInsets.all(8.w),
             decoration: BoxDecoration(
@@ -298,51 +182,32 @@ class _MealSummaryScreenState extends State<MealSummaryScreen> {
     );
   }
 
-  // Dots Indicator
-  Widget _buildDotsIndicator() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: List.generate(3, (index) {
-        return Container(
-          margin: EdgeInsets.symmetric(horizontal: 6.w),
-          width: 8.w,
-          height: 8.w,
-          decoration: BoxDecoration(
-            color: index == 1 ? Color(0xFFFB2C36) : Colors.grey.shade300,
-            borderRadius: BorderRadius.circular(3.r),
-          ),
-        );
-      }),
+  Widget _buildDotsIndicator(MealSummaryController controller) {
+    return Obx(
+      () => Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: List.generate(controller.uploadedImages.length, (index) {
+          return Container(
+            margin: EdgeInsets.symmetric(horizontal: 4.w),
+            width: index == controller.currentPage.value ? 24.w : 8.w,
+            height: 8.w,
+            decoration: BoxDecoration(
+              color: index == controller.currentPage.value
+                  ? Color(0xFFFB2C36)
+                  : Colors.grey.shade300,
+              borderRadius: BorderRadius.circular(4.r),
+            ),
+          );
+        }),
+      ),
     );
   }
 
-  // State variable
-  int? _selectedNutritionIndex;
-
-  // Segments
-  final List<NutritionSegment> _nutritionSegments = [
-    NutritionSegment(
-      name: 'Carbs',
-      color: const Color(0xFFF7C948),
-      percentage: 0.33,
-      grams: 113,
-    ),
-    NutritionSegment(
-      name: 'Proteins',
-      color: const Color(0xFF2D6DF6),
-      percentage: 0.33,
-      grams: 62,
-    ),
-    NutritionSegment(
-      name: 'Fats',
-      color: Color(0xFFF2853F),
-      percentage: 0.34,
-      grams: 14,
-    ),
-  ];
-
-  // Alternative layout if overflow issues occur
-  Widget _buildMainItem() {
+  Widget _buildMainItem(
+    MealSummaryController controller,
+    int pageIndex,
+    MealPageState pageState,
+  ) {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
@@ -353,10 +218,7 @@ class _MealSummaryScreenState extends State<MealSummaryScreen> {
             fontSize: 20.sp,
           ),
         ),
-
         Spacer(),
-
-        // Use ClipRect to allow overflow on left
         ClipRect(
           clipBehavior: Clip.none,
           child: Align(
@@ -364,12 +226,10 @@ class _MealSummaryScreenState extends State<MealSummaryScreen> {
             child: MultiSegmentCircularProgress(
               size: 100,
               totalCalories: 820,
-              segments: _nutritionSegments,
-              selectedIndex: _selectedNutritionIndex,
+              segments: pageState.nutritionSegments,
+              selectedIndex: pageState.selectedNutritionIndex,
               onSegmentChange: (index) {
-                setState(() {
-                  _selectedNutritionIndex = index;
-                });
+                controller.updateNutritionSelection(pageIndex, index);
               },
             ),
           ),
@@ -378,7 +238,6 @@ class _MealSummaryScreenState extends State<MealSummaryScreen> {
     );
   }
 
-  // Detected Items - Your Design
   Widget _buildDetectedItems() {
     final items = [
       FoodItem(
@@ -412,34 +271,12 @@ class _MealSummaryScreenState extends State<MealSummaryScreen> {
         return Container(
           decoration: BoxDecoration(
             color: const Color(0xCCF9FAFB),
-            borderRadius: BorderRadius.circular(16),
+            borderRadius: BorderRadius.circular(16.r),
           ),
           margin: EdgeInsets.only(bottom: 10.h),
-          padding: EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+          padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 4.h),
           child: Row(
             children: [
-              // Container(
-              //   width: 12.w,
-              //   height: 12.w,
-              //   decoration: BoxDecoration(
-              //     color: item.color,
-              //     shape: BoxShape.circle,
-              //     boxShadow: [
-              //       BoxShadow(
-              //         color: AppColors.black.withOpacity(0.3),
-              //         spreadRadius: -4,
-              //         blurRadius: 6,
-              //         offset: Offset(0, 10),
-              //       ),
-              //       BoxShadow(
-              //         color: AppColors.black.withOpacity(0.3),
-              //         spreadRadius: -3,
-              //         blurRadius: 15,
-              //         offset: Offset(0, 10),
-              //       ),
-              //     ],
-              //   ),
-              // ),
               SizedBox(width: 14.w),
               Expanded(
                 child: Text(
@@ -501,7 +338,6 @@ class _MealSummaryScreenState extends State<MealSummaryScreen> {
     );
   }
 
-  // Warning
   Widget _buildWarning() {
     return Container(
       padding: EdgeInsets.all(12.w),
@@ -529,11 +365,11 @@ class _MealSummaryScreenState extends State<MealSummaryScreen> {
     );
   }
 
-  // Add state variable at top of _MealSummaryScreenState
-  bool _showIngredientInput = false;
-
-  // Updated _buildImproveAccuracy() method
-  Widget _buildImproveAccuracy() {
+  Widget _buildImproveAccuracy(
+    MealSummaryController controller,
+    int pageIndex,
+    MealPageState pageState,
+  ) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -544,17 +380,15 @@ class _MealSummaryScreenState extends State<MealSummaryScreen> {
         SizedBox(height: 8.h),
         Text(
           'Add ingredients the AI couldn\'t see (e.g. oil, sauces, toppings).',
-          style: AppTextStyles.s14w4i(fontSize: 11),
+          style: AppTextStyles.s14w4i(fontSize: 11.sp),
         ),
         SizedBox(height: 16.h),
 
-        // Show Input Field (when activated)
-        if (_showIngredientInput)
+        if (pageState.showIngredientInput)
           Column(
             children: [
-              // Text Input Field
               TextField(
-                controller: _ingredientController,
+                controller: pageState.ingredientController,
                 autofocus: true,
                 decoration: InputDecoration(
                   hintText: 'Type the ingredient',
@@ -583,18 +417,16 @@ class _MealSummaryScreenState extends State<MealSummaryScreen> {
                 ),
                 onSubmitted: (value) {
                   if (value.trim().isNotEmpty) {
-                    _addAndContinue();
+                    controller.addIngredient(pageIndex);
                   }
                 },
               ),
-
               SizedBox(height: 12.h),
             ],
           ),
 
-        // Added Items (show above button when items exist)
-        if (_additionalItems.isNotEmpty) ...[
-          ..._additionalItems.map((item) {
+        if (pageState.additionalItems.isNotEmpty) ...[
+          ...pageState.additionalItems.map((item) {
             return Container(
               margin: EdgeInsets.only(bottom: 8.h),
               padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 12.h),
@@ -605,7 +437,6 @@ class _MealSummaryScreenState extends State<MealSummaryScreen> {
               ),
               child: Row(
                 children: [
-                  // Ingredient Icon
                   Container(
                     padding: EdgeInsets.all(6.w),
                     decoration: BoxDecoration(
@@ -618,10 +449,7 @@ class _MealSummaryScreenState extends State<MealSummaryScreen> {
                       color: Color(0xFF10B981),
                     ),
                   ),
-
                   SizedBox(width: 12.w),
-
-                  // Item Name
                   Expanded(
                     child: Text(
                       item['name']!,
@@ -632,8 +460,6 @@ class _MealSummaryScreenState extends State<MealSummaryScreen> {
                       ),
                     ),
                   ),
-
-                  // Calories Badge
                   Container(
                     padding: EdgeInsets.symmetric(
                       horizontal: 10.w,
@@ -652,16 +478,9 @@ class _MealSummaryScreenState extends State<MealSummaryScreen> {
                       ),
                     ),
                   ),
-
                   SizedBox(width: 8.w),
-
-                  // Remove Button
                   InkWell(
-                    onTap: () {
-                      setState(() {
-                        _additionalItems.remove(item);
-                      });
-                    },
+                    onTap: () => controller.removeIngredient(pageIndex, item),
                     child: Container(
                       padding: EdgeInsets.all(4.w),
                       decoration: BoxDecoration(
@@ -679,35 +498,28 @@ class _MealSummaryScreenState extends State<MealSummaryScreen> {
               ),
             );
           }),
-
           SizedBox(height: 8.h),
         ],
 
-        // Add/Done Button
         InkWell(
           onTap: () {
-            if (_showIngredientInput) {
-              // If input is shown, try to add current text and continue
-              if (_ingredientController.text.trim().isNotEmpty) {
-                _addAndContinue();
+            if (pageState.showIngredientInput) {
+              if (pageState.ingredientController.text.trim().isNotEmpty) {
+                controller.addIngredient(pageIndex);
               } else {
-                // If empty, close input
-                setState(() {
-                  _showIngredientInput = false;
-                });
+                controller.toggleIngredientInput(pageIndex);
               }
             } else {
-              // Show input field
-              setState(() {
-                _showIngredientInput = true;
-              });
+              controller.toggleIngredientInput(pageIndex);
             }
           },
           child: Container(
             width: double.infinity,
             padding: EdgeInsets.symmetric(vertical: 14.h),
             decoration: BoxDecoration(
-              color: _showIngredientInput ? Colors.white : Colors.grey.shade50,
+              color: pageState.showIngredientInput
+                  ? Colors.white
+                  : Colors.grey.shade50,
               borderRadius: BorderRadius.circular(12.r),
               border: Border.all(color: Colors.grey.shade300, width: 1.5),
             ),
@@ -717,7 +529,9 @@ class _MealSummaryScreenState extends State<MealSummaryScreen> {
                 Icon(Icons.add, size: 18.sp, color: Color(0xFF64748B)),
                 SizedBox(width: 8.w),
                 Text(
-                  _showIngredientInput ? 'Add another...' : 'Add an item...',
+                  pageState.showIngredientInput
+                      ? 'Add another...'
+                      : 'Add an item...',
                   style: TextStyle(
                     fontSize: 14.sp,
                     fontWeight: FontWeight.w500,
@@ -729,17 +543,12 @@ class _MealSummaryScreenState extends State<MealSummaryScreen> {
           ),
         ),
 
-        // Done Button (when input is shown)
-        if (_showIngredientInput && _additionalItems.isNotEmpty)
+        if (pageState.showIngredientInput &&
+            pageState.additionalItems.isNotEmpty)
           Padding(
             padding: EdgeInsets.only(top: 8.h),
             child: InkWell(
-              onTap: () {
-                setState(() {
-                  _showIngredientInput = false;
-                  _ingredientController.clear();
-                });
-              },
+              onTap: () => controller.closeIngredientInput(pageIndex),
               child: Container(
                 width: double.infinity,
                 padding: EdgeInsets.symmetric(vertical: 12.h),
@@ -770,60 +579,72 @@ class _MealSummaryScreenState extends State<MealSummaryScreen> {
     );
   }
 
-  // Updated add method
-  void _addAndContinue() {
-    if (_ingredientController.text.trim().isNotEmpty) {
-      setState(() {
-        _additionalItems.add({'name': _ingredientController.text.trim()});
-        _ingredientController.clear();
-        // Keep _showIngredientInput = true to continue adding
-      });
-    }
-  }
-
-  // Action Buttons
-  Widget _buildActionButtons() {
-    return Column(
-      children: [
-        ActionButton(
-          onTap: () => _handleAction('add_extra'),
-          gradient: AppColors.transparentGradiant,
-          leftIcon: "assets/icons/add.png",
-          leftIconbgColor: AppColors.secondaryGradient,
-          rightIcon: Icons.arrow_forward,
-          title: 'Add all as Extra',
-          titleColor: AppColors.black,
-          rightIconbgColor: const Color(0xFFF3F4F6),
-          descFontSize: 10,
-          desc: "Add this meal without replacing anything.",
-          descColor: const Color(0xFF4A5565),
-          rightIconColor: AppColors.black,
-          borderEnbale: true,
-        ),
-        SizedBox(height: 16.h),
-        ActionButton(
-          isSvg: true,
-          onTap: () {
-            showModalBottomSheet(
-              context: Get.context!,
-              backgroundColor: Colors.transparent,
-              isScrollControlled: true,
-              builder: (context) =>
-                  ReplaceMealBottomSheet(initialMealType: "Breakfast"),
-            );
-          },
-          leftIcon: "assets/icons/tabler_replace.svg",
-          title: "Replace a Meal",
-          leftIconbgColor: AppColors.transparentGradiant,
-          rightIcon: Icons.arrow_forward,
-          rightIconbgColor: AppColors.white.withOpacity(0.20),
-          desc: "",
-          descColor: const Color(0xFFffffff).withOpacity(0.8),
-          rightIconColor: AppColors.white,
-          iconBorderEnable: true,
-          shadowOn: true,
-        ),
-      ],
+  Widget _buildActionButtons(MealSummaryController controller, int pageIndex) {
+    return Obx(
+      () => Column(
+        children: [
+          ActionButton(
+            onTap: () {
+              Get.delete<MealSummaryController>();
+              Get.off(
+                () => RebalancingScreen(action: 'add_extra'),
+                transition: Transition.fadeIn,
+              );
+            },
+            gradient: AppColors.transparentGradiant,
+            leftIcon: "assets/icons/add.png",
+            leftIconbgColor: AppColors.secondaryGradient,
+            rightIcon: Icons.arrow_forward,
+            title: controller.uploadedImages.length > 1
+                ? 'Add All Meals as Extra'
+                : 'Add all as Extra',
+            titleColor: AppColors.black,
+            rightIconbgColor: const Color(0xFFF3F4F6),
+            descFontSize: 10,
+            desc: "Add this meal without replacing anything.",
+            descColor: const Color(0xFF4A5565),
+            rightIconColor: AppColors.black,
+            borderEnbale: true,
+          ),
+          SizedBox(height: 16.h),
+          ActionButton(
+            isSvg: true,
+            onTap: () {
+              showModalBottomSheet(
+                context: Get.context!,
+                backgroundColor: Colors.transparent,
+                isScrollControlled: true,
+                builder: (context) =>
+                    ReplaceMealBottomSheet(initialMealType: "Breakfast"),
+              );
+            },
+            leftIcon: "assets/icons/tabler_replace.svg",
+            title: "Replace a Meal",
+            leftIconbgColor: AppColors.transparentGradiant,
+            rightIcon: Icons.arrow_forward,
+            rightIconbgColor: AppColors.white.withOpacity(0.20),
+            desc: "",
+            descColor: const Color(0xFFffffff).withOpacity(0.8),
+            rightIconColor: AppColors.white,
+            iconBorderEnable: true,
+            shadowOn: true,
+          ),
+        ],
+      ),
     );
   }
+}
+
+class FoodItem {
+  final String name;
+  final int calories;
+  final Color color;
+  final int? weight;
+
+  FoodItem({
+    required this.name,
+    required this.calories,
+    required this.color,
+    this.weight,
+  });
 }
