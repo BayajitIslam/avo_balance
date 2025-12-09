@@ -73,14 +73,19 @@ class DietController extends GetxController {
   // ========== MANAGE PLAN METHODS ==========
   // ==========================================
 
+  @override
+  void onInit() {
+    super.onInit();
+    checkDietPlan();
+  }
+
   /// Format date - dd MMM yyyy
   String formatDate(DateTime date) => DateFormat('dd MMM yyyy').format(date);
 
   /// Toggle repeat - NEVER deletes saved data
   void toggleRepeat(bool value) {
     repeatCurrentPlan.value = value;
-    // Important: Do NOT clear newPlanFile, newPlanFileName, or newPlanStartDate
-    // Data must persist when toggling ON/OFF
+    update();
   }
 
   /// Check if selected start date is today
@@ -123,35 +128,24 @@ class DietController extends GetxController {
     }
   }
 
-  /// Updated dynamic message with end date
+  /// Dynamic message - 4 states only
   String get dynamicMessage {
     // State 1: Toggle ON
     if (repeatCurrentPlan.value) {
       return "The current plan will automatically repeat when it ends.";
     }
 
-    // State 2: Toggle OFF + no file uploaded
-    if (!hasFileUploaded) {
-      return "The current plan will automatically repeat when it ends.";
-    }
-
-    // State 3: Toggle OFF + file uploaded + no date selected
+    // State 2: Toggle OFF + no date selected
     if (!hasDateSelected) {
       return "The new plan will start when the current one ends.";
     }
 
-    // State 4: Toggle OFF + date = today (immediate replacement)
+    // State 3: Toggle OFF + date = today (immediate replacement)
     if (isStartDateToday) {
-      if (hasEndDateSelected) {
-        return "The new plan will start immediately and end on ${formatDate(newPlanEndDate.value!)}.";
-      }
       return "The new plan will start immediately and replace the current one.";
     }
 
-    // State 5: Toggle OFF + future date selected
-    if (hasEndDateSelected) {
-      return "The new plan will start on ${formatDate(newPlanStartDate.value!)} and end on ${formatDate(newPlanEndDate.value!)}.";
-    }
+    // State 4: Toggle OFF + future date selected
     return "The new plan will start on the selected date.";
   }
 
@@ -209,29 +203,6 @@ class DietController extends GetxController {
 
     // Reopen bottom sheet
     navigateToManagePlan();
-  }
-
-  /// Get action type based on current state
-  void changeToggleForOnlyDevlopment() {
-    final actionType = _getActionType();
-
-    // ------- YOUR REQUESTED LOGIC -------
-    // If user added new plan → repeat must be false
-    if (actionType == 'start_after_current' ||
-        actionType == 'start_on_date' ||
-        actionType == 'replace_on_date' ||
-        actionType == 'replace_immediately') {
-      repeatCurrentPlan.value = false;
-    }
-    // Else → keep user's toggle selection
-    else {
-      repeatCurrentPlan.value = tempRepeatCurrentPlan.value;
-    }
-    // ------------------------------------
-
-    // (Any other save logic you already have)
-    print("Saved action type: $actionType");
-    print("Final repeatCurrentPlan: ${repeatCurrentPlan.value}");
   }
 
   String _getActionType() {
@@ -422,7 +393,7 @@ class DietController extends GetxController {
     );
     */
 
-    debugPrint('✅ Action: Replace on ${formatDate(newPlanStartDate.value!)}');
+    // debugPrint('✅ Action: Replace on ${formatDate(newPlanStartDate.value!)}');
   }
 
   /// Save: Start on date (after current ends, current repeats until then)
@@ -466,7 +437,7 @@ class DietController extends GetxController {
     newPlanFile.value = null;
     newPlanFileName.value = '';
     newPlanStartDate.value = null;
-    repeatCurrentPlan.value = true;
+    // repeatCurrentPlan.value = true;
   }
 
   /// Restore previous plan (after immediate replacement)
@@ -532,12 +503,6 @@ class DietController extends GetxController {
   void toggleMealExpansion(String mealId) {
     expandedMeals[mealId] = !(expandedMeals[mealId] ?? false);
     update();
-  }
-
-  @override
-  void onInit() {
-    super.onInit();
-    checkDietPlan();
   }
 
   Future<void> checkDietPlan() async {
